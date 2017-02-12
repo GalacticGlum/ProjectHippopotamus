@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hippopotamus.Engine.Utilities;
+using Ninject;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -20,7 +21,7 @@ namespace Hippopotamus.Engine.Core
             }
 
             CompatibleTypes = new HashSet<Type>(compatibleTypes);
-            Pool = DependencyInjector.Get<EntityPool>();
+            Pool = DependencyInjector.Kernel.Get<EntityPool>();
 
             CompatibleEntities = GetCompatibleEntities();
 

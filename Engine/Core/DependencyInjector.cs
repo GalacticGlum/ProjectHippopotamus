@@ -1,5 +1,4 @@
 ﻿using Ninject;
-using Ninject.Syntax;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -10,16 +9,6 @@ namespace Hippopotamus.Engine.Core
         static DependencyInjector()
         {
             Kernel = new StandardKernel();
-        }
-
-        public static IBindingToSyntax<T> Bind<T>()
-        {
-            return Kernel.Bind<T>();
-        }
-
-        public static T Get<T>()
-        {
-            return Kernel.Get<T>();
         }
     }
 }

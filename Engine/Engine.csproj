@@ -66,6 +66,9 @@
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\EntityPool.cs" />
     <Compile Include="Core\EntityState.cs" />
+    <Compile Include="Core\GameEngine.cs" />
+    <Compile Include="Core\GameInstance.cs" />
+    <Compile Include="Core\GameLoop.cs" />
     <Compile Include="Physics\PhysicsSystem.cs" />
     <Compile Include="Rendering\SpriteRenderer.cs" />
     <Compile Include="Core\Transform.cs" />

@@ -13,8 +13,7 @@ namespace Hippopotamus.Engine.Core
         [STAThread]
         private static void Main()
         {
-            using (var game = new Game())
-                game.Run();
+            GameEngine.Launch<Game>();
         }
     }
 }

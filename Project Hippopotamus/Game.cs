@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -7,61 +7,40 @@ using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
 
 using Hippopotamus.Components;
+using Microsoft.Xna.Framework.Content;
+using Ninject;
 
 namespace Hippopotamus
 {
-    public class Game : Microsoft.Xna.Framework.Game
+    public class Game : GameInstance
     {
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-
-        private EntityPool pool;
         private Entity player;
 
-        public Game()
+        public override void Initialize()
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-        }
-
-        protected override void Initialize()
-        {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            pool = new EntityPool("Entity Pool");
-
-            DependencyInjector.Kernel.Bind<ContentManager>().ToConstant(Content);
-            DependencyInjector.Kernel.Bind<SpriteBatch>().ToConstant(spriteBatch);
-            DependencyInjector.Kernel.Bind<EntityPool>().ToConstant(pool);
-
-            base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-            player = pool.Create("player");
-            player.Transform.Position = new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f);
+            player = DependencyInjector.Kernel.Get<EntityPool>().Create("player");
+            player.Transform.Position = new Vector2(800 / 2.0f, 600 / 2.0f);
             player.Transform.Size = new Vector2(2);
 
             player.AddComponent<Player>();
-            player.AddComponent<SpriteRenderer>(Content.Load<Texture2D>("Tiles/BlockA0"));
+            player.AddComponent<SpriteRenderer>(DependencyInjector.Kernel.Get<ContentManager>().Load<Texture2D>("Tiles/BlockA0"));
         }
 
-        protected override void Update(GameTime gameTime)
+        public override void Update(object sender, GameLoopUpdateEventArgs args)
         {
-            Input.Update();
             if (Input.GetKeyUp(Keys.A))
             {
-                player.Disable();
+                player.Toggle();
             }
-
-            //DependencyInjector.Kernel.Get<PhysicsWorld>().Update(gameTime);
-            //GameObject.Root.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
+        public override void Draw(object sender, GameLoopDrawEventArgs args)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
             EntitySystemManager.Get<RenderSystem>().Draw();
+        }
+
+        public override void Dispose()
+        {
         }
     }
 }

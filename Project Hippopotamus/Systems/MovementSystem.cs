@@ -1,33 +1,37 @@
-﻿using Hippopotamus.Components;
+﻿using System;
+using Hippopotamus.Components;
 using Hippopotamus.Engine.Core;
-using Hippopoutamus.Engine.Core;
 using Microsoft.Xna.Framework.Input;
 
 namespace Hippopotamus.Systems
 {
-    public class MovementSystem : System<Constraint<Player>>
+    public class MovementSystem : EntitySystem
     {
-        public override void Update(GameObject gameObject)
+        public MovementSystem() : base(typeof(Player))
         {
-            Player player = gameObject.GetComponent<Player>();
+        }
+
+        public void Update(Entity entity)
+        {
+            Player player = entity.GetComponent<Player>();
             if (Input.GetKey(Keys.A))
             {
-                gameObject.Transform.Translate(-player.Speed, 0);
+                entity.Transform.Translate(-player.Speed, 0);
             }
 
             if (Input.GetKey(Keys.D))
             {
-                gameObject.Transform.Translate(player.Speed, 0);
+                entity.Transform.Translate(player.Speed, 0);
             }
 
             if (Input.GetKey(Keys.W))
             {
-                gameObject.Transform.Translate(0, -player.Speed);
+                entity.Transform.Translate(0, -player.Speed);
             }
 
             if (Input.GetKey(Keys.S))
             {
-                gameObject.Transform.Translate(0, player.Speed);
+                entity.Transform.Translate(0, player.Speed);
             }
         }
     }

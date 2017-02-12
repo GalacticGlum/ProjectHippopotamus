@@ -53,22 +53,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\SystemGameLoop.cs" />
-    <Compile Include="Core\SystemGameLoopType.cs" />
+    <Compile Include="Core\Component.cs" />
+    <Compile Include="Core\EntitySystem.cs" />
+    <Compile Include="Core\EntitySystemManager.cs" />
+    <Compile Include="Core\Exceptions\ComponentExistsException.cs" />
+    <Compile Include="Core\Exceptions\ComponentNotFoundException.cs" />
+    <Compile Include="Core\Exceptions\DuplicateEntityException.cs" />
+    <Compile Include="Core\Exceptions\EntitySystemNotFoundException.cs" />
+    <Compile Include="Core\Exceptions\InvalidEntityPoolException.cs" />
+    <Compile Include="Core\Exceptions\NullEntityPoolException.cs" />
+    <Compile Include="Core\Exceptions\EntityNotFoundException.cs" />
+    <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\EntityPool.cs" />
+    <Compile Include="Core\EntityState.cs" />
     <Compile Include="Physics\PhysicsSystem.cs" />
     <Compile Include="Rendering\SpriteRenderer.cs" />
     <Compile Include="Core\Transform.cs" />
     <Compile Include="Core\DependencyInjector.cs" />
     <Compile Include="Core\Input.cs" />
-    <Compile Include="Core\GameObject.cs" />
-    <Compile Include="Core\GameObjectManager.cs" />
-    <Compile Include="Core\Component.cs" />
-    <Compile Include="Core\Constraint.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
-    <Compile Include="Core\System.cs" />
-    <Compile Include="Core\SystemManager.cs" />
     <Compile Include="Core\Time.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ComponentExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

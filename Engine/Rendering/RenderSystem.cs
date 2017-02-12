@@ -4,34 +4,29 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using Hippopotamus.Engine.Core;
-using Hippopoutamus.Engine.Core;
 
 namespace Hippopotamus.Engine.Rendering
 {
-    public class RenderSystem : System<SpriteRenderer>
+    public class RenderSystem : EntitySystem
     {
         private readonly SpriteBatch spriteBatch;
-        private readonly Dictionary<GameObject, SpriteRenderer> spriteRenderers;
 
-        public RenderSystem()
+        public RenderSystem() : base(typeof(SpriteRenderer))
         {
             spriteBatch = DependencyInjector.Kernel.Get<SpriteBatch>();
-            spriteRenderers = new Dictionary<GameObject, SpriteRenderer>();
         }
 
-        public override void Update(GameObject gameObject)
+        public void Draw()
         {
-            if (!spriteRenderers.ContainsKey(gameObject))
-            {
-                spriteRenderers.Add(gameObject, gameObject.GetComponent<SpriteRenderer>());
-            }
-
             spriteBatch.Begin();
-            SpriteRenderer spriteRenderer = spriteRenderers[gameObject];
-            spriteBatch.Draw(spriteRenderer.Texture, spriteRenderer.Transform.Position, null, 
-                spriteRenderer.Colour, spriteRenderer.Transform.Rotation, 
-                new Vector2(spriteRenderer.Texture.Width / 2.0f, spriteRenderer.Texture.Height / 2.0f), 
-                spriteRenderer.Transform.Size, SpriteEffects.None, spriteRenderer.Layer);
+            foreach (Entity entity in CompatibleEntities)
+            {
+                SpriteRenderer spriteRenderer = entity.GetComponent<SpriteRenderer>();
+                spriteBatch.Draw(spriteRenderer.Texture, spriteRenderer.Transform.Position, null,
+                    spriteRenderer.Colour, spriteRenderer.Transform.Rotation,
+                    new Vector2(spriteRenderer.Texture.Width / 2.0f, spriteRenderer.Texture.Height / 2.0f),
+                    spriteRenderer.Transform.Size, SpriteEffects.None, spriteRenderer.Layer);
+            }
             spriteBatch.End();
         }
     }

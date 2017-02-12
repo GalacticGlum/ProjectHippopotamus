@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
 
 using Hippopotamus.Components;
-using Hippopotamus.Systems;
 
 namespace Hippopotamus
 {
@@ -15,8 +15,8 @@ namespace Hippopotamus
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        private GameObject player;
-        private GameObject platform;
+        private EntityPool pool;
+        private Entity player;
 
         public Game()
         {
@@ -27,52 +27,33 @@ namespace Hippopotamus
         protected override void Initialize()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            pool = new EntityPool("Entity Pool");
 
             DependencyInjector.Kernel.Bind<ContentManager>().ToConstant(Content);
             DependencyInjector.Kernel.Bind<SpriteBatch>().ToConstant(spriteBatch);
-
-            SystemManager.Add<RenderSystem>();
-            SystemManager.Add<MovementSystem>();
+            DependencyInjector.Kernel.Bind<EntityPool>().ToConstant(pool);
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            player = new GameObject
-            {
-                Transform =
-                {
-                    Position = new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f),
-                    Size = new Vector2(2)
-                }
-            };
+            player = pool.Create("player");
+            player.Transform.Position = new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f);
+            player.Transform.Size = new Vector2(2);
 
             player.AddComponent<Player>();
-
-            SpriteRenderer spriteRenderer = player.AddComponent<SpriteRenderer>(Content.Load<Texture2D>("Tiles/BlockA0"));
-            spriteRenderer.Colour = new Color(Color.Red, 255 / 2);
-
-            //player.AddComponent(new BoxRigidbody(new Vector2(spriteRenderer.Texture.Width, spriteRenderer.Texture.Height)));
-            //player.AddComponent<PlayerController>();
-
-            platform = new GameObject
-            {
-                Transform =
-                {
-                    Size = new Vector2(GraphicsDevice.Viewport.Width, 2)
-                }
-            };
-
-            spriteRenderer = platform.AddComponent< SpriteRenderer>(Content.Load<Texture2D>("Tiles/BlockA1"));
-            platform.Transform.Position = new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height - spriteRenderer.Texture.Height);
-
-            //platform.AddComponent(new BoxRigidbody(new Vector2(spriteRenderer.Texture.Width, spriteRenderer.Texture.Height), BodyType.Kinematic));
+            player.AddComponent<SpriteRenderer>(Content.Load<Texture2D>("Tiles/BlockA0"));
         }
 
         protected override void Update(GameTime gameTime)
         {
             Input.Update();
+            if (Input.GetKeyUp(Keys.A))
+            {
+                player.Disable();
+            }
+
             //DependencyInjector.Kernel.Get<PhysicsWorld>().Update(gameTime);
             //GameObject.Root.Update(gameTime);
         }
@@ -80,7 +61,7 @@ namespace Hippopotamus
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            GameObjectManager.Update();
+            EntitySystemManager.Get<RenderSystem>().Draw();
         }
     }
 }

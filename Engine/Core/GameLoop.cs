@@ -35,5 +35,8 @@ namespace Hippopotamus.Engine.Core
         // These methods are to limit the raising of the game loop events to the engine.
         public void Register(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop += eventHandler; }
         public void Register(DrawGameLoopEventHandler eventHandler) { DrawGameLoop += eventHandler; }
+
+        public void Unregister(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop -= eventHandler; }
+        public void Unregister(DrawGameLoopEventHandler eventHandler) { DrawGameLoop -= eventHandler; }
     }
 }

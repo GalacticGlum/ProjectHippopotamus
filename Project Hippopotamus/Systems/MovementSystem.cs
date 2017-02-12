@@ -1,37 +1,40 @@
-﻿using System;
-using Hippopotamus.Components;
+﻿using Hippopotamus.Components;
 using Hippopotamus.Engine.Core;
 using Microsoft.Xna.Framework.Input;
 
 namespace Hippopotamus.Systems
 {
-    public class MovementSystem : EntitySystem
+    [StartupEntitySystem]
+    public class MovementSystem : EntitySystem, IUpdatable
     {
         public MovementSystem() : base(typeof(Player))
         {
         }
 
-        public void Update(Entity entity)
+        public void Update(object sender, GameLoopUpdateEventArgs args)
         {
-            Player player = entity.GetComponent<Player>();
-            if (Input.GetKey(Keys.A))
+            foreach (Entity entity in CompatibleEntities)
             {
-                entity.Transform.Translate(-player.Speed, 0);
-            }
+                Player player = entity.GetComponent<Player>();
+                if (Input.GetKey(Keys.A))
+                {
+                    entity.Transform.Translate(-player.Speed * args.DeltaTime, 0);
+                }
 
-            if (Input.GetKey(Keys.D))
-            {
-                entity.Transform.Translate(player.Speed, 0);
-            }
+                if (Input.GetKey(Keys.D))
+                {
+                    entity.Transform.Translate(player.Speed * args.DeltaTime, 0);
+                }
 
-            if (Input.GetKey(Keys.W))
-            {
-                entity.Transform.Translate(0, -player.Speed);
-            }
+                if (Input.GetKey(Keys.W))
+                {
+                    entity.Transform.Translate(0, -player.Speed * args.DeltaTime);
+                }
 
-            if (Input.GetKey(Keys.S))
-            {
-                entity.Transform.Translate(0, player.Speed);
+                if (Input.GetKey(Keys.S))
+                {
+                    entity.Transform.Translate(0, player.Speed * args.DeltaTime);
+                }
             }
         }
     }

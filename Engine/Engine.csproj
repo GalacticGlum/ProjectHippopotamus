@@ -53,9 +53,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Component.cs" />
-    <Compile Include="Core\EntitySystem.cs" />
-    <Compile Include="Core\EntitySystemManager.cs" />
+    <Compile Include="Core\Entities\Component.cs" />
+    <Compile Include="Core\Entities\EntitySystem.cs" />
+    <Compile Include="Core\Entities\EntitySystemManager.cs" />
+    <Compile Include="Core\Entities\IDrawable.cs" />
+    <Compile Include="Core\Entities\IUpdatable.cs" />
+    <Compile Include="Core\Entities\StartupEntitySystem.cs" />
     <Compile Include="Core\Exceptions\ComponentExistsException.cs" />
     <Compile Include="Core\Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="Core\Exceptions\DuplicateEntityException.cs" />
@@ -63,9 +66,9 @@
     <Compile Include="Core\Exceptions\InvalidEntityPoolException.cs" />
     <Compile Include="Core\Exceptions\NullEntityPoolException.cs" />
     <Compile Include="Core\Exceptions\EntityNotFoundException.cs" />
-    <Compile Include="Core\Entity.cs" />
-    <Compile Include="Core\EntityPool.cs" />
-    <Compile Include="Core\EntityState.cs" />
+    <Compile Include="Core\Entities\Entity.cs" />
+    <Compile Include="Core\Entities\EntityPool.cs" />
+    <Compile Include="Core\Entities\EntityState.cs" />
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Core\GameInstance.cs" />
     <Compile Include="Core\GameLoop.cs" />

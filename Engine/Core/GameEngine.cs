@@ -18,6 +18,9 @@ namespace Hippopotamus.Engine.Core
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            graphics.SynchronizeWithVerticalRetrace = false;
+            IsFixedTimeStep = false;
+
             this.gameInstance = gameInstance;
         }
 
@@ -33,6 +36,7 @@ namespace Hippopotamus.Engine.Core
             BindDependencies();
             base.Initialize();
 
+            EntitySystemManager.Initialize();
             gameInstance.Initialize();
         }
 

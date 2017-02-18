@@ -1,4 +1,5 @@
-﻿using Hippopotamus.Engine.Core;
+﻿using System;
+using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -14,7 +15,7 @@ namespace Hippopotamus
 
         public WorldSystem()
         {
-            world = new World(100, 100);
+            world = new World(25, 13);
             entityPool = DependencyInjector.Kernel.Get<GameEngine>().EntityPool;
 
             Texture2D texture = DependencyInjector.Kernel.Get<ContentManager>().Load<Texture2D>("Tiles/Grass");
@@ -25,7 +26,7 @@ namespace Hippopotamus
                 {
                     Entity entity = entityPool.Create($"Tile ({x}, {y})");
                     entity.Transform.Position = new Vector2(x * 32, y * 32);
-                    SpriteRenderer spriteRenderer = (SpriteRenderer)entity.AddComponent(new SpriteRenderer(texture));
+                    entity.AddComponent(new SpriteRenderer(texture));
                 }
             }
         }

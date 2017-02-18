@@ -46,6 +46,7 @@
     <Compile Include="TileType.cs" />
     <Compile Include="Utilities\Units.cs" />
     <Compile Include="World.cs" />
+    <Compile Include="WorldGenerator.cs" />
     <Compile Include="WorldSystem.cs" />
   </ItemGroup>
   <ItemGroup>

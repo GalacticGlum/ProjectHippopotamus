@@ -1,10 +1,7 @@
-﻿using FarseerPhysics.Dynamics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using System.Diagnostics;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
-
-using Hippopotamus.Engine.Physics;
 
 namespace Hippopotamus
 {
@@ -12,8 +9,13 @@ namespace Hippopotamus
     {
         public override void Initialize()
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             GameEngine.EntityPool.Create("camera").AddComponent(new Camera(GameEngine.GraphicsDevice.Viewport));
             EntitySystemManager.Register<WorldSystem>();
+
+            stopwatch.Stop();
+            Console.WriteLine($"{stopwatch.ElapsedMilliseconds / 1000.0}");
         }
     }
 }

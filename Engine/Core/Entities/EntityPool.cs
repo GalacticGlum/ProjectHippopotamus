@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 
 namespace Hippopotamus.Engine.Core
@@ -55,7 +56,7 @@ namespace Hippopotamus.Engine.Core
 
         public EntityPool(string name)
         {
-            Entities = new List<Entity>();
+            Entities = new List<Entity>(100);
             CachedEntities = new Stack<Entity>();
 
             if (!string.IsNullOrEmpty(Name))

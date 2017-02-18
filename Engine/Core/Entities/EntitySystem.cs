@@ -12,6 +12,7 @@ namespace Hippopotamus.Engine.Core
         public HashSet<Entity> CompatibleEntities { get; private set; }
 
         protected HashSet<Type> CompatibleTypes { get; set; }
+        private bool isDirty;
 
         protected EntitySystem(params Type[] compatibleTypes)
         {
@@ -31,6 +32,16 @@ namespace Hippopotamus.Engine.Core
             Pool.EntityAdded += OnEntityPoolChanged;
             Pool.EntityChanged += OnEntityPoolChanged;
             Pool.EntityRemoved += OnEntityPoolChanged;
+
+            DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register((UpdateGameLoopEventHandler)((sender, args) => CheckEntityCompatibility()));
+        }
+
+        private void CheckEntityCompatibility()
+        {
+            if (!isDirty) return;
+
+            CompatibleEntities = GetCompatibleEntities();
+            isDirty = false;
         }
 
         public void AddCompatibility(Type type)
@@ -47,7 +58,7 @@ namespace Hippopotamus.Engine.Core
         private void OnEntityPoolChanged(object sender, EntityPoolChangedEventArgs args)
         {
             Pool = args.Pool;
-            CompatibleEntities = GetCompatibleEntities();
+            isDirty = true;
         }
 
         protected HashSet<Entity> GetCompatibleEntities()

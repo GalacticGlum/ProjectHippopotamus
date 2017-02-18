@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus.Engine.Core
@@ -14,6 +13,16 @@ namespace Hippopotamus.Engine.Core
         }
     }
 
+    public delegate void FixedUpdateGameLoopEventHandler(object sender, GameLoopFixedUpdateEventArgs args);
+    public class GameLoopFixedUpdateEventArgs : EventArgs
+    {
+        public float FixedDeltaTime { get; }
+        public GameLoopFixedUpdateEventArgs(float fixedDeltaTime)
+        {
+            FixedDeltaTime = fixedDeltaTime;
+        }
+    }
+
     public delegate void DrawGameLoopEventHandler(object sender, GameLoopDrawEventArgs args);
     public class GameLoopDrawEventArgs : EventArgs
     {
@@ -24,19 +33,24 @@ namespace Hippopotamus.Engine.Core
         }
     }
 
-    public sealed class GameLoop
+    public class GameLoop
     {
         private event UpdateGameLoopEventHandler UpdateGameLoop;
         internal void Update(GameLoopUpdateEventArgs args) { UpdateGameLoop?.Invoke(this, args); }
 
+        private event FixedUpdateGameLoopEventHandler FixedUpdateGameLoop;
+        internal void FixedUpdate(GameLoopFixedUpdateEventArgs args) { FixedUpdateGameLoop?.Invoke(this, args); }
+
         private event DrawGameLoopEventHandler DrawGameLoop;
         internal void Draw(GameLoopDrawEventArgs args) { DrawGameLoop?.Invoke(this, args); }
 
-        // These methods are to limit the raising of the game loop events to the engine.
+        // These methods allow the game engine to keep control over the raising of game loop events.
         public void Register(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop += eventHandler; }
+        public void Register(FixedUpdateGameLoopEventHandler eventHandler) { FixedUpdateGameLoop += eventHandler; }
         public void Register(DrawGameLoopEventHandler eventHandler) { DrawGameLoop += eventHandler; }
 
         public void Unregister(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop -= eventHandler; }
+        public void Unregister(FixedUpdateGameLoopEventHandler eventHandler) { FixedUpdateGameLoop -= eventHandler; }
         public void Unregister(DrawGameLoopEventHandler eventHandler) { DrawGameLoop -= eventHandler; }
     }
 }

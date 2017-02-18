@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Hippopotamus.Engine.Core
+namespace Hippopotamus.Engine.Core.Entities
 {
     public class Transform : Component
     {

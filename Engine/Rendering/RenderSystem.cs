@@ -15,7 +15,7 @@ namespace Hippopotamus.Engine.Rendering
 
         public void Draw(object sender, GameLoopDrawEventArgs args)
         {
-            args.SpriteBatch.Begin();
+            args.SpriteBatch.Begin(transformMatrix: Camera.Main.ViewMatrix);
             foreach (Entity entity in CompatibleEntities)
             {
                 SpriteRenderer spriteRenderer = entity.GetComponent<SpriteRenderer>();

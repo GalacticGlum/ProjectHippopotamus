@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 using Ninject;
 
@@ -10,7 +11,6 @@ namespace Hippopotamus.Engine.Core
     public static class EntitySystemManager
     {
         private static readonly Dictionary<Type, EntitySystem> systems = new Dictionary<Type, EntitySystem>();
-
         public static void Initialize()
         {
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -45,6 +45,15 @@ namespace Hippopotamus.Engine.Core
                 }
             }
 
+            if (interfaces.Contains(typeof(IFixedUpdatable)))
+            {
+                IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
+                if (fixedUpdatable != null)
+                {
+                    DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(fixedUpdatable.FixedUpdate);
+                }
+            }
+
             if (!interfaces.Contains(typeof(IDrawable))) return;
             IDrawable drawable = system as IDrawable;
             if (drawable != null)
@@ -73,6 +82,15 @@ namespace Hippopotamus.Engine.Core
                 if (updatable != null)
                 {
                     DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(updatable.Update);
+                }
+            }
+
+            if (interfaces.Contains(typeof(IFixedUpdatable)))
+            {
+                IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
+                if (fixedUpdatable != null)
+                {
+                    DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(fixedUpdatable.FixedUpdate);
                 }
             }
 

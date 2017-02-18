@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 using Hippopotamus.Engine.Utilities;
+using Ninject;
+using IStartable = Hippopotamus.Engine.Core.Entities.IStartable;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -161,6 +164,23 @@ namespace Hippopotamus.Engine.Core
             Pool.OnComponentAdded(this);
 
             component.Entity = this;
+            Type[] interfaces = component.GetType().GetInterfaces();
+            if (interfaces.Contains(typeof(IStartable)))
+            {
+                IStartable startable = component as IStartable;
+                startable?.Start();
+            }
+
+            if (interfaces.Contains(typeof(IUpdatable)))
+            {
+                IUpdatable updatable = component as IUpdatable;
+                if (updatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(updatable.Update); }
+            }
+
+            if (!interfaces.Contains(typeof(IFixedUpdatable))) return component;
+
+            IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
+            if (fixedUpdatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(fixedUpdatable.FixedUpdate); }
 
             return component;
         }
@@ -199,16 +219,7 @@ namespace Hippopotamus.Engine.Core
 
         public void RemoveComponent<T>() where T : Component
         {
-            if (!IsUsable()) return;
-            if (!HasComponent<T>())
-            {
-                throw new ComponentNotFoundException(this, typeof(T));
-            }
-
-            Component component = GetComponent<T>();
-            Components.Remove(component);
-            OnComponentRemoved(new ComponentEventArgs(this, component));
-            Pool.OnComponentRemoved(this);
+            RemoveComponent(typeof(T));
         }
 
         public void RemoveComponent(Type componentType)
@@ -225,6 +236,19 @@ namespace Hippopotamus.Engine.Core
             }
 
             Component component = GetComponent(componentType);
+            Type[] interfaces = componentType.GetInterfaces();
+            if (interfaces.Contains(typeof(IUpdatable)))
+            {
+                IUpdatable updatable = component as IUpdatable;
+                if (updatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(updatable.Update); }
+            }
+
+            if (interfaces.Contains(typeof(IFixedUpdatable)))
+            {
+                IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
+                if (fixedUpdatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(fixedUpdatable.FixedUpdate); }
+            }
+
             Components.Remove(component);
             OnComponentRemoved(new ComponentEventArgs(this, component));
             Pool.OnComponentRemoved(this);

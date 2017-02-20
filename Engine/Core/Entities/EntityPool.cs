@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -52,12 +53,15 @@ namespace Hippopotamus.Engine.Core
         public event EntityPoolChangedEventHandler ComponentRemoved;
         internal void OnComponentRemoved(Entity entity) { ComponentRemoved?.Invoke(this, new EntityPoolChangedEventArgs(this, entity)); }
 
+        private readonly HashSet<string> usedEntityNames;
         private const int entityCacheCap = 30;
 
         public EntityPool(string name)
         {
             Entities = new List<Entity>(100);
             CachedEntities = new Stack<Entity>();
+
+            usedEntityNames = new HashSet<string>();
 
             if (!string.IsNullOrEmpty(Name))
             {
@@ -67,7 +71,7 @@ namespace Hippopotamus.Engine.Core
 
         public Entity Create(string name)
         {
-            if (Entities.Any(obj => obj.Name == name))
+            if (usedEntityNames.Contains(name))
             {
                 throw new DuplicateEntityException(this, name);
             }
@@ -90,14 +94,14 @@ namespace Hippopotamus.Engine.Core
                 entity.Pool = this;
                 entity.State = EntityState.Enabled;
                 entity.Transform = entity.AddComponent<Transform>();
-
-                Entities.Add(entity);
             }
             else
             {
                 entity = new Entity(name, this);
-                Entities.Add(entity);
             }
+
+            Entities.Add(entity);
+            usedEntityNames.Add(name);
 
             OnEntityAdded(new EntityPoolChangedEventArgs(this, entity));
             return entity;
@@ -136,8 +140,9 @@ namespace Hippopotamus.Engine.Core
             }
 
             Entities.Remove(entity);
-            OnEntityRemoved(new EntityPoolChangedEventArgs(this, entity));
+            usedEntityNames.Remove(entity.Name);
 
+            OnEntityRemoved(new EntityPoolChangedEventArgs(this, entity));
             entity = null;
         }
 
@@ -169,9 +174,10 @@ namespace Hippopotamus.Engine.Core
             CachedEntities.Clear();
         }
 
-        public void ClearEntities()
+        public void Clear()
         {
             Entities.Clear();
+            usedEntityNames.Clear();
         }
     }
 }

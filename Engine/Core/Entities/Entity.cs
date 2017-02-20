@@ -192,13 +192,6 @@ namespace Hippopotamus.Engine.Core
             return component;
         }
 
-        public T AddComponent<T>(params object[] constructorArgs) where T : Component
-        {
-            T component = (T) Activator.CreateInstance(typeof(T), constructorArgs);
-            AddComponent(component);
-            return component;
-        }
-
         public void AddComponents(IEnumerable<Component> components)
         {
             if (!IsUsable()) return;
@@ -315,7 +308,7 @@ namespace Hippopotamus.Engine.Core
 
         public bool HasComponent<TComponent>() where TComponent : Component
         {
-            return IsUsable() && Components.Any(comp => comp.GetType() == typeof(TComponent));
+            return HasComponent(typeof(TComponent));
         }
 
         public bool HasComponent(Type componentType)
@@ -333,9 +326,31 @@ namespace Hippopotamus.Engine.Core
             return Components.Any(component => component.GetType() == componentType);
         }
 
-        public bool HasComponents(IEnumerable<Type> componentTypes)
+        public bool HasAnyComponent(params Type[] types)
         {
-            return IsUsable() && componentTypes.All(HasComponent);
+            if ((from t in types from component in Components where component.GetType() == t select t).Any())
+            {
+                return true;
+            }
+
+            return types.Length == 0;
+        }
+
+        public bool HasAllComponents(params Type[] types)
+        {
+            int matches = types.Count(type => Components.Any(component => component.GetType() == type));
+            return types.Length == 0 || matches == types.Length && matches > 0;
+        }
+
+        public bool HasNoneComponents(params Type[] types)
+        {
+            return !(from type in types from component in Components where component.GetType() == type select type).Any();
+        }
+
+        public bool DoesMatchFilter(EntityFilter filter)
+        {
+            if (filter == null) return false;
+            return HasAnyComponent(filter.Any.ToArray()) && HasAllComponents(filter.All.ToArray()) && HasNoneComponents(filter.None.ToArray());
         }
 
         public void RemoveAllComponents()

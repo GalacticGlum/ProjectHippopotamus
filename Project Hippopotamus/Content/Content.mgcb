@@ -25,3 +25,9 @@
 /processorParam:TextureFormat=Color
 /build:Tiles/Grass.png
 
+#begin Fonts/Arial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial.spritefont
+

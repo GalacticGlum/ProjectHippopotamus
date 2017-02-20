@@ -10,14 +10,14 @@ namespace Hippopotamus.Engine.Physics
     {
         public World PhysicsWorld { get; }
 
-        public PhysicsSystem() : base(typeof(Rigidbody))
+        public PhysicsSystem() 
         {
             PhysicsWorld = new World(new Vector2(0, 1f));
         }
 
         public void FixedUpdate(object sender, GameLoopFixedUpdateEventArgs args)
         {
-            foreach (Entity entity in CompatibleEntities)
+            foreach (Entity entity in GetCompatibleEntities(EntityFilter.AllOf(typeof(Rigidbody))))
             {
                 entity.Transform.Position = ConvertUnits.ToDisplayUnits(entity.GetComponent<Rigidbody>().Body.Position);
             }

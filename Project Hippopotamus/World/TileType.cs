@@ -1,4 +1,4 @@
-﻿namespace Hippopotamus
+﻿namespace Hippopotamus.World
 {
     public enum TileType 
     {

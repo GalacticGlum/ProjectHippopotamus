@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
+using Hippopotamus.World;
 
 namespace Hippopotamus
 {
@@ -9,6 +10,8 @@ namespace Hippopotamus
     {
         public override void Initialize()
         {
+            GameEngine.IsMouseVisible = true;
+
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             GameEngine.EntityPool.Create("camera").AddComponent(new Camera(GameEngine.GraphicsDevice.Viewport));

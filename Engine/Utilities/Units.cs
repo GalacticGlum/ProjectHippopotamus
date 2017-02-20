@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Hippopotamus.Utilities
+namespace Hippopotamus.Engine.Utilities
 {
     public static class Units
     {

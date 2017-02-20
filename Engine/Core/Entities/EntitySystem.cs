@@ -1,69 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hippopotamus.Engine.Utilities;
 using Ninject;
 
-namespace Hippopotamus.Engine.Core
+namespace Hippopotamus.Engine.Core.Entities
 {
     public abstract class EntitySystem
     {
-        public EntityPool Pool { get; private set; }
-        public HashSet<Entity> CompatibleEntities { get; private set; }
+        protected EntityPool Pool { get; }
+        //public HashSet<Entity> CompatibleEntities { get; private set; }
 
-        protected HashSet<Type> CompatibleTypes { get; set; }
-        private bool isDirty;
+        //protected HashSet<Type> CompatibleTypes { get; set; }
+        //private bool isDirty;
 
-        protected EntitySystem(params Type[] compatibleTypes)
+        //protected EntitySystem(params Type[] compatibleTypes)
+        protected EntitySystem()
         {
-            if (compatibleTypes.Any(type => !type.IsComponent()))
-            {
-                throw new ArgumentException("Type passed into EntitySystem was not a child of Component.");
-            }
+            //if (compatibleTypes.Any(type => !type.IsComponent()))
+            //{
+            //    throw new ArgumentException("Type passed into EntitySystem was not a child of Component.");
+            //}
 
-            CompatibleTypes = new HashSet<Type>(compatibleTypes);
+            //CompatibleTypes = new HashSet<Type>(compatibleTypes);
             Pool = DependencyInjector.Kernel.Get<EntityPool>();
 
-            CompatibleEntities = GetCompatibleEntities();
+            ////CompatibleEntities = GetCompatibleEntities();
 
-            Pool.ComponentAdded += OnEntityPoolChanged;
-            Pool.ComponentRemoved += OnEntityPoolChanged;
+            //Pool.ComponentAdded += OnEntityPoolChanged;
+            //Pool.ComponentRemoved += OnEntityPoolChanged;
 
-            Pool.EntityAdded += OnEntityPoolChanged;
-            Pool.EntityChanged += OnEntityPoolChanged;
-            Pool.EntityRemoved += OnEntityPoolChanged;
+            //Pool.EntityAdded += OnEntityPoolChanged;
+            //Pool.EntityChanged += OnEntityPoolChanged;
+            //Pool.EntityRemoved += OnEntityPoolChanged;
 
-            DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register((UpdateGameLoopEventHandler)((sender, args) => CheckEntityCompatibility()));
+            //DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register((UpdateGameLoopEventHandler)((sender, args) => CheckEntityCompatibility()));
         }
 
-        private void CheckEntityCompatibility()
+        //private void CheckEntityCompatibility()
+        //{
+        //    if (!isDirty) return;
+
+        //    CompatibleEntities = GetCompatibleEntities();
+        //    isDirty = false;
+        //}
+
+        //public void AddCompatibility(Type type)
+        //{
+        //    if (!type.IsComponent())
+        //    {
+        //        throw new ArgumentException($"Type: \"{type.Name} is not a child of Component");
+        //    }
+
+        //    CompatibleTypes.Add(type);
+        //    CompatibleEntities = GetCompatibleEntities();
+        //}
+
+        //private void OnEntityPoolChanged(object sender, EntityPoolChangedEventArgs args)
+        //{
+        //    Pool = args.Pool;
+        //    //isDirty = true;
+        //}
+
+        protected HashSet<Entity> GetCompatibleEntities(EntityFilter filter)
         {
-            if (!isDirty) return;
-
-            CompatibleEntities = GetCompatibleEntities();
-            isDirty = false;
-        }
-
-        public void AddCompatibility(Type type)
-        {
-            if (!type.IsComponent())
-            {
-                throw new ArgumentException($"Type: \"{type.Name} is not a child of Component");
-            }
-
-            CompatibleTypes.Add(type);
-            CompatibleEntities = GetCompatibleEntities();
-        }
-
-        private void OnEntityPoolChanged(object sender, EntityPoolChangedEventArgs args)
-        {
-            Pool = args.Pool;
-            isDirty = true;
-        }
-
-        protected HashSet<Entity> GetCompatibleEntities()
-        {
-            return new HashSet<Entity>(Pool.Entities.Where(entity => entity.State != EntityState.Disabled && entity.HasComponents(CompatibleTypes)));
+            return new HashSet<Entity>(Pool.Entities.Where(entity => entity.State != EntityState.Disabled && entity.DoesMatchFilter(filter)));
         }
     }
 }

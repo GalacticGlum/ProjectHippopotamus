@@ -46,6 +46,7 @@
     <Compile Include="World\IWorldGenerator.cs" />
     <Compile Include="World\TerrainWorldGenerator.cs" />
     <Compile Include="World\Tile.cs" />
+    <Compile Include="World\TileGraphicSystem.cs" />
     <Compile Include="World\TileType.cs" />
     <Compile Include="World\World.cs" />
     <Compile Include="World\SineCurveParameter.cs" />

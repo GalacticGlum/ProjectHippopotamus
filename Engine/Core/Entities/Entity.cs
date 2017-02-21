@@ -447,9 +447,9 @@ namespace Hippopotamus.Engine.Core
             return child;
         }
 
-        public Entity GetChild(string name)
+        public Entity GetChild(string childName)
         {
-            return !IsUsable() ? null : Children.FirstOrDefault(child => child.Name == name);
+            return !IsUsable() ? null : Children.FirstOrDefault(child => child.Name == childName);
         }
 
         /// <summary>

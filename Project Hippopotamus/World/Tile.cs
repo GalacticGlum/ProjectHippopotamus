@@ -1,12 +1,38 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Hippopotamus.World
 {
+    public delegate void TileChangedEventHandler(object sender, TileEventArgs args);
+    public class TileEventArgs : EventArgs
+    {
+        public Tile Tile { get; }
+        public TileEventArgs(Tile tile)
+        {
+            Tile = tile;
+        }
+    }
+
     public class Tile
     {
         public const int Size = 32;
 
-        public TileType Type { get; set; }
+        private TileType type;
+        public TileType Type
+        {
+            get { return type; }
+            set
+            {
+                TileType oldTileType = type;
+                type = value;
+
+                if (oldTileType == type) return;
+                OnTileChanged(new TileEventArgs(this));
+            }
+        }
+
+        public event TileChangedEventHandler TileChanged;
+        public void OnTileChanged(TileEventArgs args) { TileChanged?.Invoke(this, args); }
 
         public Tile(TileType type)
         {

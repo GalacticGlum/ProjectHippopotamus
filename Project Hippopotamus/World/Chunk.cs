@@ -1,8 +1,19 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.World
 {
+    public delegate void ChunkLoadedEventHandler(object sender, ChunkEventArgs args);
+    public class ChunkEventArgs : EventArgs
+    {
+        public Chunk Chunk { get; }
+        public ChunkEventArgs(Chunk chunk)
+        {
+            Chunk = chunk;
+        }
+    }
+
     public class Chunk
     {
         public const int Size = 32;
@@ -16,6 +27,11 @@ namespace Hippopotamus.World
         public bool Loaded { get; set; }
         public Vector2 Position { get; }
 
+        public event ChunkLoadedEventHandler ChunkLoaded;
+        public void OnChunkLoaded(ChunkEventArgs args) { ChunkLoaded?.Invoke(this, args); }
+
+        public event TileChangedEventHandler TileChanged;
+
         private readonly Tile[,] tiles;
 
         public Chunk(Vector2 position)
@@ -28,8 +44,14 @@ namespace Hippopotamus.World
                 for (int y = 0; y < Size; y++)
                 {
                     tiles[x, y] = new Tile(TileType.Empty);
+                    tiles[x, y].TileChanged += OnTileChanged;
                 }
             }
+        }
+
+        private void OnTileChanged(object sender, TileEventArgs args)
+        {
+            TileChanged?.Invoke(this, args);
         }
 
         public Tile GetTileAt(int x, int y)
@@ -60,6 +82,8 @@ namespace Hippopotamus.World
         public void Load(BinaryReader reader)
         {
             Loaded = true;
+            OnChunkLoaded(new ChunkEventArgs(this));
+
             for (int x = 0; x < Size; x++)
             {
                 for (int y = 0; y < Size; y++)

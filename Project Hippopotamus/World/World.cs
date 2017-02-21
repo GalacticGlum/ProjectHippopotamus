@@ -8,17 +8,24 @@ namespace Hippopotamus.World
 {
     public class World
     {
+        public static World Current { get; private set; }
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
         public int HorizontalChunks { get; private set; }
         public int VerticalChunks { get; private set; }
 
+        public event ChunkLoadedEventHandler ChunkLoaded;
+        public event TileChangedEventHandler TileChanged;
+
         private readonly Chunk[,] chunks;
         private readonly List<IWorldGenerator> worldGeneratorPasses;
 
         public World(int horizontalChunks, int verticalChunks)
         {
+            Current = this;
+
             HorizontalChunks = horizontalChunks;
             VerticalChunks = verticalChunks;
 
@@ -37,6 +44,8 @@ namespace Hippopotamus.World
                 pass.Reseed();
                 pass.Generate(this);
             }
+
+            Save("moo.data");
         }
 
         public void Generate(int seed)
@@ -47,6 +56,8 @@ namespace Hippopotamus.World
                 pass.Reseed(seed);
                 pass.Generate(this);
             }
+
+            Save("moo.data");
         }
 
         public void Clear()
@@ -56,9 +67,22 @@ namespace Hippopotamus.World
                 for (int y = 0; y < VerticalChunks; y++)
                 {
                     chunks[x, y] = new Chunk(new Vector2(x, y));
+                    chunks[x, y].ChunkLoaded += OnChunkLoaded;
+                    chunks[x, y].TileChanged += OnTileChanged;
                 }
             }
         }
+
+        private void OnChunkLoaded(object sender, ChunkEventArgs args)
+        {
+            ChunkLoaded?.Invoke(this, new ChunkEventArgs(args.Chunk));
+        }
+
+        public void OnTileChanged(object sender, TileEventArgs args)
+        {
+            TileChanged?.Invoke(this, args);
+        }
+
 
         public void AddGenerator(TerrainWorldGenerator worldGenerator)
         {
@@ -76,7 +100,7 @@ namespace Hippopotamus.World
             return chunks[chunkX, chunkY];
         }
 
-        public Tile GetTileAtWorldCoordinates(int x, int y)
+        public Tile GetTileAt(int x, int y)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height) return null;
             Chunk chunk = GetChunkContaining(x, y);
@@ -89,6 +113,7 @@ namespace Hippopotamus.World
             if (tileX < 0 || tileX >= Chunk.Size || tileY < 0 || tileY >= Chunk.Size) return null;
             return chunk.GetTileAt(tileX, tileY);
         }
+
 
         public void Save(string fileName)
         {
@@ -138,13 +163,7 @@ namespace Hippopotamus.World
                     if (chunk == null)
                     {
                         Camera.Main.Transform.Position = new Vector2(cameraX, cameraY);
-                        for (int x = 0; x < HorizontalChunks; x++)
-                        {
-                            for (int y = 0; y < VerticalChunks; y++)
-                            {
-                                chunks[x, y] = new Chunk(new Vector2(x, y));
-                            }
-                        }
+                        Clear();
 
                         chunk = GetChunkContaining((int)Math.Round(cameraX / Tile.Size), (int)Math.Round(cameraY / Tile.Size));
                     }

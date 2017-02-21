@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace Hippopotamus.Engine.Core
 {

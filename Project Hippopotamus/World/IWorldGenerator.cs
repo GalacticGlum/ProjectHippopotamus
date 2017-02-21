@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Hippopotamus.World
+﻿namespace Hippopotamus.World
 {
     public interface IWorldGenerator
     {

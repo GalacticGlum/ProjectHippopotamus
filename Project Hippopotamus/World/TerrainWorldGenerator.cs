@@ -64,7 +64,7 @@ namespace Hippopotamus.World
                 {
                     if (world.Height - 1 - y <= heightMap[x])
                     {
-                        world.GetTileAtWorldCoordinates(x, y).Type = TileType.Grass;
+                        world.GetTileAt(x, y).Type = TileType.Grass;
                     }
                 }
             }

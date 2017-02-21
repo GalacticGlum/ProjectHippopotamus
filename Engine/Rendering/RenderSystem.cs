@@ -23,10 +23,10 @@ namespace Hippopotamus.Engine.Rendering
                 DrawSprite(args.SpriteBatch, entity);
             }
 
-            //foreach (Entity entity in Pool.GetGroup(EntityFilter.AllOf(typeof(Text))))
-            //{
-            //    DrawFont(args.SpriteBatch, entity);
-            //}
+            foreach (Entity entity in GetCompatibleEntities(EntityFilter.AllOf(typeof(Text))))
+            {
+                DrawFont(args.SpriteBatch, entity);
+            }
             args.SpriteBatch.End();
         }
 

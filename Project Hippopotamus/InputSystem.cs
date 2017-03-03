@@ -8,7 +8,7 @@ namespace Hippopotamus
     [StartupEntitySystem]
     public class InputSystem : EntitySystem, IUpdatable
     {
-        public void Update(object sender, GameLoopUpdateEventArgs args)
+        public void Update(GameLoopUpdateEventArgs args)
         {
             const float speed = 1000.0f;
            

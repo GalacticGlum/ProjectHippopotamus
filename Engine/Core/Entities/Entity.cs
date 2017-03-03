@@ -174,13 +174,19 @@ namespace Hippopotamus.Engine.Core
             if (interfaces.Contains(typeof(IUpdatable)))
             {
                 IUpdatable updatable = component as IUpdatable;
-                if (updatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(updatable.Update); }
+                if (updatable != null)
+                {
+                    GameLoop.Register(updatable.Update);
+                }
             }
 
             if (!interfaces.Contains(typeof(IFixedUpdatable))) return component;
 
             IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
-            if (fixedUpdatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(fixedUpdatable.FixedUpdate); }
+            if (fixedUpdatable != null)
+            {
+                GameLoop.Register(fixedUpdatable.FixedUpdate);
+            }
 
             return component;
         }
@@ -233,13 +239,19 @@ namespace Hippopotamus.Engine.Core
             if (interfaces.Contains(typeof(IUpdatable)))
             {
                 IUpdatable updatable = component as IUpdatable;
-                if (updatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(updatable.Update); }
+                if (updatable != null)
+                {
+                    GameLoop.Unregister(updatable.Update);
+                }
             }
 
             if (interfaces.Contains(typeof(IFixedUpdatable)))
             {
                 IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
-                if (fixedUpdatable != null) { DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(fixedUpdatable.FixedUpdate); }
+                if (fixedUpdatable != null)
+                {
+                    GameLoop.Unregister(fixedUpdatable.FixedUpdate);
+                }
             }
 
             Components.Remove(component);

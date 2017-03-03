@@ -20,7 +20,7 @@ namespace Hippopotamus.World
             World.Generate();
         }
 
-        public void Update(object sender, GameLoopUpdateEventArgs args)
+        public void Update(GameLoopUpdateEventArgs args)
         {
             World.Update();
         }

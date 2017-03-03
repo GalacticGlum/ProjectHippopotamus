@@ -2,6 +2,6 @@
 {
     public interface IUpdatable
     {
-        void Update(object sender, GameLoopUpdateEventArgs args);
+        void Update(GameLoopUpdateEventArgs args);
     }
 }

@@ -15,7 +15,7 @@ namespace Hippopotamus.Engine.Physics
             PhysicsWorld = new World(new Vector2(0, 1f));
         }
 
-        public void FixedUpdate(object sender, GameLoopFixedUpdateEventArgs args)
+        public void FixedUpdate(GameLoopFixedUpdateEventArgs args)
         {
             foreach (Entity entity in GetCompatibleEntities(EntityFilter.AllOf(typeof(Rigidbody))))
             {

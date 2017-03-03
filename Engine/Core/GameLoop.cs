@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus.Engine.Core
 {
-    public delegate void UpdateGameLoopEventHandler(object sender, GameLoopUpdateEventArgs args);
+    public delegate void UpdateGameLoopEventHandler(GameLoopUpdateEventArgs args);
     public class GameLoopUpdateEventArgs : EventArgs
     {
         public float DeltaTime { get; }
@@ -13,7 +13,7 @@ namespace Hippopotamus.Engine.Core
         }
     }
 
-    public delegate void FixedUpdateGameLoopEventHandler(object sender, GameLoopFixedUpdateEventArgs args);
+    public delegate void FixedUpdateGameLoopEventHandler(GameLoopFixedUpdateEventArgs args);
     public class GameLoopFixedUpdateEventArgs : EventArgs
     {
         public float FixedDeltaTime { get; }
@@ -23,7 +23,7 @@ namespace Hippopotamus.Engine.Core
         }
     }
 
-    public delegate void DrawGameLoopEventHandler(object sender, GameLoopDrawEventArgs args);
+    public delegate void DrawGameLoopEventHandler(GameLoopDrawEventArgs args);
     public class GameLoopDrawEventArgs : EventArgs
     {
         public SpriteBatch SpriteBatch { get; }
@@ -33,24 +33,24 @@ namespace Hippopotamus.Engine.Core
         }
     }
 
-    public class GameLoop
+    public static class GameLoop
     {
-        private event UpdateGameLoopEventHandler UpdateGameLoop;
-        internal void Update(GameLoopUpdateEventArgs args) { UpdateGameLoop?.Invoke(this, args); }
+        private static event UpdateGameLoopEventHandler UpdateGameLoop;
+        internal static void Update(GameLoopUpdateEventArgs args) { UpdateGameLoop?.Invoke(args); }
 
-        private event FixedUpdateGameLoopEventHandler FixedUpdateGameLoop;
-        internal void FixedUpdate(GameLoopFixedUpdateEventArgs args) { FixedUpdateGameLoop?.Invoke(this, args); }
+        private static event FixedUpdateGameLoopEventHandler FixedUpdateGameLoop;
+        internal static void FixedUpdate(GameLoopFixedUpdateEventArgs args) { FixedUpdateGameLoop?.Invoke(args); }
 
-        private event DrawGameLoopEventHandler DrawGameLoop;
-        internal void Draw(GameLoopDrawEventArgs args) { DrawGameLoop?.Invoke(this, args); }
+        private static event DrawGameLoopEventHandler DrawGameLoop;
+        internal static void Draw(GameLoopDrawEventArgs args) { DrawGameLoop?.Invoke(args); }
 
         // These methods allow the game engine to keep control over the raising of game loop events.
-        public void Register(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop += eventHandler; }
-        public void Register(FixedUpdateGameLoopEventHandler eventHandler) { FixedUpdateGameLoop += eventHandler; }
-        public void Register(DrawGameLoopEventHandler eventHandler) { DrawGameLoop += eventHandler; }
-
-        public void Unregister(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop -= eventHandler; }
-        public void Unregister(FixedUpdateGameLoopEventHandler eventHandler) { FixedUpdateGameLoop -= eventHandler; }
-        public void Unregister(DrawGameLoopEventHandler eventHandler) { DrawGameLoop -= eventHandler; }
+        public static void Register(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop += eventHandler; }
+        public static void Register(FixedUpdateGameLoopEventHandler eventHandler) { FixedUpdateGameLoop += eventHandler; }
+        public static void Register(DrawGameLoopEventHandler eventHandler) { DrawGameLoop += eventHandler; }
+                
+        public static void Unregister(UpdateGameLoopEventHandler eventHandler) { UpdateGameLoop -= eventHandler; }
+        public static void Unregister(FixedUpdateGameLoopEventHandler eventHandler) { FixedUpdateGameLoop -= eventHandler; }
+        public static void Unregister(DrawGameLoopEventHandler eventHandler) { DrawGameLoop -= eventHandler; }
     }
 }

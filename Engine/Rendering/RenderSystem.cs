@@ -15,7 +15,7 @@ namespace Hippopotamus.Engine.Rendering
             FontManager.Load("Arial", "Fonts/Arial");
         }
 
-        public void Draw(object sender, GameLoopDrawEventArgs args)
+        public void Draw(GameLoopDrawEventArgs args)
         {
             args.SpriteBatch.Begin(transformMatrix: Camera.Main.ViewMatrix);
             foreach (Entity entity in GetCompatibleEntities(EntityFilter.AllOf(typeof(SpriteRenderer))))

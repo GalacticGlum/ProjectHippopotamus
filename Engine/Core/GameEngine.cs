@@ -10,7 +10,6 @@ namespace Hippopotamus.Engine.Core
         public static float FixedTimeStep { get; set; } = 1.0f / 120.0f;
 
         public EntityPool EntityPool { get; private set; }
-        public GameLoop GameLoop { get; private set; }
 
         private readonly GameInstance gameInstance;
         private readonly GraphicsDeviceManager graphics;
@@ -34,7 +33,6 @@ namespace Hippopotamus.Engine.Core
             spriteBatch = new SpriteBatch(GraphicsDevice);
             EntityPool = new EntityPool("GameEngine_EntityPool");
 
-            GameLoop = new GameLoop();
             GameLoop.Register(Input.Update);
             GameLoop.Register(gameInstance.Update);
             GameLoop.Register(gameInstance.Draw);

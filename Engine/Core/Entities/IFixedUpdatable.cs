@@ -2,6 +2,6 @@
 {
     public interface IFixedUpdatable
     {   
-        void FixedUpdate(object sender, GameLoopFixedUpdateEventArgs args);
+        void FixedUpdate(GameLoopFixedUpdateEventArgs args);
     }
 }

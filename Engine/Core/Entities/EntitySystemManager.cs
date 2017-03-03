@@ -41,7 +41,7 @@ namespace Hippopotamus.Engine.Core
                 IUpdatable updatable = system as IUpdatable;
                 if (updatable != null)
                 {
-                    DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(updatable.Update);
+                    GameLoop.Register(updatable.Update);
                 }
             }
 
@@ -50,7 +50,7 @@ namespace Hippopotamus.Engine.Core
                 IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
                 if (fixedUpdatable != null)
                 {
-                    DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(fixedUpdatable.FixedUpdate);
+                    GameLoop.Register(fixedUpdatable.FixedUpdate);
                 }
             }
 
@@ -58,7 +58,7 @@ namespace Hippopotamus.Engine.Core
             IDrawable drawable = system as IDrawable;
             if (drawable != null)
             {
-                DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Register(drawable.Draw);
+                GameLoop.Register(drawable.Draw);
             }
         }
 
@@ -81,7 +81,7 @@ namespace Hippopotamus.Engine.Core
                 IUpdatable updatable = system as IUpdatable;
                 if (updatable != null)
                 {
-                    DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(updatable.Update);
+                    GameLoop.Unregister(updatable.Update);
                 }
             }
 
@@ -90,7 +90,7 @@ namespace Hippopotamus.Engine.Core
                 IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
                 if (fixedUpdatable != null)
                 {
-                    DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(fixedUpdatable.FixedUpdate);
+                    GameLoop.Unregister(fixedUpdatable.FixedUpdate);
                 }
             }
 
@@ -98,7 +98,7 @@ namespace Hippopotamus.Engine.Core
             IDrawable drawable = system as IDrawable;
             if (drawable != null)
             {
-                DependencyInjector.Kernel.Get<GameEngine>().GameLoop.Unregister(drawable.Draw);
+                GameLoop.Unregister(drawable.Draw);
             }
 
             systems.Remove(type);

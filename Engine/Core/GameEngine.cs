@@ -84,7 +84,9 @@ namespace Hippopotamus.Engine.Core
             using (GameEngine gameEngine = new GameEngine(gameInstance))
             {
                 gameInstance.GameEngine = gameEngine;
+
                 DependencyInjector.Kernel.Bind<GameEngine>().ToConstant(gameEngine);
+
                 gameEngine.Run();
             }
         }

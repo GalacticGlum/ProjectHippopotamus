@@ -380,7 +380,7 @@ namespace Hippopotamus.Engine.Core
             foreach (Entity entity in Children)
             {
                 Entity child = entity;
-                Pool.Destroy(ref child);
+                Pool.Destroy(child);
             }
 
             Children.Clear();
@@ -405,7 +405,7 @@ namespace Hippopotamus.Engine.Core
 
             destination.Add(this);
             Entity self = this;
-            Pool.Destroy(ref self);
+            Pool.Destroy(self);
             Pool = destination;
         }
 

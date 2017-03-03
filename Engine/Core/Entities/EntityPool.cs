@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 
@@ -118,7 +119,7 @@ namespace Hippopotamus.Engine.Core
             OnEntityAdded(new EntityPoolChangedEventArgs(this, entity));
         }
 
-        public void Destroy(ref Entity entity)
+        public void Destroy(Entity entity)
         {
             if (!entity.IsUsable())
             {
@@ -136,11 +137,15 @@ namespace Hippopotamus.Engine.Core
                 CachedEntities.Push(entity);
             }
 
-            Entities.Remove(entity);
             usedEntityNames.Remove(entity.Name);
+            Entities.Remove(entity);
 
             OnEntityRemoved(new EntityPoolChangedEventArgs(this, entity));
-            entity = null;
+
+            if (usedEntityNames.Count != Entities.Count)
+            {
+               
+            }
         }
 
         public bool Exists(string name)

@@ -30,14 +30,21 @@ namespace Hippopotamus.World
         public event ChunkLoadedEventHandler ChunkLoaded;
         public void OnChunkLoaded(ChunkEventArgs args) { ChunkLoaded?.Invoke(this, args); }
 
+        public event ChunkLoadedEventHandler ChunkUnloaded;
+        public void OnChunkUnloaded(ChunkEventArgs args) { ChunkUnloaded?.Invoke(this, args); }
+
         public event TileChangedEventHandler TileChanged;
 
-        private readonly Tile[,] tiles;
+        private Tile[,] tiles;
 
         public Chunk(Vector2 position)
         {
             Position = position;
+            Generate();
+        }
 
+        private void Generate()
+        {
             tiles = new Tile[Size, Size];
             for (int x = 0; x < Size; x++)
             {
@@ -82,8 +89,8 @@ namespace Hippopotamus.World
         public void Load(BinaryReader reader)
         {
             Loaded = true;
-            OnChunkLoaded(new ChunkEventArgs(this));
 
+            Generate();
             for (int x = 0; x < Size; x++)
             {
                 for (int y = 0; y < Size; y++)
@@ -91,6 +98,16 @@ namespace Hippopotamus.World
                     tiles[x, y].Load(reader);
                 }
             }
+
+            OnChunkLoaded(new ChunkEventArgs(this));
+        }
+
+        public void Unload()
+        {
+            Loaded = false;
+            OnChunkUnloaded(new ChunkEventArgs(this));
+
+            tiles = null;
         }
     }
 }

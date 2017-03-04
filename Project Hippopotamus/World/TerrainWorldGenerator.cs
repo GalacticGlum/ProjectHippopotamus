@@ -12,10 +12,10 @@ namespace Hippopotamus.World
             random = new Random();
         }
 
-        public void Generate(World world)
+        public void Generate(WorldData worldData)
         {
-            double[] heightMap = new double[world.WidthInTiles];
-            double groundHeight = world.HeightInTiles * 0.7f;
+            double[] heightMap = new double[worldData.Width];
+            double groundHeight = worldData.Height * 0.7f;
             SineCurveParameter[] curveParameters =
             {
               new SineCurveParameter(0.0, 0.2, 1.0, 5.0),     // main big terrain feature
@@ -31,26 +31,26 @@ namespace Hippopotamus.World
             const double noiseMinimumMagnitude = -2.0;
             const double noiseMaxMagnitude = 2.0;
 
-            for (int x = 0; x < world.WidthInTiles; x++)
+            for (int x = 0; x < worldData.Width; x++)
             {
                 heightMap[x] = groundHeight;
             }
 
             foreach (SineCurveParameter curveParameter in curveParameters)
             {
-                double amplitude = world.HeightInTiles * MathHelper.Lerp((float)curveParameter.MinimumAmplitude, (float)curveParameter.MaximumAmplitude, (float)random.NextDouble());
+                double amplitude = worldData.Height * MathHelper.Lerp((float)curveParameter.MinimumAmplitude, (float)curveParameter.MaximumAmplitude, (float)random.NextDouble());
                 double frequency = MathHelper.Lerp((float)curveParameter.MinimumFrequency, (float)curveParameter.MaximumFrequency, (float)random.NextDouble()) / 100.0;
 
                 const double offset = 0.0;
-                double phase = random.NextDouble() * world.WidthInTiles;
-                for (int x = 0; x < world.WidthInTiles; x++)
+                double phase = random.NextDouble() * worldData.Width;
+                for (int x = 0; x < worldData.Width; x++)
                 {
                     heightMap[x] += amplitude * Math.Sin(frequency * x - phase) + offset;
                 }
             }
 
             // do noise!
-            for (int x = 0; x < world.WidthInTiles; x++)
+            for (int x = 0; x < worldData.Width; x++)
             {
                 if (random.NextDouble() < noiseChance)
                 {
@@ -58,13 +58,13 @@ namespace Hippopotamus.World
                 }
             }
 
-            for (int x = 0; x < world.WidthInTiles; x++)
+            for (int x = 0; x < worldData.Width; x++)
             {
-                for (int y = 0; y < world.HeightInTiles; y++)
+                for (int y = 0; y < worldData.Height; y++)
                 {
-                    if (world.HeightInTiles - 1 - y <= heightMap[x])
+                    if (worldData.Height - 1 - y <= heightMap[x])
                     {
-                        world.GetTileAt(x, y).Type = TileType.Grass;
+                        worldData.Tiles[x, y] = TileType.Grass;
                     }
                 }
             }

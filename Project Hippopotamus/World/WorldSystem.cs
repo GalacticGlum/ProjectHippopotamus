@@ -1,5 +1,4 @@
-﻿using System;
-using Hippopotamus.Engine.Core;
+﻿using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
 
@@ -11,12 +10,14 @@ namespace Hippopotamus.World
 
         public WorldSystem()
         {
-            Camera.Main.OrthographicSize = .1f;
+            Camera.Main.OrthographicSize = .5f;
 
-            World = new World(200, 4);
+            World = new World();
+            World.Initialize(200, 4);
+
             World.AddGenerator(new TerrainWorldGenerator());
-
             EntitySystemManager.Register<TileGraphicSystem>();
+
             World.Generate();
         }
 

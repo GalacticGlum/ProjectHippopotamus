@@ -23,15 +23,22 @@ namespace Hippopotamus.World
         public event ChunkLoadedEventHandler ChunkUnloaded;
         public event TileChangedEventHandler TileChanged;
 
-        private readonly Chunk[,] chunks;
+        private Chunk[,] chunks;
         private readonly HashSet<Chunk> loadedChunks;
 
         private readonly List<IWorldGenerator> worldGeneratorPasses;
+        private WorldData worldData;
 
-        public World(int width, int height)
+        public World()
         {
             Current = this;
 
+            loadedChunks = new HashSet<Chunk>();
+            worldGeneratorPasses = new List<IWorldGenerator>();
+        }
+
+        public void Initialize(int width, int height)
+        {
             Width = width;
             Height = height;
 
@@ -39,8 +46,7 @@ namespace Hippopotamus.World
             HeightInTiles = height * Chunk.Size;
 
             chunks = new Chunk[Width, Height];
-            loadedChunks = new HashSet<Chunk>();
-            worldGeneratorPasses = new List<IWorldGenerator>();
+            worldData = new WorldData(WidthInTiles, HeightInTiles);
         }
 
         public void Generate()
@@ -49,7 +55,7 @@ namespace Hippopotamus.World
             foreach (IWorldGenerator pass in worldGeneratorPasses)
             {
                 pass.Reseed();
-                pass.Generate(this);
+                pass.Generate(worldData);
             }
 
             Save("moo.data");
@@ -61,7 +67,7 @@ namespace Hippopotamus.World
             foreach (IWorldGenerator pass in worldGeneratorPasses)
             {
                 pass.Reseed(seed);
-                pass.Generate(this);
+                pass.Generate(worldData);
             }
 
             Save("moo.data");
@@ -133,9 +139,8 @@ namespace Hippopotamus.World
             {
                 using (BinaryWriter writer = new BinaryWriter(memoryStream))
                 {
-                    writer.Write(WidthInTiles);
-                    writer.Write(HeightInTiles);
-                    writer.Write(Chunk.Size);
+                    writer.Write(Width);
+                    writer.Write(Height);
 
                     Vector2 cameraPosition = Camera.Main.Transform.Position;
                     writer.Write(cameraPosition.X);
@@ -145,7 +150,13 @@ namespace Hippopotamus.World
                     {
                         for (int y = 0; y < Height; y++)
                         {
-                            chunks[x, y].Save(writer);
+                            for (int tx = 0; tx < Chunk.Size; tx++)
+                            {
+                                for (int ty = 0; ty < Chunk.Size; ty++)
+                                {
+                                    writer.Write((byte)worldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty]);
+                                }
+                            }
                         }
                     }
                 }
@@ -154,38 +165,34 @@ namespace Hippopotamus.World
             }
         }
 
-        public void Load(string fileName, Chunk chunk = null)
+        public void Load(string fileName)
         {
-            if (chunk != null && chunk.Loaded) return;
-
             using (FileStream fileStream = new FileStream(fileName, FileMode.Open))
             {
                 using (BinaryReader reader = new BinaryReader(fileStream))
                 {
-                    WidthInTiles = reader.ReadInt32();
-                    HeightInTiles = reader.ReadInt32();
-                    int chunkSize = reader.ReadInt32();
+                    int width = reader.ReadInt32();
+                    int height = reader.ReadInt32();
+
+                    Initialize(width, height);
 
                     float cameraX = reader.ReadSingle();
                     float cameraY = reader.ReadSingle();
+                    Camera.Main.Transform.Position = new Vector2(cameraX, cameraY);
 
-                    Width = (int) Math.Ceiling(WidthInTiles / (double) chunkSize);
-                    Height = (int) Math.Ceiling(HeightInTiles / (double) chunkSize);
-
-                    if (chunk == null)
+                    for (int x = 0; x < Width; x++)
                     {
-                        Camera.Main.Transform.Position = new Vector2(cameraX, cameraY);
-                        CreateChunks();
-
-                        chunk = GetChunkContaining((int)Math.Round(cameraX / Tile.Size), (int)Math.Round(cameraY / Tile.Size));
+                        for (int y = 0; y < Height; y++)
+                        {
+                            for (int tx = 0; tx < Chunk.Size; tx++)
+                            {
+                                for (int ty = 0; ty < Chunk.Size; ty++)
+                                {
+                                    worldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = (TileType) reader.ReadByte();
+                                }
+                            }
+                        }
                     }
-
-                    // Skip to the chunk we want to actually load in
-                    long chunkPosition = (long) chunk.Position.X * Height + (long) chunk.Position.Y;
-                    long skipLength = 1 * Chunk.Size * Chunk.Size * chunkPosition;
-                    reader.BaseStream.Seek(skipLength, SeekOrigin.Current);
-
-                    chunk.Load(reader);
                 }
             }
         }
@@ -231,7 +238,7 @@ namespace Hippopotamus.World
 
             foreach (Chunk chunk in chunksToLoad)
             {
-                Load("moo.data", chunk);
+                chunk.Load(worldData);
                 loadedChunks.Add(chunk);
             }
         }

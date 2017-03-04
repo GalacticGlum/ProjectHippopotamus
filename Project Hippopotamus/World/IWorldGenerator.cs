@@ -4,6 +4,6 @@
     {
         void Reseed();
         void Reseed(int seed);
-        void Generate(World world);
+        void Generate(WorldData worldData);
     }
 }

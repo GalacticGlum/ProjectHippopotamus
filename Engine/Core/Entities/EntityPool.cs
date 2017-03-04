@@ -24,7 +24,7 @@ namespace Hippopotamus.Engine.Core
     {
         public string Name { get; set; }
 
-        public List<Entity> Entities { get; }
+        public HashSet<Entity> Entities { get; }
         public Stack<Entity> CachedEntities { get; }
 
         public event EntityPoolChangedEventHandler EntityAdded;
@@ -52,11 +52,11 @@ namespace Hippopotamus.Engine.Core
         internal void OnComponentRemoved(Entity entity) { ComponentRemoved?.Invoke(this, new EntityPoolChangedEventArgs(this, entity)); }
 
         private readonly HashSet<string> usedEntityNames;
-        private const int entityCacheCap = 30;
+        private const int entityCacheCap = 16384;
 
         public EntityPool(string name)
         {
-            Entities = new List<Entity>(100);
+            Entities = new HashSet<Entity>();
             CachedEntities = new Stack<Entity>();
 
             usedEntityNames = new HashSet<string>();
@@ -131,21 +131,15 @@ namespace Hippopotamus.Engine.Core
                 throw new EntityNotFoundException(this);
             }
 
-            if (CachedEntities.Count < entityCacheCap)
-            {
-                entity.Reset();
-                CachedEntities.Push(entity);
-            }
-
             usedEntityNames.Remove(entity.Name);
             Entities.Remove(entity);
 
             OnEntityRemoved(new EntityPoolChangedEventArgs(this, entity));
 
-            if (usedEntityNames.Count != Entities.Count)
-            {
-               
-            }
+            if (CachedEntities.Count >= entityCacheCap) return;
+
+            entity.Reset();
+            CachedEntities.Push(entity);
         }
 
         public bool Exists(string name)

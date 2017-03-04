@@ -75,27 +75,21 @@ namespace Hippopotamus.World
             tiles[x, y] = value;
         }
 
-        public void Save(BinaryWriter writer)
+        public void Load(WorldData worldData)
         {
-            for (int x = 0; x < Size; x++)
-            {
-                for (int y = 0; y < Size; y++)
-                {
-                    tiles[x, y].Save(writer);
-                }
-            }
-        }
+            if (Loaded) return;
 
-        public void Load(BinaryReader reader)
-        {
             Loaded = true;
 
             Generate();
+            int startX = (int) Position.X * Size;
+            int startY = (int) Position.Y * Size;
+
             for (int x = 0; x < Size; x++)
             {
                 for (int y = 0; y < Size; y++)
                 {
-                    tiles[x, y].Load(reader);
+                    tiles[x, y].Type = worldData.Tiles[startX + x, startY + y];
                 }
             }
 
@@ -104,6 +98,8 @@ namespace Hippopotamus.World
 
         public void Unload()
         {
+            if (!Loaded) return;
+
             Loaded = false;
             OnChunkUnloaded(new ChunkEventArgs(this));
 

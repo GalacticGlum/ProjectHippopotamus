@@ -17,7 +17,7 @@ namespace Hippopotamus.Engine.Physics
 
         public void FixedUpdate(GameLoopFixedUpdateEventArgs args)
         {
-            foreach (Entity entity in GetCompatibleEntities(EntityFilter.AllOf(typeof(Rigidbody))))
+            foreach (Entity entity in Pool.GetGroup(typeof(Rigidbody)))
             {
                 entity.Transform.Position = ConvertUnits.ToDisplayUnits(entity.GetComponent<Rigidbody>().Body.Position);
             }

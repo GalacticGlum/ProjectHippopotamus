@@ -21,7 +21,9 @@ namespace Hippopotamus.World
 
         public event ChunkLoadedEventHandler ChunkLoaded;
         public event ChunkLoadedEventHandler ChunkUnloaded;
+
         public event TileChangedEventHandler TileChanged;
+        public void OnTileChanged(TileEventArgs args) { TileChanged?.Invoke(this, args); }
 
         private Chunk[,] chunks;
         private readonly HashSet<Chunk> loadedChunks;
@@ -82,7 +84,6 @@ namespace Hippopotamus.World
                     chunks[x, y] = new Chunk(new Vector2(x, y));
                     chunks[x, y].ChunkLoaded += OnChunkLoaded;
                     chunks[x, y].ChunkUnloaded += OnChunkUnloaded;
-                    chunks[x, y].TileChanged += OnTileChanged;
                 }
             }
         }

@@ -4,34 +4,10 @@ using System.Linq;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 using Hippopotamus.Engine.Utilities;
-using Ninject;
 using IStartable = Hippopotamus.Engine.Core.Entities.IStartable;
 
 namespace Hippopotamus.Engine.Core
 {
-    public delegate void EntityChangedEventHandler(object sender, EntityEventArgs args);
-    public class EntityEventArgs : EventArgs
-    {
-        public Entity Entity { get; }
-        public EntityEventArgs(Entity entity)
-        {
-            Entity = entity;
-        }
-    }
-
-    public delegate void ComponentChangedEventHandler(object sender, ComponentEventArgs args);
-    public class ComponentEventArgs : EventArgs
-    {
-        public Entity Entity { get; }
-        public Component Component { get; }
-
-        public ComponentEventArgs(Entity entity, Component component)
-        {
-            Entity = entity;
-            Component = component;
-        }
-    }
-
     public sealed class Entity
     {
         private string name;
@@ -41,7 +17,7 @@ namespace Hippopotamus.Engine.Core
             set
             {
                 name = value;
-                OnChanged(new EntityEventArgs(this));
+                Pool?.OnEntityChanged(this);
             }
         }
 
@@ -76,7 +52,7 @@ namespace Hippopotamus.Engine.Core
             set
             {
                 state = value;
-                OnChanged(new EntityEventArgs(this));
+                Pool?.OnEntityChanged(this);
             }
         }
 
@@ -89,29 +65,20 @@ namespace Hippopotamus.Engine.Core
             }
         }
 
-        internal List<Component> Components { get; }
+        internal Dictionary<Type, Component> Components { get; }
         internal List<Entity> Children { get; }
-
-        public event EntityChangedEventHandler Changed;
-        private void OnChanged(EntityEventArgs args) { Changed?.Invoke(this, args); }
-
-        public event ComponentChangedEventHandler ComponentAdded;
-        public void OnComponentAdded(ComponentEventArgs args) { ComponentAdded?.Invoke(this, args); }
-
-        public event ComponentChangedEventHandler ComponentRemoved;
-        public void OnComponentRemoved(ComponentEventArgs args) { ComponentRemoved?.Invoke(this, args); }
 
         internal Entity(string name, EntityPool pool)
         {
-            Name = name;
             if (pool == null)
             {
                 throw new InvalidEntityPoolException(this);
             }
 
             Pool = pool;
+            Name = name;
 
-            Components = new List<Component>();
+            Components = new Dictionary<Type, Component>();
             Children = new List<Entity>();
 
             State = EntityState.Enabled;
@@ -159,11 +126,11 @@ namespace Hippopotamus.Engine.Core
                 throw new ComponentExistsException(this, component.GetType());
             }
 
-            Components.Add(component);
-            OnComponentAdded(new ComponentEventArgs(this, component));
-            Pool.OnComponentAdded(this);
+            component.Entity = this;    
+            Components.Add(component.GetType(), component);
+     
+            Pool.OnComponentAdded(component);
 
-            component.Entity = this;
             Type[] interfaces = component.GetType().GetInterfaces();
             if (interfaces.Contains(typeof(IStartable)))
             {
@@ -254,9 +221,8 @@ namespace Hippopotamus.Engine.Core
                 }
             }
 
-            Components.Remove(component);
-            OnComponentRemoved(new ComponentEventArgs(this, component));
-            Pool.OnComponentRemoved(this);
+            Components.Remove(componentType);
+            Pool.OnComponentRemoved(component);
         }
 
         public T GetComponent<T>() where T : Component
@@ -266,13 +232,10 @@ namespace Hippopotamus.Engine.Core
                 return default(T);
             }
 
-            T component = Components.OfType<T>().FirstOrDefault();
-            if (component == null)
-            {
-                throw new ComponentNotFoundException(this, typeof(T));
-            }
+            Component component;
+            if (Components.TryGetValue(typeof(T), out component)) return (T) component;
 
-            return component;
+            throw new ComponentNotFoundException(this, typeof(T));
         }
 
         public Component GetComponent(Type componentType)
@@ -287,8 +250,8 @@ namespace Hippopotamus.Engine.Core
                 throw new ArgumentException($"The type \"{componentType.Name}\" is not a child of Component!");
             }
 
-            Component component = Components.FirstOrDefault(comp => comp.GetType() == componentType);
-            if (component != null) return component;
+            Component component;
+            if (Components.TryGetValue(componentType, out component)) return component;
 
             throw new ComponentNotFoundException(this, componentType);
         }
@@ -315,7 +278,7 @@ namespace Hippopotamus.Engine.Core
             }
 
             destination.AddComponent(component);
-            Components.Remove(component);
+            Components.Remove(component.GetType());
         }
 
         public bool HasComponent<TComponent>() where TComponent : Component
@@ -335,34 +298,7 @@ namespace Hippopotamus.Engine.Core
                 throw new ArgumentException($"The type \"{componentType.Name}\" is not a child of Component!");
             }
 
-            return Components.Any(component => component.GetType() == componentType);
-        }
-
-        public bool HasAnyComponent(params Type[] types)
-        {
-            if ((from t in types from component in Components where component.GetType() == t select t).Any())
-            {
-                return true;
-            }
-
-            return types.Length == 0;
-        }
-
-        public bool HasAllComponents(params Type[] types)
-        {
-            int matches = types.Count(type => Components.Any(component => component.GetType() == type));
-            return types.Length == 0 || matches == types.Length && matches > 0;
-        }
-
-        public bool HasNoneComponents(params Type[] types)
-        {
-            return !(from type in types from component in Components where component.GetType() == type select type).Any();
-        }
-
-        public bool DoesMatchFilter(EntityFilter filter)
-        {
-            if (filter == null) return false;
-            return HasAnyComponent(filter.Any.ToArray()) && HasAllComponents(filter.All.ToArray()) && HasNoneComponents(filter.None.ToArray());
+            return Components.ContainsKey(componentType);
         }
 
         public void RemoveAllComponents()
@@ -372,9 +308,10 @@ namespace Hippopotamus.Engine.Core
                 return;
             }
 
-            for (int i = Components.Count - 1; i >= 0; i--)
+            List<Type> keys = new List<Type>(Components.Keys);
+            foreach (Type type in keys)
             {
-                RemoveComponent(Components[i].GetType());
+                RemoveComponent(type);
             }
 
             Components.Clear();
@@ -439,7 +376,7 @@ namespace Hippopotamus.Engine.Core
 
             if (inheritComponents)
             {
-                child.AddComponents(Components);
+                child.AddComponents(Components.Values);
             }
 
             Children.Add(child);

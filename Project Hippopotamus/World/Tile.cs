@@ -27,12 +27,9 @@ namespace Hippopotamus.World
                 type = value;
 
                 if (oldTileType == type) return;
-                OnTileChanged(new TileEventArgs(this));
+                World.Current.OnTileChanged(new TileEventArgs(this));
             }
         }
-
-        public event TileChangedEventHandler TileChanged;
-        public void OnTileChanged(TileEventArgs args) { TileChanged?.Invoke(this, args); }
 
         public Tile(TileType type)
         {

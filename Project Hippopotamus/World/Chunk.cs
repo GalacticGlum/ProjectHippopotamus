@@ -33,8 +33,6 @@ namespace Hippopotamus.World
         public event ChunkLoadedEventHandler ChunkUnloaded;
         public void OnChunkUnloaded(ChunkEventArgs args) { ChunkUnloaded?.Invoke(this, args); }
 
-        public event TileChangedEventHandler TileChanged;
-
         private Tile[,] tiles;
 
         public Chunk(Vector2 position)
@@ -51,14 +49,8 @@ namespace Hippopotamus.World
                 for (int y = 0; y < Size; y++)
                 {
                     tiles[x, y] = new Tile(TileType.Empty);
-                    tiles[x, y].TileChanged += OnTileChanged;
                 }
             }
-        }
-
-        private void OnTileChanged(object sender, TileEventArgs args)
-        {
-            TileChanged?.Invoke(this, args);
         }
 
         public Tile GetTileAt(int x, int y)

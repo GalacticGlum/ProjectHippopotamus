@@ -1,22 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 
 namespace Hippopotamus.Engine.Core
 {
-    public delegate void EntityPoolChangedEventHandler(object sender, EntityPoolChangedEventArgs args);
-    public class EntityPoolChangedEventArgs : EventArgs
+    public delegate void EntityChangedEventHandler(object sender, EntityChangedEventArgs args);
+    public class EntityChangedEventArgs : EventArgs
     {
         public EntityPool Pool { get; }
         public Entity Entity { get; }
 
-        public EntityPoolChangedEventArgs(EntityPool pool, Entity entity)
+        public EntityChangedEventArgs(EntityPool pool, Entity entity)
         {
             Pool = pool;
             Entity = entity;
+        }
+    }
+
+    public delegate void ComponentChangedEventHandler(object sender, ComponentChangedEventArgs args);
+    public class ComponentChangedEventArgs : EventArgs
+    {
+        public EntityPool Pool { get; }
+        public Component Component { get; }
+
+        public ComponentChangedEventArgs(EntityPool pool, Component component)
+        {
+            Pool = pool;
+            Component = component;
         }
     }
 
@@ -27,31 +39,51 @@ namespace Hippopotamus.Engine.Core
         public HashSet<Entity> Entities { get; }
         public Stack<Entity> CachedEntities { get; }
 
-        public event EntityPoolChangedEventHandler EntityAdded;
+        public event EntityChangedEventHandler EntityAdded;
+        internal void OnEntityAdded(Entity entity) { EntityAdded?.Invoke(this, new EntityChangedEventArgs(this, entity)); }
 
-        public void OnEntityAdded(EntityPoolChangedEventArgs args)
+        public event EntityChangedEventHandler EntityChanged;
+        internal void OnEntityChanged(Entity entity) { EntityChanged?.Invoke(this, new EntityChangedEventArgs(this, entity)); }
+
+        public event EntityChangedEventHandler EntityRemoved;
+        internal void OnEntityRemoved(Entity entity)
         {
-            args.Entity.Changed += (sender, arg) =>
+            foreach (Component component in entity.Components.Values)
             {
-                OnEntityChanged(new EntityPoolChangedEventArgs(this, arg.Entity));
-            };
+                groups[component.GetType()].Remove(entity);
+            }
 
-            EntityAdded?.Invoke(this, args);
+            EntityRemoved?.Invoke(this, new EntityChangedEventArgs(this, entity));
         }
 
-        public event EntityPoolChangedEventHandler EntityChanged;
-        public void OnEntityChanged(EntityPoolChangedEventArgs args) { EntityChanged?.Invoke(this, args); }
+        public event ComponentChangedEventHandler ComponentAdded;
+        internal void OnComponentAdded(Component component)
+        {
+            Type componentType = component.GetType();
+            if (!groups.ContainsKey(componentType))
+            {
+                groups[componentType] = new HashSet<Entity>();
+            }
 
-        public event EntityPoolChangedEventHandler EntityRemoved;
-        public void OnEntityRemoved(EntityPoolChangedEventArgs args) { EntityRemoved?.Invoke(this, args); }
+            groups[componentType].Add(component.Entity);
+            ComponentAdded?.Invoke(this, new ComponentChangedEventArgs(this, component));
+        }
 
-        public event EntityPoolChangedEventHandler ComponentAdded;
-        internal void OnComponentAdded(Entity entity) { ComponentAdded?.Invoke(this, new EntityPoolChangedEventArgs(this, entity)); }
+        public event ComponentChangedEventHandler ComponentRemoved;
+        internal void OnComponentRemoved(Component component)
+        {
+            Type componentType = component.GetType();
+            if (groups.ContainsKey(componentType))
+            {
+                groups[componentType].Remove(component.Entity);
+            }
 
-        public event EntityPoolChangedEventHandler ComponentRemoved;
-        internal void OnComponentRemoved(Entity entity) { ComponentRemoved?.Invoke(this, new EntityPoolChangedEventArgs(this, entity)); }
+            ComponentRemoved?.Invoke(this, new ComponentChangedEventArgs(this, component));
+        }
 
         private readonly HashSet<string> usedEntityNames;
+        private readonly Dictionary<Type, HashSet<Entity>> groups;
+
         private const int entityCacheCap = 16384;
 
         public EntityPool(string name)
@@ -60,6 +92,7 @@ namespace Hippopotamus.Engine.Core
             CachedEntities = new Stack<Entity>();
 
             usedEntityNames = new HashSet<string>();
+            groups = new Dictionary<Type, HashSet<Entity>>();
 
             if (!string.IsNullOrEmpty(Name))
             {
@@ -101,7 +134,7 @@ namespace Hippopotamus.Engine.Core
             Entities.Add(entity);
             usedEntityNames.Add(name);
 
-            OnEntityAdded(new EntityPoolChangedEventArgs(this, entity));
+            OnEntityAdded(entity);
             return entity;
         }
 
@@ -116,7 +149,7 @@ namespace Hippopotamus.Engine.Core
                 CachedEntities.Push(entity);
             }
 
-            OnEntityAdded(new EntityPoolChangedEventArgs(this, entity));
+            OnEntityAdded(entity);
         }
 
         public void Destroy(Entity entity)
@@ -134,7 +167,7 @@ namespace Hippopotamus.Engine.Core
             usedEntityNames.Remove(entity.Name);
             Entities.Remove(entity);
 
-            OnEntityRemoved(new EntityPoolChangedEventArgs(this, entity));
+            OnEntityRemoved(entity);
 
             if (CachedEntities.Count >= entityCacheCap) return;
 
@@ -173,7 +206,27 @@ namespace Hippopotamus.Engine.Core
         public void Clear()
         {
             Entities.Clear();
+            groups.Clear();
             usedEntityNames.Clear();
+        }
+
+        public HashSet<Entity> GetGroup(params Type[] types)
+        {
+            if (types.Length == 1)
+            {
+                return groups.ContainsKey(types[0]) ? groups[types[0]] : new HashSet<Entity>();
+            }
+
+            HashSet<Entity> result = new HashSet<Entity>();
+            foreach (Type type in types)
+            {
+                if (groups.ContainsKey(type))
+                {
+                    result.UnionWith(groups[type]);
+                }
+            }
+
+            return result;
         }
     }
 }

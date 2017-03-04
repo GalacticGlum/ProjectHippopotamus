@@ -18,12 +18,12 @@ namespace Hippopotamus.Engine.Rendering
         public void Draw(GameLoopDrawEventArgs args)
         {
             args.SpriteBatch.Begin(transformMatrix: Camera.Main.ViewMatrix);
-            foreach (Entity entity in GetCompatibleEntities(EntityFilter.AllOf(typeof(SpriteRenderer))))
+            foreach (Entity entity in Pool.GetGroup(typeof(SpriteRenderer)))
             {
                 DrawSprite(args.SpriteBatch, entity);
             }
 
-            foreach (Entity entity in GetCompatibleEntities(EntityFilter.AllOf(typeof(Text))))
+            foreach (Entity entity in Pool.GetGroup(typeof(Text)))
             {
                 DrawFont(args.SpriteBatch, entity);
             }

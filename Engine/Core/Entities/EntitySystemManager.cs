@@ -5,6 +5,7 @@ using System.Reflection;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 using Ninject;
+using IStartable = Hippopotamus.Engine.Core.Entities.IStartable;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -36,6 +37,12 @@ namespace Hippopotamus.Engine.Core
             systems.Add(type, system);
 
             Type[] interfaces = type.GetInterfaces();
+            if (interfaces.Contains(typeof(IStartable)))
+            {
+                IStartable startable = system as IStartable;
+                startable?.Start();
+            }
+
             if (interfaces.Contains(typeof(IUpdatable)))
             {
                 IUpdatable updatable = system as IUpdatable;

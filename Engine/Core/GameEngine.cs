@@ -1,4 +1,6 @@
-﻿using Hippopotamus.Engine.Core.Messaging;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Hippopotamus.Engine.Core.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,6 +12,7 @@ namespace Hippopotamus.Engine.Core
         public static float FixedTimeStep { get; set; } = 1.0f / 120.0f;
 
         public EntityPool EntityPool { get; private set; }
+        public float FramesPerSecond { get; private set; }
 
         private readonly GameInstance gameInstance;
         private readonly GraphicsDeviceManager graphics;
@@ -17,14 +20,22 @@ namespace Hippopotamus.Engine.Core
 
         private float unprocessedTimeSteps;
 
+        private long totalFrames;
+        private float totalSeconds;
+        private float currentFramesPerSecond;
+
+        private const int MaximumFrameSamples = 100;
+        private readonly Queue<float> frameSampleBuffer;
+
         public GameEngine(GameInstance gameInstance)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.SynchronizeWithVerticalRetrace = true;
             IsFixedTimeStep = false;
 
+            frameSampleBuffer = new Queue<float>();
             this.gameInstance = gameInstance;
         }
 
@@ -46,11 +57,32 @@ namespace Hippopotamus.Engine.Core
 
         protected override void Update(GameTime gameTime)
         {
-            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            ProcessFrameCalculation(deltaTime);
+
             GameLoop.Update(new GameLoopUpdateEventArgs(deltaTime));
             FixedUpdate(deltaTime);
 
             MessageSystem.Update();
+        }
+
+        private void ProcessFrameCalculation(float deltaTime)
+        {
+            currentFramesPerSecond = 1.0f / deltaTime;
+            frameSampleBuffer.Enqueue(currentFramesPerSecond);
+
+            if (frameSampleBuffer.Count > MaximumFrameSamples)
+            {
+                frameSampleBuffer.Dequeue();
+                FramesPerSecond = frameSampleBuffer.Average(entry => entry);
+            }
+            else
+            {
+                FramesPerSecond = currentFramesPerSecond;
+            }
+
+            totalFrames++;
+            totalSeconds += deltaTime;
         }
 
         private void FixedUpdate(float deltaTime)

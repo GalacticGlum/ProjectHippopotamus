@@ -10,10 +10,10 @@ namespace Hippopotamus.Engine.Rendering
 
         public Color Colour { get; set; }
 
-        public Text(string message, string font = "Arial")
+        public Text()
         {
-            Font = font;
-            Message = message;
+            Font = "Arial";
+            Message = string.Empty;
             Colour = Color.White;
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
-using Hippopotamus.Engine.Rendering;
 
 namespace Hippopotamus.World
 {
@@ -10,8 +9,6 @@ namespace Hippopotamus.World
 
         public WorldSystem()
         {
-            Camera.Main.OrthographicSize = .5f;
-
             World = new World();
             World.Initialize(200, 4);
 
@@ -19,6 +16,8 @@ namespace Hippopotamus.World
             EntitySystemManager.Register<TileGraphicSystem>();
 
             World.Generate();
+
+            //Camera.Main.Transform.Position = new Vector2(0, 2000);
         }
 
         public void Update(GameLoopUpdateEventArgs args)

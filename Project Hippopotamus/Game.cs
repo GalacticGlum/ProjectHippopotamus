@@ -8,6 +8,8 @@ namespace Hippopotamus
 {
     public class Game : GameInstance
     {
+        private Text fpsCounter;
+
         public override void Initialize()
         {
             GameEngine.IsMouseVisible = true;
@@ -19,6 +21,14 @@ namespace Hippopotamus
 
             stopwatch.Stop();
             Console.WriteLine($"{stopwatch.ElapsedMilliseconds / 1000.0}");
+
+            Entity entity = GameEngine.EntityPool.Create("fps_counter");
+            fpsCounter = entity.AddComponent<Text>();
+        }
+
+        public override void Update(GameLoopUpdateEventArgs args)
+        {
+            fpsCounter.Message = GameEngine.FramesPerSecond.ToString();
         }
     }
 }

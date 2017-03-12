@@ -32,7 +32,7 @@ namespace Hippopotamus.World
                 {
                     Tile tileAt = args.Chunk.GetTileAt(x, y);
 
-                    Entity entity = Pool.Create($"Chunk ({args.Chunk.Position.X}, {args.Chunk.Position.Y}): Tile ({x}, {y})");
+                    Entity entity = EntityPool.Create($"Chunk ({args.Chunk.Position.X}, {args.Chunk.Position.Y}): Tile ({x}, {y})");
                     entity.Transform.Position = new Vector2((args.Chunk.Position.X * Chunk.Size + x) * Tile.Size, (args.Chunk.Position.Y * Chunk.Size + y) * Tile.Size);
                     entity.AddComponent(new SpriteRenderer(null));
 
@@ -51,9 +51,7 @@ namespace Hippopotamus.World
                     Tile tileAt = args.Chunk.GetTileAt(x, y);
                     if (!tileEntities.ContainsKey(tileAt)) continue;
 
-                    Entity entity = tileEntities[tileAt];
-                    Pool.Destroy(entity);
-
+                    tileEntities[tileAt].Destroy();
                     tileEntities.Remove(tileAt);
                 }
             }

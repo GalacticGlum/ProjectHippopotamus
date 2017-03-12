@@ -16,15 +16,15 @@ namespace Hippopotamus.Engine.Rendering
             FontManager.Load("Arial", "Fonts/Arial");
         }
 
-        public void Draw(GameLoopDrawEventArgs args)
+        public void Draw(GameLoopEventArgs args)
         {
             args.SpriteBatch.Begin(transformMatrix: Camera.Main.ViewMatrix, samplerState: SamplerState.PointClamp);
-            foreach (Entity entity in Pool.GetGroup(typeof(SpriteRenderer)))
+            foreach (Entity entity in EntityPool.GetGroup(typeof(SpriteRenderer)))
             {
                 DrawSprite(args.SpriteBatch, entity);
             }
 
-            foreach (Entity entity in Pool.GetGroup(typeof(Text)))
+            foreach (Entity entity in EntityPool.GetGroup(typeof(Text)))
             {
                 DrawFont(args.SpriteBatch, entity);
             }

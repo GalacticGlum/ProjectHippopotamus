@@ -6,58 +6,50 @@ using Hippopotamus.Engine.Core.Exceptions;
 
 namespace Hippopotamus.Engine.Core
 {
-    public delegate void EntityChangedEventHandler(object sender, EntityChangedEventArgs args);
+    public delegate void EntityChangedEventHandler(EntityChangedEventArgs args);
     public class EntityChangedEventArgs : EventArgs
     {
-        public EntityPool Pool { get; }
         public Entity Entity { get; }
-
-        public EntityChangedEventArgs(EntityPool pool, Entity entity)
+        public EntityChangedEventArgs(Entity entity)
         {
-            Pool = pool;
             Entity = entity;
         }
     }
 
-    public delegate void ComponentChangedEventHandler(object sender, ComponentChangedEventArgs args);
+    public delegate void ComponentChangedEventHandler(ComponentChangedEventArgs args);
     public class ComponentChangedEventArgs : EventArgs
     {
-        public EntityPool Pool { get; }
         public Component Component { get; }
-
-        public ComponentChangedEventArgs(EntityPool pool, Component component)
+        public ComponentChangedEventArgs(Component component)
         {
-            Pool = pool;
             Component = component;
         }
     }
 
-    public class EntityPool
+    public static class EntityPool
     {
-        public string Name { get; set; }
+        public static HashSet<Entity> Entities { get; }
+        public static Stack<Entity> CachedEntities { get; }
 
-        public HashSet<Entity> Entities { get; }
-        public Stack<Entity> CachedEntities { get; }
+        public static event EntityChangedEventHandler EntityAdded;
+        internal static void OnEntityAdded(Entity entity) { EntityAdded?.Invoke(new EntityChangedEventArgs(entity)); }
 
-        public event EntityChangedEventHandler EntityAdded;
-        internal void OnEntityAdded(Entity entity) { EntityAdded?.Invoke(this, new EntityChangedEventArgs(this, entity)); }
+        public static event EntityChangedEventHandler EntityChanged;
+        internal static void OnEntityChanged(Entity entity) { EntityChanged?.Invoke(new EntityChangedEventArgs(entity)); }
 
-        public event EntityChangedEventHandler EntityChanged;
-        internal void OnEntityChanged(Entity entity) { EntityChanged?.Invoke(this, new EntityChangedEventArgs(this, entity)); }
-
-        public event EntityChangedEventHandler EntityRemoved;
-        internal void OnEntityRemoved(Entity entity)
+        public static event EntityChangedEventHandler EntityRemoved;
+        internal static void OnEntityRemoved(Entity entity)
         {
             foreach (Component component in entity.Components.Values)
             {
                 groups[component.GetType()].Remove(entity);
             }
 
-            EntityRemoved?.Invoke(this, new EntityChangedEventArgs(this, entity));
+            EntityRemoved?.Invoke(new EntityChangedEventArgs(entity));
         }
 
-        public event ComponentChangedEventHandler ComponentAdded;
-        internal void OnComponentAdded(Component component)
+        public static event ComponentChangedEventHandler ComponentAdded;
+        internal static void OnComponentAdded(Component component)
         {
             Type componentType = component.GetType();
             if (!groups.ContainsKey(componentType))
@@ -66,11 +58,11 @@ namespace Hippopotamus.Engine.Core
             }
 
             groups[componentType].Add(component.Entity);
-            ComponentAdded?.Invoke(this, new ComponentChangedEventArgs(this, component));
+            ComponentAdded?.Invoke(new ComponentChangedEventArgs(component));
         }
 
-        public event ComponentChangedEventHandler ComponentRemoved;
-        internal void OnComponentRemoved(Component component)
+        public static event ComponentChangedEventHandler ComponentRemoved;
+        internal static void OnComponentRemoved(Component component)
         {
             Type componentType = component.GetType();
             if (groups.ContainsKey(componentType))
@@ -78,33 +70,28 @@ namespace Hippopotamus.Engine.Core
                 groups[componentType].Remove(component.Entity);
             }
 
-            ComponentRemoved?.Invoke(this, new ComponentChangedEventArgs(this, component));
+            ComponentRemoved?.Invoke(new ComponentChangedEventArgs(component));
         }
 
-        private readonly HashSet<string> usedEntityNames;
-        private readonly Dictionary<Type, HashSet<Entity>> groups;
+        private static readonly HashSet<string> usedEntityNames;
+        private static readonly Dictionary<Type, HashSet<Entity>> groups;
 
         private const int entityCacheCap = 16384;
 
-        public EntityPool(string name)
+        static EntityPool()
         {
             Entities = new HashSet<Entity>();
             CachedEntities = new Stack<Entity>();
 
             usedEntityNames = new HashSet<string>();
             groups = new Dictionary<Type, HashSet<Entity>>();
-
-            if (!string.IsNullOrEmpty(Name))
-            {
-                Name = name;
-            }
         }
 
-        public Entity Create(string name)
+        public static Entity Create(string name)
         {
             if (usedEntityNames.Contains(name))
             {
-                throw new DuplicateEntityException(this, name);
+                throw new DuplicateEntityException(name);
             }
 
             if (string.IsNullOrEmpty(name))
@@ -118,17 +105,16 @@ namespace Hippopotamus.Engine.Core
                 entity = CachedEntities.Pop();
                 if (entity == null)
                 {
-                    throw new EntityNotFoundException(this);
+                    throw new EntityNotFoundException(name);
                 }
 
                 entity.Name = name;
-                entity.Pool = this;
                 entity.State = EntityState.Enabled;
                 entity.Transform = entity.AddComponent<Transform>();
             }
             else
             {
-                entity = new Entity(name, this);
+                entity = new Entity(name);
             }
 
             Entities.Add(entity);
@@ -138,13 +124,13 @@ namespace Hippopotamus.Engine.Core
             return entity;
         }
 
-        internal void Add(Entity entity)
+        internal static void Add(Entity entity)
         {
-            if (entity.IsUsable())
+            if (entity.IsFree())
             {
                 Entities.Add(entity);
             }
-            else if (!entity.IsUsable())
+            else if (!entity.IsFree())
             {
                 CachedEntities.Push(entity);
             }
@@ -152,16 +138,16 @@ namespace Hippopotamus.Engine.Core
             OnEntityAdded(entity);
         }
 
-        public void Destroy(Entity entity)
+        public static void Destroy(Entity entity)
         {
-            if (!entity.IsUsable())
+            if (!entity.IsFree())
             {
                 return;
             }
 
             if (!Entities.Contains(entity))
             {
-                throw new EntityNotFoundException(this);
+                throw new EntityNotFoundException(entity.Name);
             }
 
             usedEntityNames.Remove(entity.Name);
@@ -175,42 +161,42 @@ namespace Hippopotamus.Engine.Core
             CachedEntities.Push(entity);
         }
 
-        public bool Exists(string name)
+        public static bool Exists(string name)
         {
-            return !string.IsNullOrEmpty(name) && Entities.Any(obj => obj.Name == Name && Find(Name).IsUsable());
+            return !string.IsNullOrEmpty(name) && Entities.Any(obj => obj.Name == name && Find(name).IsFree());
         }
 
-        public bool Exists(Entity entity)
+        public static bool Exists(Entity entity)
         {
             if (entity == null)
             {
                 return false;
             }
 
-            return !string.IsNullOrEmpty(entity.Name) && Entities.Any(obj => obj == entity && entity.IsUsable());
+            return !string.IsNullOrEmpty(entity.Name) && Entities.Any(obj => obj == entity && entity.IsFree());
         }
 
-        public Entity Find(string name)
+        public static Entity Find(string name)
         {
             Entity entity = Entities.FirstOrDefault(obj => obj.Name == name);
             if(entity != null) return entity;
 
-            throw new EntityNotFoundException(this);
+            throw new EntityNotFoundException(name);
         }
 
-        public void ClearCache()
+        internal static void ClearCache()
         {
             CachedEntities.Clear();
         }
 
-        public void Clear()
+        internal static void Clear()
         {
             Entities.Clear();
             groups.Clear();
             usedEntityNames.Clear();
         }
 
-        public HashSet<Entity> GetGroup(params Type[] types)
+        public static HashSet<Entity> GetGroup(params Type[] types)
         {
             if (types.Length == 1)
             {

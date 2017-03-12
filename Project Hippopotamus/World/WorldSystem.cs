@@ -18,7 +18,7 @@ namespace Hippopotamus.World
             World.Generate();
         }
 
-        public void Update(GameLoopUpdateEventArgs args)
+        public void Update(GameLoopEventArgs args)
         {
             World.Update();
         }

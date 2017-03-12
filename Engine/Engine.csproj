@@ -67,7 +67,6 @@
     <Compile Include="Core\Exceptions\DuplicateEntityException.cs" />
     <Compile Include="Core\Exceptions\EntitySystemNotFoundException.cs" />
     <Compile Include="Core\Exceptions\InvalidEntityPoolException.cs" />
-    <Compile Include="Core\Exceptions\NullEntityPoolException.cs" />
     <Compile Include="Core\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="Core\Entities\Entity.cs" />
     <Compile Include="Core\Entities\EntityPool.cs" />
@@ -75,6 +74,7 @@
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Core\GameInstance.cs" />
     <Compile Include="Core\GameLoop.cs" />
+    <Compile Include="Core\GameLoopType.cs" />
     <Compile Include="Core\GameTimer.cs" />
     <Compile Include="Core\Messaging\IMessage.cs" />
     <Compile Include="Core\Messaging\MessageChannel.cs" />

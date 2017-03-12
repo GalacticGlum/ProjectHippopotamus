@@ -20,7 +20,7 @@ namespace Hippopotamus.Engine.Core
         private static MouseState currentMouseState;
         private static MouseState lastMouseState;
     
-        internal static void Update(GameLoopUpdateEventArgs args)
+        internal static void Update(GameLoopEventArgs args)
         {
             lastMouseState = currentMouseState;
             lastKeyState = currentKeyState;

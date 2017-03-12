@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
-using Ninject;
 using IStartable = Hippopotamus.Engine.Core.Entities.IStartable;
 
 namespace Hippopotamus.Engine.Core
@@ -48,7 +47,7 @@ namespace Hippopotamus.Engine.Core
                 IUpdatable updatable = system as IUpdatable;
                 if (updatable != null)
                 {
-                    GameLoop.Register(updatable.Update);
+                    GameLoop.Register(GameLoopType.Update, updatable.Update);
                 }
             }
 
@@ -57,7 +56,7 @@ namespace Hippopotamus.Engine.Core
                 IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
                 if (fixedUpdatable != null)
                 {
-                    GameLoop.Register(fixedUpdatable.FixedUpdate);
+                    GameLoop.Register(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
                 }
             }
 
@@ -65,7 +64,7 @@ namespace Hippopotamus.Engine.Core
             IDrawable drawable = system as IDrawable;
             if (drawable != null)
             {
-                GameLoop.Register(drawable.Draw);
+                GameLoop.Register(GameLoopType.Draw, drawable.Draw);
             }
         }
 
@@ -88,7 +87,7 @@ namespace Hippopotamus.Engine.Core
                 IUpdatable updatable = system as IUpdatable;
                 if (updatable != null)
                 {
-                    GameLoop.Unregister(updatable.Update);
+                    GameLoop.Unregister(GameLoopType.Update, updatable.Update);
                 }
             }
 
@@ -97,7 +96,7 @@ namespace Hippopotamus.Engine.Core
                 IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
                 if (fixedUpdatable != null)
                 {
-                    GameLoop.Unregister(fixedUpdatable.FixedUpdate);
+                    GameLoop.Unregister(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
                 }
             }
 
@@ -105,7 +104,7 @@ namespace Hippopotamus.Engine.Core
             IDrawable drawable = system as IDrawable;
             if (drawable != null)
             {
-                GameLoop.Unregister(drawable.Draw);
+                GameLoop.Unregister(GameLoopType.Draw, drawable.Draw);
             }
 
             systems.Remove(type);

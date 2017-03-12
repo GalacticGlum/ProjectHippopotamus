@@ -9,8 +9,6 @@ namespace Hippopotamus.Engine.Core
     {
         public static float FixedTimeStep { get; set; } = 1.0f / 120.0f;
 
-        public EntityPool EntityPool { get; private set; }
-
         public GameTimer TimeStats { get; private set; }
         public float FramesPerSecond => TimeStats.FramesPerSecond;
         public float UpdatesPerSeconds => TimeStats.UpdatesPerSecond;
@@ -35,12 +33,11 @@ namespace Hippopotamus.Engine.Core
         protected override void Initialize()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            EntityPool = new EntityPool("GameEngine_EntityPool");
             TimeStats = new GameTimer();
 
-            GameLoop.Register(Input.Update);
-            GameLoop.Register(gameInstance.Update);
-            GameLoop.Register(gameInstance.Draw);
+            GameLoop.Register(GameLoopType.Update, Input.Update);
+            GameLoop.Register(GameLoopType.Update, gameInstance.Update);
+            GameLoop.Register(GameLoopType.Draw, gameInstance.Draw);
 
             BindDependencies();
             base.Initialize();
@@ -54,7 +51,7 @@ namespace Hippopotamus.Engine.Core
             float deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             TimeStats.ProcessUpdateCalculation(deltaTime);
 
-            GameLoop.Update(new GameLoopUpdateEventArgs(deltaTime));
+            GameLoop.Trigger(GameLoopType.Update, new GameLoopEventArgs(deltaTime, FixedTimeStep, spriteBatch));
             FixedUpdate(deltaTime);
 
             MessageSystem.Update();
@@ -65,7 +62,7 @@ namespace Hippopotamus.Engine.Core
             unprocessedTimeSteps += deltaTime;
             while (unprocessedTimeSteps >= FixedTimeStep)
             {
-                GameLoop.FixedUpdate(new GameLoopFixedUpdateEventArgs(FixedTimeStep));
+                GameLoop.Trigger(GameLoopType.FixedUpdate, new GameLoopEventArgs(deltaTime, FixedTimeStep, spriteBatch));
                 unprocessedTimeSteps -= FixedTimeStep;
             }
         }
@@ -75,14 +72,13 @@ namespace Hippopotamus.Engine.Core
             TimeStats.ProcessFrameCalculation((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            GameLoop.Draw(new GameLoopDrawEventArgs(spriteBatch));
+            GameLoop.Trigger(GameLoopType.Draw, new GameLoopEventArgs((float)gameTime.ElapsedGameTime.TotalSeconds, FixedTimeStep, spriteBatch));
         }
 
         private void BindDependencies()
         {
             DependencyInjector.Kernel.Bind<ContentManager>().ToConstant(Content);
             DependencyInjector.Kernel.Bind<SpriteBatch>().ToConstant(spriteBatch);
-            DependencyInjector.Kernel.Bind<EntityPool>().ToConstant(EntityPool);
         }
 
         public static void Launch<TGameInstance>() where TGameInstance : GameInstance, new()

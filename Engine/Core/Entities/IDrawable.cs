@@ -2,6 +2,6 @@
 {
     public interface IDrawable
     {
-        void Draw(GameLoopDrawEventArgs args);
+        void Draw(GameLoopEventArgs args);
     }
 }

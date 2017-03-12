@@ -4,9 +4,8 @@ namespace Hippopotamus.Engine.Core.Exceptions
 {
     public class EntityNotFoundException : Exception
     {
-        public EntityNotFoundException(EntityPool pool) : base($"GameObject not found in pool: \"{pool.Name}\".")
-        {
-                        
+        public EntityNotFoundException(string searchTerm) : base($"Entity of name: \"{searchTerm}\" not found.")
+        {                     
         }
     }
 }

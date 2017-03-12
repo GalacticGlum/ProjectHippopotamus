@@ -5,7 +5,7 @@
         public GameEngine GameEngine { get; internal set; }
 
         public virtual void Initialize() { }
-        public virtual void Update(GameLoopUpdateEventArgs args) { }
-        public virtual void Draw(GameLoopDrawEventArgs args) { }
+        public virtual void Update(GameLoopEventArgs args) { }
+        public virtual void Draw(GameLoopEventArgs args) { }
     }
 }

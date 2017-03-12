@@ -17,11 +17,9 @@ namespace Hippopotamus.Engine.Core
             set
             {
                 name = value;
-                Pool?.OnEntityChanged(this);
+                EntityPool.OnEntityChanged(this);
             }
         }
-
-        public EntityPool Pool { get; internal set; }
 
         public Transform Transform { get; internal set; }
         public Entity Parent { get; private set; }
@@ -52,7 +50,7 @@ namespace Hippopotamus.Engine.Core
             set
             {
                 state = value;
-                Pool?.OnEntityChanged(this);
+                EntityPool.OnEntityChanged(this);
             }
         }
 
@@ -60,7 +58,7 @@ namespace Hippopotamus.Engine.Core
         {
             get
             {
-                if (!IsUsable()) return false;
+                if (!IsFree()) return false;
                 return State == EntityState.Enabled;
             }
         }
@@ -68,14 +66,8 @@ namespace Hippopotamus.Engine.Core
         internal Dictionary<Type, Component> Components { get; }
         internal List<Entity> Children { get; }
 
-        internal Entity(string name, EntityPool pool)
+        internal Entity(string name)
         {
-            if (pool == null)
-            {
-                throw new InvalidEntityPoolException(this);
-            }
-
-            Pool = pool;
             Name = name;
 
             Components = new Dictionary<Type, Component>();
@@ -87,7 +79,7 @@ namespace Hippopotamus.Engine.Core
 
         public void Enable()
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return;
             }
@@ -97,7 +89,7 @@ namespace Hippopotamus.Engine.Core
 
         public void Disable()
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return;
             }
@@ -110,7 +102,7 @@ namespace Hippopotamus.Engine.Core
         /// </summary>
         public void Toggle()
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return;
             }
@@ -120,7 +112,7 @@ namespace Hippopotamus.Engine.Core
 
         public Component AddComponent(Component component)
         {
-            if (!IsUsable()) return null;
+            if (!IsFree()) return null;
             if (HasComponent(component.GetType()))
             {
                 throw new ComponentExistsException(this, component.GetType());
@@ -129,7 +121,7 @@ namespace Hippopotamus.Engine.Core
             component.Entity = this;    
             Components.Add(component.GetType(), component);
      
-            Pool.OnComponentAdded(component);
+            EntityPool.OnComponentAdded(component);
 
             Type[] interfaces = component.GetType().GetInterfaces();
             if (interfaces.Contains(typeof(IStartable)))
@@ -143,7 +135,7 @@ namespace Hippopotamus.Engine.Core
                 IUpdatable updatable = component as IUpdatable;
                 if (updatable != null)
                 {
-                    GameLoop.Register(updatable.Update);
+                    GameLoop.Register(GameLoopType.Update, updatable.Update);
                 }
             }
 
@@ -152,7 +144,7 @@ namespace Hippopotamus.Engine.Core
             IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
             if (fixedUpdatable != null)
             {
-                GameLoop.Register(fixedUpdatable.FixedUpdate);
+                GameLoop.Register(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
             }
 
             return component;
@@ -167,7 +159,7 @@ namespace Hippopotamus.Engine.Core
 
         public void AddComponents(IEnumerable<Component> components)
         {
-            if (!IsUsable()) return;
+            if (!IsFree()) return;
             foreach (Component component in components)
             {
                 AddComponent(component);
@@ -176,7 +168,7 @@ namespace Hippopotamus.Engine.Core
 
         public void AddComponents(params Component[] components)
         {
-            if (!IsUsable()) return;
+            if (!IsFree()) return;
             foreach (Component component in components)
             {
                 AddComponent(component);
@@ -190,7 +182,7 @@ namespace Hippopotamus.Engine.Core
 
         public void RemoveComponent(Type componentType)
         {
-            if (!IsUsable()) return;
+            if (!IsFree()) return;
             if (!componentType.IsComponent())
             {
                 throw new ArgumentException($"The type \"{componentType.Name}\" is not a child of Component!");
@@ -208,7 +200,7 @@ namespace Hippopotamus.Engine.Core
                 IUpdatable updatable = component as IUpdatable;
                 if (updatable != null)
                 {
-                    GameLoop.Unregister(updatable.Update);
+                    GameLoop.Unregister(GameLoopType.Update, updatable.Update);
                 }
             }
 
@@ -217,17 +209,17 @@ namespace Hippopotamus.Engine.Core
                 IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
                 if (fixedUpdatable != null)
                 {
-                    GameLoop.Unregister(fixedUpdatable.FixedUpdate);
+                    GameLoop.Unregister(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
                 }
             }
 
             Components.Remove(componentType);
-            Pool.OnComponentRemoved(component);
+            EntityPool.OnComponentRemoved(component);
         }
 
         public T GetComponent<T>() where T : Component
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return default(T);
             }
@@ -240,7 +232,7 @@ namespace Hippopotamus.Engine.Core
 
         public Component GetComponent(Type componentType)
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return null;
             }
@@ -262,11 +254,11 @@ namespace Hippopotamus.Engine.Core
         /// If the destination object or component is null then throw a ComponentNotFoundException.
         /// Otherwise, add the component to the destination object and remove it from this.
         /// </summary>
-        /// <param name="component"></param>
-        /// <param name="destination"></param>
+        /// <param entityName="component"></param>
+        /// <param entityName="destination"></param>
         public void TransferComponent(Component component, Entity destination)
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return;
             }
@@ -288,7 +280,7 @@ namespace Hippopotamus.Engine.Core
 
         public bool HasComponent(Type componentType)
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return false;
             }
@@ -303,7 +295,7 @@ namespace Hippopotamus.Engine.Core
 
         public void RemoveAllComponents()
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return;
             }
@@ -317,9 +309,14 @@ namespace Hippopotamus.Engine.Core
             Components.Clear();
         }
 
-        public void Reset()
+        public void Destroy()
         {
-            if (!IsUsable())
+            EntityPool.Destroy(this);
+        }
+
+        internal void Reset()
+        {
+            if (!IsFree())
             {
                 return;
             }
@@ -329,49 +326,29 @@ namespace Hippopotamus.Engine.Core
             foreach (Entity entity in Children)
             {
                 Entity child = entity;
-                Pool.Destroy(child);
+                EntityPool.Destroy(child);
             }
 
             Children.Clear();
 
             Name = string.Empty;
-            Pool = null;
             State = EntityState.Cached;
-        }
-
-        /// <summary>
-        /// Moves this entity from it's current object pool to the destination pool.
-        /// If the destination pool is null then throw a NullEntityPoolException.
-        /// Otherwise, add the entity to the destination pool and remove it from it's current pool.
-        /// </summary>
-        /// <param name="destination"></param>
-        public void Transfer(EntityPool destination)
-        {
-            if (Pool == null)
-            {
-                throw new NullEntityPoolException(Pool);
-            }
-
-            destination.Add(this);
-            Entity self = this;
-            Pool.Destroy(self);
-            Pool = destination;
         }
 
         /// <summary>
         /// Creates and returns a new entity as a child of this entity.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="inheritComponents">Copy this entity's components to the child.</param>
+        /// <param entityName="entityName"></param>
+        /// <param entityName="inheritComponents">Copy this entity's components to the child.</param>
         /// <returns></returns>
-        public Entity CreateChild(string name, bool inheritComponents = false)
+        public Entity CreateChild(string entityName, bool inheritComponents = false)
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return null;
             }
 
-            Entity child = Pool.Create(name);
+            Entity child = EntityPool.Create(entityName);
             child.Parent = this;
 
             if (inheritComponents)
@@ -385,7 +362,7 @@ namespace Hippopotamus.Engine.Core
 
         public Entity AddChild(Entity child)
         {
-            if (!IsUsable())
+            if (!IsFree())
             {
                 return null;
             }
@@ -398,7 +375,7 @@ namespace Hippopotamus.Engine.Core
 
         public Entity GetChild(string childName)
         {
-            return !IsUsable() ? null : Children.FirstOrDefault(child => child.Name == childName);
+            return !IsFree() ? null : Children.FirstOrDefault(child => child.Name == childName);
         }
 
         /// <summary>
@@ -419,7 +396,7 @@ namespace Hippopotamus.Engine.Core
             }
         }
 
-        public bool IsUsable()
+        public bool IsFree()
         {
             return State != EntityState.Cached;
         }

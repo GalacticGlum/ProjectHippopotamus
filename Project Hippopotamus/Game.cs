@@ -9,11 +9,11 @@ namespace Hippopotamus
         public override void Initialize()
         {
             GameEngine.IsMouseVisible = true;
-            GameEngine.EntityPool.Create("camera").AddComponent(new Camera(GameEngine.GraphicsDevice.Viewport));
+            EntityPool.Create("camera").AddComponent(new Camera(GameEngine.GraphicsDevice.Viewport));
             EntitySystemManager.Register<WorldSystem>();
         }
 
-        public override void Update(GameLoopUpdateEventArgs args)
+        public override void Update(GameLoopEventArgs args)
         {
             GameEngine.Window.Title = $"FPS: {(int)GameEngine.FramesPerSecond} | UPS: {(int)GameEngine.UpdatesPerSeconds}";
         }

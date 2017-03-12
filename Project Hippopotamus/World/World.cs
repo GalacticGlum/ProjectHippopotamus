@@ -5,7 +5,6 @@ using System.Linq;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
-using Ninject;
 
 namespace Hippopotamus.World
 {
@@ -191,8 +190,8 @@ namespace Hippopotamus.World
 
         public void Update()
         {
-            int screenWidth = DependencyInjector.Kernel.Get<GameEngine>().GraphicsDevice.Viewport.Width;
-            int screenHeight = DependencyInjector.Kernel.Get<GameEngine>().GraphicsDevice.Viewport.Height;
+            int screenWidth = GameEngine.Context.GraphicsDevice.Viewport.Width;
+            int screenHeight = GameEngine.Context.GraphicsDevice.Viewport.Height;
 
             float zoom = Camera.Main.OrthographicSize;
             int viewportWidth = (int) Math.Ceiling((double)screenWidth / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;

@@ -7,6 +7,7 @@ namespace Hippopotamus.Engine.Core
 {
     public class GameEngine : Game
     {
+        public static GameEngine Context{ get; private set; }
         public static float FixedTimeStep { get; set; } = 1.0f / 120.0f;
 
         public GameTimer TimeStats { get; private set; }
@@ -21,6 +22,8 @@ namespace Hippopotamus.Engine.Core
 
         public GameEngine(GameInstance gameInstance)
         {
+            Context = this;
+
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -39,7 +42,6 @@ namespace Hippopotamus.Engine.Core
             GameLoop.Register(GameLoopType.Update, gameInstance.Update);
             GameLoop.Register(GameLoopType.Draw, gameInstance.Draw);
 
-            BindDependencies();
             base.Initialize();
 
             EntitySystemManager.Initialize();
@@ -75,21 +77,12 @@ namespace Hippopotamus.Engine.Core
             GameLoop.Trigger(GameLoopType.Draw, new GameLoopEventArgs((float)gameTime.ElapsedGameTime.TotalSeconds, FixedTimeStep, spriteBatch));
         }
 
-        private void BindDependencies()
-        {
-            DependencyInjector.Kernel.Bind<ContentManager>().ToConstant(Content);
-            DependencyInjector.Kernel.Bind<SpriteBatch>().ToConstant(spriteBatch);
-        }
-
         public static void Launch<TGameInstance>() where TGameInstance : GameInstance, new()
         {
             TGameInstance gameInstance = new TGameInstance();
             using (GameEngine gameEngine = new GameEngine(gameInstance))
             {
                 gameInstance.GameEngine = gameEngine;
-
-                DependencyInjector.Kernel.Bind<GameEngine>().ToConstant(gameEngine);
-
                 gameEngine.Run();
             }
         }

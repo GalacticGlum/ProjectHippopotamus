@@ -3,9 +3,7 @@ using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Ninject;
 
 namespace Hippopotamus.World
 {
@@ -16,7 +14,7 @@ namespace Hippopotamus.World
 
         public TileGraphicSystem()
         {
-            grassTexture = DependencyInjector.Kernel.Get<ContentManager>().Load<Texture2D>("Tiles/Grass");
+            grassTexture = GameEngine.Context.Content.Load<Texture2D>("Tiles/Grass");
             tileEntities = new Dictionary<Tile, Entity>();
 
             World.Current.ChunkLoaded += OnChunkLoaded;

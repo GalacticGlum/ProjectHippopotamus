@@ -39,10 +39,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -85,7 +81,6 @@
     <Compile Include="Rendering\FontManager.cs" />
     <Compile Include="Rendering\SpriteRenderer.cs" />
     <Compile Include="Core\Entities\Transform.cs" />
-    <Compile Include="Core\DependencyInjector.cs" />
     <Compile Include="Core\Input\Input.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

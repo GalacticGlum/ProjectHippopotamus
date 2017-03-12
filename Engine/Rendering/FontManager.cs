@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using Hippopotamus.Engine.Core;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Ninject;
 
 namespace Hippopotamus.Engine.Rendering
 {
@@ -18,7 +16,7 @@ namespace Hippopotamus.Engine.Rendering
         public static void Load(string font, string fontPath)
         {
             if(fonts.ContainsKey(font)) return;
-            fonts.Add(font, DependencyInjector.Kernel.Get<ContentManager>().Load<SpriteFont>(fontPath));
+            fonts.Add(font, GameEngine.Context.Content.Load<SpriteFont>(fontPath));
         }
 
         public static SpriteFont Get(string font)

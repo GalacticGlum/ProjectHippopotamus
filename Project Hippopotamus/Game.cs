@@ -1,4 +1,5 @@
-﻿using Hippopotamus.Engine.Core;
+﻿using Hippopotamus.Engine.Bridge;
+using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
 using Hippopotamus.World;
 
@@ -8,14 +9,16 @@ namespace Hippopotamus
     {
         public override void Initialize()
         {
-            GameEngine.IsMouseVisible = true;
-            EntityPool.Create("camera").AddComponent(new Camera(GameEngine.GraphicsDevice.Viewport));
+            Context.IsMouseVisible = true;
+            EntityPool.Create("camera").AddComponent(new Camera(Context.GraphicsDevice.Viewport));
             EntitySystemManager.Register<WorldSystem>();
+
+            Lua.Parse("Lua/Test.lua");
         }
 
         public override void Update(GameLoopEventArgs args)
         {
-            GameEngine.Window.Title = $"FPS: {(int)GameEngine.FramesPerSecond} | UPS: {(int)GameEngine.UpdatesPerSeconds}";
+            Context.Window.Title = $"FPS: {Lua.Call("GetFPS").String} | UPS: {(int)Context.UpdatesPerSeconds}";
         }
     }
 }

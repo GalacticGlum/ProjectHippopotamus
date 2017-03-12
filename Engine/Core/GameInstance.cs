@@ -2,7 +2,7 @@
 {
     public abstract class GameInstance
     {
-        public GameEngine GameEngine { get; internal set; }
+        public GameEngine Context { get; internal set; }
 
         public virtual void Initialize() { }
         public virtual void Update(GameLoopEventArgs args) { }

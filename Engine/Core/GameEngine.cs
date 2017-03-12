@@ -82,7 +82,7 @@ namespace Hippopotamus.Engine.Core
             TGameInstance gameInstance = new TGameInstance();
             using (GameEngine gameEngine = new GameEngine(gameInstance))
             {
-                gameInstance.GameEngine = gameEngine;
+                gameInstance.Context = gameEngine;
                 gameEngine.Run();
             }
         }

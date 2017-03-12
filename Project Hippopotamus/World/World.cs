@@ -19,14 +19,19 @@ namespace Hippopotamus.World
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
 
-        public event ChunkLoadedEventHandler ChunkLoaded;
-        public event ChunkLoadedEventHandler ChunkUnloaded;
-
         public event TileChangedEventHandler TileChanged;
         public void OnTileChanged(TileEventArgs args) { TileChanged?.Invoke(this, args); }
 
+        public event ChunkLoadedEventHandler ChunkLoaded;
+        public void OnChunkLoaded(ChunkEventArgs args) { ChunkLoaded?.Invoke(this, args); }
+
+        public event ChunkLoadedEventHandler ChunkUnloaded;
+        public void OnChunkUnloaded(ChunkEventArgs args) { ChunkUnloaded?.Invoke(this, args); }
+
         private Chunk[,] chunks;
         private readonly HashSet<Chunk> loadedChunks;
+        private readonly Queue<Chunk> loadChunkQueue;
+        private readonly Queue<Chunk> unloadChunkQueue;
 
         private readonly List<IWorldGenerator> worldGeneratorPasses;
         private WorldData worldData;
@@ -36,6 +41,9 @@ namespace Hippopotamus.World
             Current = this;
 
             loadedChunks = new HashSet<Chunk>();
+            loadChunkQueue = new Queue<Chunk>();
+            unloadChunkQueue = new Queue<Chunk>();
+
             worldGeneratorPasses = new List<IWorldGenerator>();
         }
 
@@ -82,25 +90,8 @@ namespace Hippopotamus.World
                 for (int y = 0; y < Height; y++)
                 {
                     chunks[x, y] = new Chunk(new Vector2(x, y));
-                    chunks[x, y].ChunkLoaded += OnChunkLoaded;
-                    chunks[x, y].ChunkUnloaded += OnChunkUnloaded;
                 }
             }
-        }
-
-        private void OnChunkLoaded(object sender, ChunkEventArgs args)
-        {
-            ChunkLoaded?.Invoke(this, new ChunkEventArgs(args.Chunk));
-        }
-
-        private void OnChunkUnloaded(object sender, ChunkEventArgs args)
-        {
-            ChunkUnloaded?.Invoke(this, new ChunkEventArgs(args.Chunk));
-        }
-
-        private void OnTileChanged(object sender, TileEventArgs args)
-        {
-            TileChanged?.Invoke(this, args);
         }
 
         public void AddGenerator(TerrainWorldGenerator worldGenerator)
@@ -204,8 +195,8 @@ namespace Hippopotamus.World
             int screenHeight = DependencyInjector.Kernel.Get<GameEngine>().GraphicsDevice.Viewport.Height;
 
             float zoom = Camera.Main.OrthographicSize;
-            int viewportWidth = (int) Math.Ceiling((double)screenWidth / (Chunk.Size * Tile.Size * 2 * zoom));
-            int viewportHeight = (int)Math.Ceiling((double)screenHeight / (Chunk.Size * Tile.Size * 2 * zoom));
+            int viewportWidth = (int) Math.Ceiling((double)screenWidth / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
+            int viewportHeight = (int)Math.Ceiling((double)screenHeight / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
 
             Vector2 cameraPosition = Camera.Main.Transform.Position;
             Vector2 tileAtCameraPosition = new Vector2(cameraPosition.X / Tile.Size, cameraPosition.Y / Tile.Size);
@@ -233,13 +224,34 @@ namespace Hippopotamus.World
             IEnumerable<Chunk> chunksToUnload = loadedChunks.Except(chunksToLoad);
             foreach (Chunk chunk in chunksToUnload.ToList())
             {
-                chunk.Unload();
-                loadedChunks.Remove(chunk);
+                if (!unloadChunkQueue.Contains(chunk) && chunk.Loaded)
+                {
+                    unloadChunkQueue.Enqueue(chunk);
+                }
             }
 
             foreach (Chunk chunk in chunksToLoad)
             {
+                if (!loadChunkQueue.Contains(chunk) && !chunk.Loaded)
+                {
+                    loadChunkQueue.Enqueue(chunk);
+                }
+            }
+
+            if (unloadChunkQueue.Count > 0)
+            {
+                Chunk chunk = unloadChunkQueue.Dequeue();
+                chunk.Unload();
+
+                loadedChunks.Remove(chunk);
+            }
+
+            // ReSharper disable once InvertIf
+            if (loadChunkQueue.Count > 0)
+            {
+                Chunk chunk = loadChunkQueue.Dequeue();
                 chunk.Load(worldData);
+
                 loadedChunks.Add(chunk);
             }
         }

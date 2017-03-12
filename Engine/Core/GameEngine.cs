@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Hippopotamus.Engine.Core.Messaging;
+﻿using Hippopotamus.Engine.Core.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,20 +10,16 @@ namespace Hippopotamus.Engine.Core
         public static float FixedTimeStep { get; set; } = 1.0f / 120.0f;
 
         public EntityPool EntityPool { get; private set; }
-        public float FramesPerSecond { get; private set; }
+
+        public GameTimer TimeStats { get; private set; }
+        public float FramesPerSecond => TimeStats.FramesPerSecond;
+        public float UpdatesPerSeconds => TimeStats.UpdatesPerSecond;
 
         private readonly GameInstance gameInstance;
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
         private float unprocessedTimeSteps;
-
-        private long totalFrames;
-        private float totalSeconds;
-        private float currentFramesPerSecond;
-
-        private const int MaximumFrameSamples = 100;
-        private readonly Queue<float> frameSampleBuffer;
 
         public GameEngine(GameInstance gameInstance)
         {
@@ -35,7 +29,6 @@ namespace Hippopotamus.Engine.Core
             graphics.SynchronizeWithVerticalRetrace = true;
             IsFixedTimeStep = false;
 
-            frameSampleBuffer = new Queue<float>();
             this.gameInstance = gameInstance;
         }
 
@@ -43,6 +36,7 @@ namespace Hippopotamus.Engine.Core
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             EntityPool = new EntityPool("GameEngine_EntityPool");
+            TimeStats = new GameTimer();
 
             GameLoop.Register(Input.Update);
             GameLoop.Register(gameInstance.Update);
@@ -58,31 +52,12 @@ namespace Hippopotamus.Engine.Core
         protected override void Update(GameTime gameTime)
         {
             float deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
-            ProcessFrameCalculation(deltaTime);
+            TimeStats.ProcessUpdateCalculation(deltaTime);
 
             GameLoop.Update(new GameLoopUpdateEventArgs(deltaTime));
             FixedUpdate(deltaTime);
 
             MessageSystem.Update();
-        }
-
-        private void ProcessFrameCalculation(float deltaTime)
-        {
-            currentFramesPerSecond = 1.0f / deltaTime;
-            frameSampleBuffer.Enqueue(currentFramesPerSecond);
-
-            if (frameSampleBuffer.Count > MaximumFrameSamples)
-            {
-                frameSampleBuffer.Dequeue();
-                FramesPerSecond = frameSampleBuffer.Average(entry => entry);
-            }
-            else
-            {
-                FramesPerSecond = currentFramesPerSecond;
-            }
-
-            totalFrames++;
-            totalSeconds += deltaTime;
         }
 
         private void FixedUpdate(float deltaTime)
@@ -97,6 +72,8 @@ namespace Hippopotamus.Engine.Core
 
         protected override void Draw(GameTime gameTime)
         {
+            TimeStats.ProcessFrameCalculation((float)gameTime.ElapsedGameTime.TotalSeconds);
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
             GameLoop.Draw(new GameLoopDrawEventArgs(spriteBatch));
         }

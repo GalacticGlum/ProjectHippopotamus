@@ -27,12 +27,6 @@ namespace Hippopotamus.World
         public bool Loaded { get; set; }
         public Vector2 Position { get; }
 
-        public event ChunkLoadedEventHandler ChunkLoaded;
-        public void OnChunkLoaded(ChunkEventArgs args) { ChunkLoaded?.Invoke(this, args); }
-
-        public event ChunkLoadedEventHandler ChunkUnloaded;
-        public void OnChunkUnloaded(ChunkEventArgs args) { ChunkUnloaded?.Invoke(this, args); }
-
         private Tile[,] tiles;
 
         public Chunk(Vector2 position)
@@ -85,7 +79,7 @@ namespace Hippopotamus.World
                 }
             }
 
-            OnChunkLoaded(new ChunkEventArgs(this));
+            World.Current.OnChunkLoaded(new ChunkEventArgs(this));
         }
 
         public void Unload()
@@ -93,7 +87,7 @@ namespace Hippopotamus.World
             if (!Loaded) return;
 
             Loaded = false;
-            OnChunkUnloaded(new ChunkEventArgs(this));
+            World.Current.OnChunkUnloaded(new ChunkEventArgs(this));
 
             tiles = null;
         }

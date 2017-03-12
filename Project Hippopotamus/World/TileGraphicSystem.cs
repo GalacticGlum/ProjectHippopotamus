@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.AccessControl;
+﻿using System.Collections.Generic;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
@@ -11,8 +9,6 @@ using Ninject;
 
 namespace Hippopotamus.World
 {
-    // TODO: Only ACTUALLY create entities for CHUNKS that are currenty loaded (and destroy entities for unloaded chunks)
-    // This is a huge optimization!
     public class TileGraphicSystem : EntitySystem
     {
         private readonly Dictionary<Tile, Entity> tileEntities;
@@ -30,12 +26,6 @@ namespace Hippopotamus.World
 
         private void OnChunkLoaded(object sender, ChunkEventArgs args)
         {
-            //Entity chunkEntity = Pool.Create($"Chunk ({args.Chunk.Position.X}, {args.Chunk.Position.Y})");
-            //chunkEntity.Transform.Position = new Vector2(args.Chunk.Position.X * Chunk.Size * Tile.Size, args.Chunk.Position.Y * Chunk.Size * Tile.Size);
-            //chunkEntity.Transform.Size = new Vector2(5);
-
-            //chunkEntity.AddComponent(new Text($"({args.Chunk.Position.X}, {args.Chunk.Position.Y})"));
-
             for (int x = 0; x < Chunk.Size; x++)
             {
                 for (int y = 0; y < Chunk.Size; y++)

@@ -16,8 +16,6 @@ namespace Hippopotamus.World
             EntitySystemManager.Register<TileGraphicSystem>();
 
             World.Generate();
-
-            //Camera.Main.Transform.Position = new Vector2(0, 2000);
         }
 
         public void Update(GameLoopUpdateEventArgs args)

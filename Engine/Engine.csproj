@@ -75,6 +75,7 @@
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Core\GameInstance.cs" />
     <Compile Include="Core\GameLoop.cs" />
+    <Compile Include="Core\GameTimer.cs" />
     <Compile Include="Core\Messaging\IMessage.cs" />
     <Compile Include="Core\Messaging\MessageChannel.cs" />
     <Compile Include="Core\Messaging\MessageSystem.cs" />

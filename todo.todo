@@ -1,0 +1,21 @@
+Features:
+    ☐ UI System
+
+    ☐ Physics Systems
+        ☐ Collisions using Farseerer
+        ☐ Gravity
+    
+    ☐ Player Controller
+        ☐ Momentum based movement.
+    
+
+    ☐ Inventory (stack size -> max stack size)
+        ☐ Items
+            ☐ Resources (ex: wood, stone)
+                ☐ Gathering (mining, cutting trees)
+
+            ☐ Consumables (ex: bread)
+            ☐ Gear/Equips
+
+        ☐ Crafting
+            ☐ List ui where it's a simple selection based crafting.

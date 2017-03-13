@@ -1,15 +1,33 @@
-Features:
-    ☐ UI System
+Priority of tasks is organized based ordering (respective to the specific section).
+
+Engine:
+    ☐ Entity system layers: allow entity systems to specify execution orders instead of assuming based on creation sequence.
+        ☐  Decouple game loop from entity system.
+            Currently, entity system game loops are registered into the engine's main game loop (GameLoop.cs). This means that we are unable to 
+            control the execution order of the game loop functions within the system, rendering the layer system useless. Instead, allow
+            the entity system manager to control the calling of game loop functions within and register the top level functions. It's also
+            wise to note that it could be beneficial to abandon the interfaces for different game loop specifiers and instead use inheritance; this
+            would mean there is no reflection usage and thus speeding up the init code dramatically.
+        
+
+    ☐ Ensure that the creation (initializations, etc...) of systems is correct and that there is little room for error in client code.
+        Although this engine is only for internal use it is wise to keep it as safe as possible as when lua scripting is fully implemented (and hopefully mods) when don't 
+        want the users to fuck anything up.
+
+    ☐ Scenes
+        ☐ Scene Graph
+    
+    ☐ UI System (shon)
 
     ☐ Physics Systems
         ☐ Collisions using Farseerer
         ☐ Gravity
-    
+
+Game:
     ☐ Player Controller
         ☐ Momentum based movement.
     
-
-    ☐ Inventory (stack size -> max stack size)
+    ☐ Inventory 
         ☐ Items
             ☐ Resources (ex: wood, stone)
                 ☐ Gathering (mining, cutting trees)
@@ -18,4 +36,4 @@ Features:
             ☐ Gear/Equips
 
         ☐ Crafting
-            ☐ List ui where it's a simple selection based crafting.
+            ☐ List UI where it's a simple selection based crafting.

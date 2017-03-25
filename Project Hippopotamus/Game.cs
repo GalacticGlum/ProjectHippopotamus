@@ -7,6 +7,7 @@ namespace Hippopotamus
 {
     public class Game : GameInstance
     {
+        private float timer;
         public override void Initialize()
         {
             Context.IsMouseVisible = true;
@@ -18,7 +19,11 @@ namespace Hippopotamus
 
         public override void Update(GameLoopEventArgs args)
         {
-            Context.Window.Title = $"FPS: {Lua.Call("GetFPS").String} | UPS: {(int)Context.UpdatesPerSeconds}";
+            timer += args.DeltaTime;
+            if (!(timer >= 1)) return;
+
+            Context.Window.Title = $"FPS: {(int)Context.FramesPerSecond} | UPS: {(int)Context.UpdatesPerSeconds}";
+            timer = 0;
         }
     }
 }

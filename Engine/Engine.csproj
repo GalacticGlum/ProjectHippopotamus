@@ -69,10 +69,6 @@
     <Compile Include="Core\Entities\EntityFilter.cs" />
     <Compile Include="Core\Entities\EntitySystem.cs" />
     <Compile Include="Core\Entities\EntitySystemManager.cs" />
-    <Compile Include="Core\Entities\IDrawable.cs" />
-    <Compile Include="Core\Entities\IFixedUpdatable.cs" />
-    <Compile Include="Core\Entities\IStartable.cs" />
-    <Compile Include="Core\Entities\IUpdatable.cs" />
     <Compile Include="Core\Entities\StartupEntitySystem.cs" />
     <Compile Include="Core\Exceptions\ComponentExistsException.cs" />
     <Compile Include="Core\Exceptions\ComponentNotFoundException.cs" />
@@ -88,6 +84,10 @@
     <Compile Include="Core\GameLoop.cs" />
     <Compile Include="Core\GameLoopType.cs" />
     <Compile Include="Core\GameTimer.cs" />
+    <Compile Include="Core\Logger.cs" />
+    <Compile Include="Core\LogTimeStampMode.cs" />
+    <Compile Include="Core\LogMessageVerbosity.cs" />
+    <Compile Include="Core\LoggerVerbosity.cs" />
     <Compile Include="Core\Messaging\IMessage.cs" />
     <Compile Include="Core\Messaging\MessageChannel.cs" />
     <Compile Include="Core\Messaging\MessageSystem.cs" />

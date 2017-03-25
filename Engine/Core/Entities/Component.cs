@@ -6,5 +6,7 @@ namespace Hippopotamus.Engine.Core
     {
         public Entity Entity { get; internal set; }
         public Transform Transform => Entity.Transform;
+
+        public virtual void Start() {}
     }
 }

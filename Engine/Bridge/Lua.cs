@@ -13,8 +13,6 @@ namespace Hippopotamus.Engine.Bridge
         static Lua()
         {
             lua = new Script();
-            lua.Options.DebugPrint = Console.WriteLine;
-
             parsedFilePaths = new List<string>();
         }
 

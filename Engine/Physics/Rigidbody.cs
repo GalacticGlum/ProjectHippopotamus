@@ -2,12 +2,11 @@
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Hippopotamus.Engine.Core;
-using Hippopotamus.Engine.Core.Entities;
 using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.Engine.Physics
 {
-    public class Rigidbody : Component, IStartable
+    public class Rigidbody : Component
     {
         public Body Body { get; }
 
@@ -19,7 +18,7 @@ namespace Hippopotamus.Engine.Physics
             Body.UserData = Entity;
         }
 
-        public void Start()
+        public override void Start()
         {
             Body.Position = ConvertUnits.ToSimUnits(Transform.Position);
         }

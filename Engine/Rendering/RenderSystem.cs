@@ -4,19 +4,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
-using IDrawable = Hippopotamus.Engine.Core.IDrawable;
 
 namespace Hippopotamus.Engine.Rendering
 {
     [StartupEntitySystem]
-    public class RenderSystem : EntitySystem, IDrawable
+    public class RenderSystem : EntitySystem
     {
         public RenderSystem()
         {
             FontManager.Load("Arial", "Fonts/Arial");
         }
 
-        public void Draw(GameLoopEventArgs args)
+        public override void Draw(GameLoopEventArgs args)
         {
             args.SpriteBatch.Begin(transformMatrix: Camera.Main.ViewMatrix, samplerState: SamplerState.PointClamp);
             foreach (Entity entity in EntityPool.GetGroup(typeof(SpriteRenderer)))

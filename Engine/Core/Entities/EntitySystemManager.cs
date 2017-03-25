@@ -4,19 +4,24 @@ using System.Linq;
 using System.Reflection;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
-using IStartable = Hippopotamus.Engine.Core.Entities.IStartable;
+using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.Engine.Core
 {
     public static class EntitySystemManager
     {
         private static readonly Dictionary<Type, EntitySystem> systems = new Dictionary<Type, EntitySystem>();
-        public static void Initialize()
+
+        /// <summary>
+        /// Does a full scan of all assemblies in the current app domain and registers any systems that need to be registered.
+        /// </summary>
+        internal static void Initialize()
         {
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (Type type in assembly.GetTypes())
                 {
+                    // If type is not a child (inherits) of EntitySystem then we don't have an business here.
                     if(type.BaseType != typeof(EntitySystem)) continue;
 
                     object[] attribute = type.GetCustomAttributes(typeof(StartupEntitySystem), false);
@@ -25,6 +30,34 @@ namespace Hippopotamus.Engine.Core
                         Register(type);
                     }
                 }
+            }
+
+            GameLoop.Register(GameLoopType.Update, Update);
+            GameLoop.Register(GameLoopType.FixedUpdate, FixedUpdate);
+            GameLoop.Register(GameLoopType.Draw, Draw);
+        }
+
+        private static void Update(GameLoopEventArgs args)
+        {
+            foreach (EntitySystem system in systems.Values)
+            {
+                system.Update(args);
+            }
+        }
+
+        private static void FixedUpdate(GameLoopEventArgs args)
+        {
+            foreach (EntitySystem system in systems.Values)
+            {
+                system.FixedUpdate(args);
+            }
+        }
+
+        private static void Draw(GameLoopEventArgs args)
+        {
+            foreach (EntitySystem system in systems.Values)
+            {
+                system.Draw(args);
             }
         }
 
@@ -35,37 +68,7 @@ namespace Hippopotamus.Engine.Core
             EntitySystem system = (EntitySystem) Activator.CreateInstance(type);
             systems.Add(type, system);
 
-            Type[] interfaces = type.GetInterfaces();
-            if (interfaces.Contains(typeof(IStartable)))
-            {
-                IStartable startable = system as IStartable;
-                startable?.Start();
-            }
-
-            if (interfaces.Contains(typeof(IUpdatable)))
-            {
-                IUpdatable updatable = system as IUpdatable;
-                if (updatable != null)
-                {
-                    GameLoop.Register(GameLoopType.Update, updatable.Update);
-                }
-            }
-
-            if (interfaces.Contains(typeof(IFixedUpdatable)))
-            {
-                IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
-                if (fixedUpdatable != null)
-                {
-                    GameLoop.Register(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
-                }
-            }
-
-            if (!interfaces.Contains(typeof(IDrawable))) return;
-            IDrawable drawable = system as IDrawable;
-            if (drawable != null)
-            {
-                GameLoop.Register(GameLoopType.Draw, drawable.Draw);
-            }
+            system.Start();
         }
 
         public static void Register<T>() where T : EntitySystem, new()
@@ -78,33 +81,6 @@ namespace Hippopotamus.Engine.Core
             if (!systems.ContainsKey(type))
             {
                 throw new EntitySystemNotFoundException(type);
-            }
-
-            EntitySystem system = systems[type];
-            Type[] interfaces = type.GetInterfaces();
-            if (interfaces.Contains(typeof(IUpdatable)))
-            {
-                IUpdatable updatable = system as IUpdatable;
-                if (updatable != null)
-                {
-                    GameLoop.Unregister(GameLoopType.Update, updatable.Update);
-                }
-            }
-
-            if (interfaces.Contains(typeof(IFixedUpdatable)))
-            {
-                IFixedUpdatable fixedUpdatable = system as IFixedUpdatable;
-                if (fixedUpdatable != null)
-                {
-                    GameLoop.Unregister(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
-                }
-            }
-
-            if (!interfaces.Contains(typeof(IDrawable))) return;
-            IDrawable drawable = system as IDrawable;
-            if (drawable != null)
-            {
-                GameLoop.Unregister(GameLoopType.Draw, drawable.Draw);
             }
 
             systems.Remove(type);

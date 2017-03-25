@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.Engine.Physics
 {
-    public class PhysicsSystem : EntitySystem, IFixedUpdatable
+    public class PhysicsSystem : EntitySystem
     {
         public World PhysicsWorld { get; }
 
@@ -15,7 +15,7 @@ namespace Hippopotamus.Engine.Physics
             PhysicsWorld = new World(new Vector2(0, 1f));
         }
 
-        public void FixedUpdate(GameLoopEventArgs args)
+        public override void FixedUpdate(GameLoopEventArgs args)
         {
             foreach (Entity entity in EntityPool.GetGroup(typeof(Rigidbody)))
             {

@@ -22,7 +22,7 @@ namespace Hippopotamus.Engine.Core
     public static class GameLoop
     {
         private static readonly Dictionary<GameLoopType, GameLoopEventHandler> processors;
-    
+
         static GameLoop()
         {
             processors = new Dictionary<GameLoopType, GameLoopEventHandler>();

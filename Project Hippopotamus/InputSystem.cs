@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Input;
 namespace Hippopotamus
 {
     [StartupEntitySystem]
-    public class InputSystem : EntitySystem, IUpdatable
+    public class InputSystem : EntitySystem
     {
-        public void Update(GameLoopEventArgs args)
+        public override void Update(GameLoopEventArgs args)
         {
             const float speed = 100;
 

@@ -4,7 +4,6 @@ using System.Linq;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Core.Exceptions;
 using Hippopotamus.Engine.Utilities;
-using IStartable = Hippopotamus.Engine.Core.Entities.IStartable;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -122,30 +121,7 @@ namespace Hippopotamus.Engine.Core
             Components.Add(component.GetType(), component);
      
             EntityPool.OnComponentAdded(component);
-
-            Type[] interfaces = component.GetType().GetInterfaces();
-            if (interfaces.Contains(typeof(IStartable)))
-            {
-                IStartable startable = component as IStartable;
-                startable?.Start();
-            }
-
-            if (interfaces.Contains(typeof(IUpdatable)))
-            {
-                IUpdatable updatable = component as IUpdatable;
-                if (updatable != null)
-                {
-                    GameLoop.Register(GameLoopType.Update, updatable.Update);
-                }
-            }
-
-            if (!interfaces.Contains(typeof(IFixedUpdatable))) return component;
-
-            IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
-            if (fixedUpdatable != null)
-            {
-                GameLoop.Register(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
-            }
+            component.Start();
 
             return component;
         }
@@ -194,25 +170,6 @@ namespace Hippopotamus.Engine.Core
             }
 
             Component component = GetComponent(componentType);
-            Type[] interfaces = componentType.GetInterfaces();
-            if (interfaces.Contains(typeof(IUpdatable)))
-            {
-                IUpdatable updatable = component as IUpdatable;
-                if (updatable != null)
-                {
-                    GameLoop.Unregister(GameLoopType.Update, updatable.Update);
-                }
-            }
-
-            if (interfaces.Contains(typeof(IFixedUpdatable)))
-            {
-                IFixedUpdatable fixedUpdatable = component as IFixedUpdatable;
-                if (fixedUpdatable != null)
-                {
-                    GameLoop.Unregister(GameLoopType.FixedUpdate, fixedUpdatable.FixedUpdate);
-                }
-            }
-
             Components.Remove(componentType);
             EntityPool.OnComponentRemoved(component);
         }

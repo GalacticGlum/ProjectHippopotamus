@@ -80,7 +80,6 @@ namespace Hippopotamus.Engine.Core
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            Logger.Log("Engine", "Exiting game!");
             Logger.WriteLogBufferToFile();
         }
 

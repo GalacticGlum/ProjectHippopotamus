@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -61,11 +62,14 @@ namespace Hippopotamus.Engine.Core
         // TODO: Move this operation to a different thread.
         internal static void WriteLogBufferToFile()
         {
-            lock (Console.Out)
+            new Thread(() =>
             {
-                File.WriteAllText(LogFilePath, logBuffer.ToString());
-                logBuffer.Clear();
-            }
+                lock (Console.Out)
+                {
+                    File.WriteAllText(LogFilePath, logBuffer.ToString());
+                    logBuffer.Clear();
+                }
+            }).Start();
         }
 
         private static string GetMessageHeader(string category, bool logUps, bool logFps)

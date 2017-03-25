@@ -86,7 +86,6 @@
     <Compile Include="Core\GameTimer.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\LogTimeStampMode.cs" />
-    <Compile Include="Core\LogMessageVerbosity.cs" />
     <Compile Include="Core\LoggerVerbosity.cs" />
     <Compile Include="Core\Messaging\IMessage.cs" />
     <Compile Include="Core\Messaging\MessageChannel.cs" />

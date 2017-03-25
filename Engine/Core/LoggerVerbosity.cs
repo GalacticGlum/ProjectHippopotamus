@@ -2,9 +2,8 @@
 {
     public enum LoggerVerbosity
     {
-        All,
-        Info = 15,
-        Warning = 14,
-        Error = 12
+        Info = 1,
+        Warning = 2,
+        Error = 3,
     }
 }

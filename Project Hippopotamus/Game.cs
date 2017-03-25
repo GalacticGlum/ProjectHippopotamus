@@ -15,8 +15,6 @@ namespace Hippopotamus
             EntitySystemManager.Register<WorldSystem>();
 
             Lua.Parse("Lua/Test.lua");
-
-            Logger.Verbosity = LoggerVerbosity.Error;
         }
 
         public override void Update(GameLoopEventArgs args)

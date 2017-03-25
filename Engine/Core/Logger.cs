@@ -1,27 +1,56 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Hippopotamus.Engine.Core
 {
     public static class Logger
     {
-        public static LoggerVerbosity Verbosity { get; set; } = LoggerVerbosity.All;
+        public const string AllCategoryVerbosities = "__ALL_CATEGORY_VERBOSITIES__";
 
         public static LogTimeStampMode TimeStampMode { get; set; } = LogTimeStampMode.DateTimeStamp;
-        public static void Log(string message, LogMessageVerbosity messageVerbosity = LogMessageVerbosity.Info, bool logUps = false, bool logFps = false)
+        public static LoggerVerbosity Verbosity { get; set; } = LoggerVerbosity.Info;
+
+        /// <summary>
+        /// The category verbosity filter. If set to null, then the filter will allow all categories.
+        /// </summary>
+        public static Dictionary<string, LoggerVerbosity> CategoryVerbosities { get; set; }
+
+        static Logger()
+        {
+            CategoryVerbosities = new Dictionary<string, LoggerVerbosity>
+            {
+                // Second parameter doesn't matter, if the key AllCategoryVerbosities is in the dictionary then it just logs any category.
+                {AllCategoryVerbosities, LoggerVerbosity.Info}
+            };
+        }
+        public static void Log(string category, string message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info, bool logUps = false, bool logFps = false)
         {
             lock (Console.Out)
             {
-                if (Verbosity != LoggerVerbosity.All && (int) messageVerbosity != (int) Verbosity) return;
+                if (Verbosity > messageVerbosity) return;
+                if (CategoryVerbosities != null)
+                {
+                    if (!CategoryVerbosities.ContainsKey(category) && !CategoryVerbosities.ContainsKey(AllCategoryVerbosities)) return;
+                    if (CategoryVerbosities.ContainsKey(category))
+                    {
+                        if (CategoryVerbosities[category] > messageVerbosity) return;
+                    }
+                }
 
                 ConsoleColor oldConsoleColor = Console.ForegroundColor;
-                Console.ForegroundColor = (ConsoleColor) messageVerbosity;
+                Console.ForegroundColor = GetConsoleColour(messageVerbosity);
 
-                Console.WriteLine($"{GetMessageHeader(logUps, logFps)}{message}");
+                Console.WriteLine($"{GetMessageHeader(category, logUps, logFps)}{message}");
                 Console.ForegroundColor = oldConsoleColor;
             }
         }
 
-        private static string GetMessageHeader(bool logUps, bool logFps)
+        public static void Log(string message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info, bool logUps = false, bool logFps = false)
+        {
+            Log(string.Empty, message, messageVerbosity, logUps, logFps);
+        }
+
+        private static string GetMessageHeader(string category, bool logUps, bool logFps)
         {
             string dateTimeStamp = string.Empty;
             switch (TimeStampMode)
@@ -63,7 +92,24 @@ namespace Hippopotamus.Engine.Core
                 }
             }
 
-            return !string.IsNullOrEmpty(headerContents) ? $"[{headerContents}] " : string.Empty;
+            string header = !string.IsNullOrEmpty(headerContents) ? $"[{headerContents}] " : string.Empty;
+            string categoryHeader = !string.IsNullOrEmpty(category) ? $"{category}: " : string.Empty;
+            return $"{header}{categoryHeader}";
+        }
+
+        private static ConsoleColor GetConsoleColour(LoggerVerbosity verbosity)
+        {
+            switch (verbosity)
+            {
+                case LoggerVerbosity.Info:
+                    return ConsoleColor.White;
+                case LoggerVerbosity.Warning:
+                    return ConsoleColor.Yellow;
+                case LoggerVerbosity.Error:
+                    return ConsoleColor.Red;
+            }
+
+            return ConsoleColor.Gray;
         }
     }
 }

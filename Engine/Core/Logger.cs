@@ -17,7 +17,7 @@ namespace Hippopotamus.Engine.Core
         /// The category verbosity filter. If set to null, then the filter will allow all categories.
         /// </summary>
         public static Dictionary<string, LoggerVerbosity> CategoryVerbosities { get; set; }
-        private static StringBuilder logBuffer = new StringBuilder();
+        private static readonly StringBuilder logBuffer = new StringBuilder();
 
         static Logger()
         {

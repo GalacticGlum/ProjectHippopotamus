@@ -10,7 +10,7 @@ namespace Hippopotamus.Engine.Rendering
     [StartupEntitySystem]
     public class RenderSystem : EntitySystem
     {
-        public RenderSystem()
+        public RenderSystem() 
         {
             FontManager.Load("Arial", "Fonts/Arial");
         }

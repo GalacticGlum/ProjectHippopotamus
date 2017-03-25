@@ -10,7 +10,8 @@ namespace Hippopotamus.Engine.Core
 {
     public static class EntitySystemManager
     {
-        private static readonly Dictionary<Type, EntitySystem> systems = new Dictionary<Type, EntitySystem>();
+        private static Dictionary<Type, EntitySystem> systems = new Dictionary<Type, EntitySystem>();
+        private static bool isDirty = false;
 
         /// <summary>
         /// Does a full scan of all assemblies in the current app domain and registers any systems that need to be registered.
@@ -24,10 +25,10 @@ namespace Hippopotamus.Engine.Core
                     // If type is not a child (inherits) of EntitySystem then we don't have an business here.
                     if(type.BaseType != typeof(EntitySystem)) continue;
 
-                    object[] attribute = type.GetCustomAttributes(typeof(StartupEntitySystem), false);
+                    StartupEntitySystem[] attribute = (StartupEntitySystem[])type.GetCustomAttributes(typeof(StartupEntitySystem), false);
                     if (attribute.Length > 0)
                     {
-                        Register(type);
+                        Register(type, attribute[0].ExecutionLayer);
                     }
                 }
             }
@@ -39,8 +40,20 @@ namespace Hippopotamus.Engine.Core
 
         private static void Update(GameLoopEventArgs args)
         {
+            if (isDirty)
+            {
+                systems = systems.OrderBy(pair => pair.Value.ExecutionLayer).ToDictionary(pair => pair.Key, pair => pair.Value);
+                isDirty = false;
+            }
+
             foreach (EntitySystem system in systems.Values)
             {
+                if (system.IsStartDirty)
+                {
+                    system.Start();
+                    system.IsStartDirty = false;
+                }
+
                 system.Update(args);
             }
         }
@@ -61,19 +74,21 @@ namespace Hippopotamus.Engine.Core
             }
         }
 
-        public static void Register(Type type)
+        public static void Register(Type type, uint executionLayer = 0)
         {
             if (type.BaseType != typeof(EntitySystem) || systems.ContainsKey(type)) return;
 
             EntitySystem system = (EntitySystem) Activator.CreateInstance(type);
+            system.ExecutionLayer = executionLayer;
             systems.Add(type, system);
 
-            system.Start();
+            isDirty = true;
+            system.IsStartDirty = true;
         }
 
-        public static void Register<T>() where T : EntitySystem, new()
+        public static void Register<T>(uint executionLayer = 0) where T : EntitySystem, new()
         {
-            Register(typeof(T));
+            Register(typeof(T), executionLayer);
         }
 
         public static void Unregister(Type type)
@@ -91,11 +106,17 @@ namespace Hippopotamus.Engine.Core
             Unregister(typeof(T));
         }
              
-        public static T Get<T>() where T : EntitySystem, new()
+        /// <summary>
+        /// Gets a EntitySystem of type. If the system is not registered then will register.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="defaultExecutionLayer">The execution layer to use if the entity system is not registered.</param>
+        /// <returns></returns>
+        public static T Get<T>(uint defaultExecutionLayer = 0) where T : EntitySystem, new()
         {
             if (!systems.ContainsKey(typeof(T)))
             {
-                Register<T>();
+                Register<T>(defaultExecutionLayer);
             }
 
             return (T)systems[typeof(T)];

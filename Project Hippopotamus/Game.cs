@@ -12,6 +12,7 @@ namespace Hippopotamus
         {
             Context.IsMouseVisible = true;
             EntityPool.Create("camera").AddComponent(new Camera(Context.GraphicsDevice.Viewport));
+
             EntitySystemManager.Register<WorldSystem>();
 
             Lua.Parse("Lua/Test.lua");

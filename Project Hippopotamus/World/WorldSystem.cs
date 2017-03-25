@@ -23,8 +23,8 @@ namespace Hippopotamus.World
         public override void Start()
         {
             Logger.TimeStampMode = LogTimeStampMode.None;
-            Logger.CategoryVerbosities.Add("WorldSystem", LoggerVerbosity.Warning);
-            Logger.Log("General", "Just telling you that something has started up! It's not really that important.");
+            Logger.CategoryVerbosities.Add("WorldSystem", LoggerVerbosity.Info);
+            Logger.Log("WorldSystem", "Just telling you that something has started up! It's not really that important.");
         }
 
         public override void Update(GameLoopEventArgs args)
@@ -38,7 +38,7 @@ namespace Hippopotamus.World
                 Logger.Log("WorldSystem", "Oh no! Something has gone wrong, we do care about this, but it's not fatal.", LoggerVerbosity.Warning);
             }
 
-            Logger.Log("WorldSystem", "We are flooding the logger with non-important information, how do we catch errors with this spam???");
+            //Logger.Log("WorldSystem", "We are flooding the logger with non-important information, how do we catch errors with this spam???");
 
             World.Update();
         }

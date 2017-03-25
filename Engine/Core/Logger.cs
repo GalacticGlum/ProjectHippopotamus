@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -7,6 +9,7 @@ namespace Hippopotamus.Engine.Core
     {
         public const string AllCategoryVerbosities = "__ALL_CATEGORY_VERBOSITIES__";
 
+        public static string LogFilePath { get; set; } = "Runtime.log";
         public static LogTimeStampMode TimeStampMode { get; set; } = LogTimeStampMode.DateTimeStamp;
         public static LoggerVerbosity Verbosity { get; set; } = LoggerVerbosity.Info;
 
@@ -14,6 +17,7 @@ namespace Hippopotamus.Engine.Core
         /// The category verbosity filter. If set to null, then the filter will allow all categories.
         /// </summary>
         public static Dictionary<string, LoggerVerbosity> CategoryVerbosities { get; set; }
+        private static StringBuilder logBuffer = new StringBuilder();
 
         static Logger()
         {
@@ -23,6 +27,7 @@ namespace Hippopotamus.Engine.Core
                 {AllCategoryVerbosities, LoggerVerbosity.Info}
             };
         }
+
         public static void Log(string category, string message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info, bool logUps = false, bool logFps = false)
         {
             lock (Console.Out)
@@ -40,7 +45,10 @@ namespace Hippopotamus.Engine.Core
                 ConsoleColor oldConsoleColor = Console.ForegroundColor;
                 Console.ForegroundColor = GetConsoleColour(messageVerbosity);
 
-                Console.WriteLine($"{GetMessageHeader(category, logUps, logFps)}{message}");
+                string output = string.Concat(GetMessageHeader(category, logUps, logFps), message);
+                logBuffer.AppendLine(string.Concat($"[{GetVerbosityName(messageVerbosity)}]", output));
+
+                Console.WriteLine(output);
                 Console.ForegroundColor = oldConsoleColor;
             }
         }
@@ -48,6 +56,16 @@ namespace Hippopotamus.Engine.Core
         public static void Log(string message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info, bool logUps = false, bool logFps = false)
         {
             Log(string.Empty, message, messageVerbosity, logUps, logFps);
+        }
+
+        // TODO: Move this operation to a different thread.
+        internal static void WriteLogBufferToFile()
+        {
+            lock (Console.Out)
+            {
+                File.WriteAllText(LogFilePath, logBuffer.ToString());
+                logBuffer.Clear();
+            }
         }
 
         private static string GetMessageHeader(string category, bool logUps, bool logFps)
@@ -110,6 +128,21 @@ namespace Hippopotamus.Engine.Core
             }
 
             return ConsoleColor.Gray;
+        }
+
+        private static string GetVerbosityName(LoggerVerbosity verbosity)
+        {
+            switch (verbosity)
+            {
+                case LoggerVerbosity.Info:
+                    return "Info";
+                case LoggerVerbosity.Warning:
+                    return "Warning";
+                case LoggerVerbosity.Error:
+                    return "Error";
+            }
+
+            return string.Empty;
         }
     }
 }

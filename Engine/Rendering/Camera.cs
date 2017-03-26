@@ -6,7 +6,19 @@ namespace Hippopotamus.Engine.Rendering
 {
     public class Camera : Component
     {
-        public static Camera Main { get; private set; }
+        private static Camera main;
+        public static Camera Main
+        {
+            get
+            {
+                if (main == null)
+                {
+                    EntityPool.Create("Main Camera").AddComponent(new Camera(GameEngine.Context.GraphicsDevice.Viewport));
+                }
+
+                return main;
+            }
+        }
 
         public float OrthographicSize;
         public Vector2 Origin { get; set; }
@@ -22,7 +34,12 @@ namespace Hippopotamus.Engine.Rendering
             OrthographicSize = 1;
             Origin  = new Vector2(viewport.Width / 2.0f, viewport.Height / 2.0f);
 
-            Main = this;
+            main = this;
+        }
+
+        public Vector2 ScreenToWorldPoint(Vector2 screenPoint)
+        {
+            return Transform.Position + screenPoint;
         }
     }
 }

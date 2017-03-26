@@ -11,7 +11,7 @@ namespace Hippopotamus.Engine.Core
         public const string AllCategoryVerbosities = "__ALL_CATEGORY_VERBOSITIES__";
 
         public static string LogFilePath { get; set; } = "Runtime.log";
-        public static LogTimeStampMode TimeStampMode { get; set; } = LogTimeStampMode.DateTimeStamp;
+        public static LoggerTimeStampMode TimeStampMode { get; set; } = LoggerTimeStampMode.DateTimeStamp;
         public static LoggerVerbosity Verbosity { get; set; } = LoggerVerbosity.Info;
 
         /// <summary>
@@ -59,8 +59,7 @@ namespace Hippopotamus.Engine.Core
             Log(string.Empty, message, messageVerbosity, logUps, logFps);
         }
 
-        // TODO: Move this operation to a different thread.
-        internal static void WriteLogBufferToFile()
+        public static void WriteLogBufferToFile()
         {
             new Thread(() =>
             {
@@ -77,13 +76,13 @@ namespace Hippopotamus.Engine.Core
             string dateTimeStamp = string.Empty;
             switch (TimeStampMode)
             {
-                case LogTimeStampMode.TimeStamp:
+                case LoggerTimeStampMode.TimeStamp:
                     dateTimeStamp =  $"{DateTime.Now.ToShortTimeString()}";
                     break;
-                case LogTimeStampMode.DateStamp:
+                case LoggerTimeStampMode.DateStamp:
                     dateTimeStamp = $"{DateTime.Now.ToShortDateString()}";
                     break;
-                case LogTimeStampMode.DateTimeStamp:
+                case LoggerTimeStampMode.DateTimeStamp:
                     dateTimeStamp = $"{DateTime.Now}";
                     break;
             }

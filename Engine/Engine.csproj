@@ -84,8 +84,14 @@
     <Compile Include="Core\GameLoop.cs" />
     <Compile Include="Core\GameLoopType.cs" />
     <Compile Include="Core\GameTimer.cs" />
+    <Compile Include="Core\Input\InputManager.cs" />
+    <Compile Include="Core\Input\MappedInputModifier.cs" />
+    <Compile Include="Core\Input\MappedInput.cs" />
+    <Compile Include="Core\Input\MappedInputType.cs" />
+    <Compile Include="Core\Input\KeyboardMappedInput.cs" />
+    <Compile Include="Core\Input\MouseMappedInput.cs" />
     <Compile Include="Core\Logger.cs" />
-    <Compile Include="Core\LogTimeStampMode.cs" />
+    <Compile Include="Core\LoggerTimeStampMode.cs" />
     <Compile Include="Core\LoggerVerbosity.cs" />
     <Compile Include="Core\Messaging\IMessage.cs" />
     <Compile Include="Core\Messaging\MessageChannel.cs" />

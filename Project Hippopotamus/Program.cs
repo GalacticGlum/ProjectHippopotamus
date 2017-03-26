@@ -14,6 +14,7 @@ namespace Hippopotamus.Engine.Core
         private static void Main()
         {
             GameEngine.Launch<Game>();
+            Logger.WriteLogBufferToFile();
         }
     }
 }

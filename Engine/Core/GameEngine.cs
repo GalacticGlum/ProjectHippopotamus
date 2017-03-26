@@ -1,7 +1,6 @@
 ﻿using System;
 using Hippopotamus.Engine.Core.Messaging;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus.Engine.Core
@@ -39,7 +38,7 @@ namespace Hippopotamus.Engine.Core
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TimeStats = new GameTimer();
 
-            GameLoop.Register(GameLoopType.Update, Input.Update);
+            GameLoop.Register(GameLoopType.Update, InputManager.Update);
             GameLoop.Register(GameLoopType.Update, gameInstance.Update);
             GameLoop.Register(GameLoopType.Draw, gameInstance.Draw);
 
@@ -76,11 +75,6 @@ namespace Hippopotamus.Engine.Core
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
             GameLoop.Trigger(GameLoopType.Draw, new GameLoopEventArgs((float)gameTime.ElapsedGameTime.TotalSeconds, FixedTimeStep, spriteBatch));
-        }
-
-        protected override void OnExiting(object sender, EventArgs args)
-        {
-            Logger.WriteLogBufferToFile();
         }
 
         public static void Launch<TGameInstance>() where TGameInstance : GameInstance, new()

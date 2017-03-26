@@ -1,6 +1,6 @@
 ﻿namespace Hippopotamus.Engine.Core
 {
-    public enum LogTimeStampMode
+    public enum LoggerTimeStampMode
     {
         None,
         TimeStamp,

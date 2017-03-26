@@ -88,7 +88,7 @@ namespace Hippopotamus.World
             {
                 for (int y = 0; y < Height; y++)
                 {
-                    chunks[x, y] = new Chunk(new Vector2(x, y));
+                    chunks[x, y] = new Chunk(new Vector2(x, y), new Vector2(x, y) * Chunk.Size);
                 }
             }
         }
@@ -123,6 +123,11 @@ namespace Hippopotamus.World
             return chunk.GetTileAt(tileX, tileY);
         }
 
+        public Chunk GetChunkAt(int x, int y)
+        {
+            if (x < 0 || x >= Width || y < 0 || y >= Height) return null;
+            return chunks[x, y];
+        }
 
         public void Save(string fileName)
         {

@@ -5,10 +5,12 @@ namespace Hippopotamus.Engine.Core
 {
     public enum MouseButton
     {
-        LeftMouseButton = 0,
-        RightMouseButton = 1,
-        MiddleMouseButton = 2
+        Left = 0,
+        Right = 1,
+        Middle = 2
     }
+
+    public delegate void InputTriggeredEventHandler(object sender, GameLoopEventArgs args);
 
     public static class Input
     {
@@ -20,7 +22,7 @@ namespace Hippopotamus.Engine.Core
         private static MouseState currentMouseState;
         private static MouseState lastMouseState;
     
-        internal static void Update(GameLoopEventArgs args)
+        internal static void Update()
         {
             lastMouseState = currentMouseState;
             lastKeyState = currentKeyState;
@@ -31,40 +33,40 @@ namespace Hippopotamus.Engine.Core
             MousePosition = currentMouseState.Position.ToVector2();
         }
 
-        public static bool GetKey(Keys keyCode)
+        internal static bool GetKey(Keys keyCode)
         {
             return currentKeyState.IsKeyDown(keyCode);
         }
 
-        public static bool GetKeyDown(Keys keyCode)
+        internal static bool GetKeyDown(Keys keyCode)
         {
             return lastKeyState.IsKeyUp(keyCode) && currentKeyState.IsKeyDown(keyCode);
         }
 
-        public static bool GetKeyUp(Keys keyCode)
+        internal static bool GetKeyUp(Keys keyCode)
         {
             return lastKeyState.IsKeyDown(keyCode) && currentKeyState.IsKeyUp(keyCode);
         }
 
-        public static bool GetMouseButton(MouseButton mouseButton)
+        internal static bool GetMouseButton(MouseButton mouseButton)
         {
             switch (mouseButton)
             {
-                case MouseButton.LeftMouseButton:
+                case MouseButton.Left:
                     if (currentMouseState.LeftButton == ButtonState.Pressed)
                     {
                         return true;
                     }
 
                     break;
-                case MouseButton.RightMouseButton:
+                case MouseButton.Right:
                     if (currentMouseState.RightButton == ButtonState.Pressed)
                     {
                         return true;
                     }
 
                     break;
-                case MouseButton.MiddleMouseButton:
+                case MouseButton.Middle:
                     if (currentMouseState.MiddleButton == ButtonState.Pressed)
                     {
                         return true;
@@ -76,25 +78,25 @@ namespace Hippopotamus.Engine.Core
             return false;
         }
 
-        public static bool GetMouseButtonDown(MouseButton mouseButton)
+        internal static bool GetMouseButtonDown(MouseButton mouseButton)
         {
             switch (mouseButton)
             {
-                case MouseButton.LeftMouseButton:
+                case MouseButton.Left:
                     if (lastMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed)
                     {
                         return true;
                     }
 
                     break;
-                case MouseButton.RightMouseButton:
+                case MouseButton.Right:
                     if (lastMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton == ButtonState.Pressed)
                     {
                         return true;
                     }
 
                     break;
-                case MouseButton.MiddleMouseButton:
+                case MouseButton.Middle:
                     if (lastMouseState.MiddleButton == ButtonState.Released && currentMouseState.MiddleButton == ButtonState.Pressed)
                     {
                         return true;
@@ -106,11 +108,11 @@ namespace Hippopotamus.Engine.Core
             return false;
         }
 
-        public static bool GetMouseButtonUp(MouseButton mouseButton)
+        internal static bool GetMouseButtonUp(MouseButton mouseButton)
         {
             switch (mouseButton)
             {
-                case MouseButton.LeftMouseButton:
+                case MouseButton.Left:
                     if (lastMouseState.LeftButton == ButtonState.Pressed &&
                         currentMouseState.LeftButton == ButtonState.Released)
                     {
@@ -118,7 +120,7 @@ namespace Hippopotamus.Engine.Core
                     }
 
                     break;
-                case MouseButton.RightMouseButton:
+                case MouseButton.Right:
                     if (lastMouseState.RightButton == ButtonState.Pressed &&
                         currentMouseState.RightButton == ButtonState.Released)
                     {
@@ -126,7 +128,7 @@ namespace Hippopotamus.Engine.Core
                     }
 
                     break;
-                case MouseButton.MiddleMouseButton:
+                case MouseButton.Middle:
                     if (lastMouseState.MiddleButton == ButtonState.Pressed &&
                         currentMouseState.MiddleButton == ButtonState.Released)
                     {

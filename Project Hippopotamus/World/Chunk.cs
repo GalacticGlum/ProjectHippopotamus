@@ -25,12 +25,15 @@ namespace Hippopotamus.World
 
         public bool Loaded { get; set; }
         public Vector2 Position { get; }
+        public Vector2 WorldPosition { get; }
 
         private Tile[,] tiles;
 
-        public Chunk(Vector2 position)
+        public Chunk(Vector2 position, Vector2 worldPosition)
         {
             Position = position;
+            WorldPosition = worldPosition;
+
             Generate();
         }
 

@@ -8,7 +8,7 @@ namespace Hippopotamus.Engine.Rendering
     {
         public Color Colour { get; set; }
         public Texture2D Texture { get; set; }
-        public float Layer { get; set; }
+        public int Layer { get; set; }
 
         public SpriteRenderer(Texture2D texture)
         {

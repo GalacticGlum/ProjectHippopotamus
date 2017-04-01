@@ -1,6 +1,8 @@
-﻿using Hippopotamus.Engine.Bridge;
-using Hippopotamus.Engine.Core;
+﻿using Hippopotamus.Engine.Core;
+using Hippopotamus.Engine.Rendering;
 using Hippopotamus.World;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus
 {
@@ -12,8 +14,12 @@ namespace Hippopotamus
             Context.IsMouseVisible = true;
 
             EntitySystemManager.Register<WorldSystem>();
-            Lua.Parse("Lua/Test.lua");
-        }
+            Entity test = EntityPool.Create("Test");
+            test.Transform.Position = new Vector2(101376, 1024);
+            test.Transform.Size = new Vector2(50);
+
+            test.AddComponent(new SpriteRenderer(Context.Content.Load<Texture2D>("Tiles/Grass")) { Colour = Color.Pink, Layer = 0 });
+;        }
 
         public override void Update(GameLoopEventArgs args)
         {          

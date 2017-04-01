@@ -11,7 +11,7 @@ namespace Hippopotamus
     [StartupEntitySystem]
     public class InputSystem : EntitySystem
     {
-        private const float speed = 100;
+        private float speed = 100;
         private Vector2 targetPosition = Vector2.Zero;
 
         public override void Start()
@@ -33,6 +33,15 @@ namespace Hippopotamus
 
             InputManager.RegisterInputMapping("InputSystem: Mouse Right", MappedInputModifier.None, MouseButton.Right);
             InputManager.RegisterMouseInputAction("InputSystem: Mouse Right", MappedInputType.Down, (sender, args) => PlaceTile(TileType.Empty));
+
+            InputManager.RegisterInputMapping("SpeedUp", MappedInputModifier.None, Keys.Add);
+            InputManager.RegisterKeyInputAction("SpeedUp", MappedInputType.Down, (sender, args) => speed += 10);
+
+            InputManager.RegisterInputMapping("SpeedDown", MappedInputModifier.None, Keys.Subtract);
+            InputManager.RegisterKeyInputAction("SpeedDown", MappedInputType.Down, (sender, args) => speed -= 10);
+
+            InputManager.RegisterInputMapping("Position logger", MappedInputModifier.Control, MouseButton.Left);
+            InputManager.RegisterMouseInputAction("Position logger", MappedInputType.Down, (sender, args) => Logger.Log("InputSystem", Camera.Main.Transform.Position.ToString()));
         }
 
         public override void Update(GameLoopEventArgs args)

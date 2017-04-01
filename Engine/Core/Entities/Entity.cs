@@ -211,8 +211,8 @@ namespace Hippopotamus.Engine.Core
         /// If the destination object or component is null then throw a ComponentNotFoundException.
         /// Otherwise, add the component to the destination object and remove it from this.
         /// </summary>
-        /// <param entityName="component"></param>
-        /// <param entityName="destination"></param>
+        /// <param name="component"></param>
+        /// <param name="destination"></param>
         public void TransferComponent(Component component, Entity destination)
         {
             if (!IsFree())

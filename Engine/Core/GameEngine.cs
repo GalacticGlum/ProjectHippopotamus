@@ -1,5 +1,4 @@
-﻿using System;
-using Hippopotamus.Engine.Core.Messaging;
+﻿using Hippopotamus.Engine.Core.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Hippopotamus.Engine.Core.Entities;
-using Hippopotamus.Engine.Core.Exceptions;
-using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -95,7 +93,8 @@ namespace Hippopotamus.Engine.Core
         {
             if (!systems.ContainsKey(type))
             {
-                throw new EntitySystemNotFoundException(type);
+                Logger.Log("Engine", $"Entity System of type: \"{type.Name}\" not found in the Entity System manager.", LoggerVerbosity.Warning);
+                return;
             }
 
             systems.Remove(type);

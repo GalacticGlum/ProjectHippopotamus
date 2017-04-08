@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hippopotamus.Engine.Core.Entities;
-using Hippopotamus.Engine.Core.Exceptions;
 
 namespace Hippopotamus.Engine.Core
 {
@@ -90,7 +89,8 @@ namespace Hippopotamus.Engine.Core
         {
             if (usedEntityNames.Contains(name))
             {
-                throw new DuplicateEntityException(name);
+                Logger.Log("Engine", $"An entity with name \"{name}\" already exists!", LoggerVerbosity.Warning);
+                return null;
             }
 
             if (string.IsNullOrEmpty(name))
@@ -104,7 +104,8 @@ namespace Hippopotamus.Engine.Core
                 entity = CachedEntities.Pop();
                 if (entity == null)
                 {
-                    throw new EntityNotFoundException(name);
+                    Logger.Log("Engine", $"Entity of name: \"{name}\" not found.", LoggerVerbosity.Warning);
+                    return null;
                 }
 
                 entity.Name = name;
@@ -146,7 +147,8 @@ namespace Hippopotamus.Engine.Core
 
             if (!Entities.Contains(entity))
             {
-                throw new EntityNotFoundException(entity.Name);
+                Logger.Log("Engine", $"Entity of name: \"{entity.Name}\" not found.", LoggerVerbosity.Warning);
+                return;
             }
 
             usedEntityNames.Remove(entity.Name);
@@ -180,7 +182,8 @@ namespace Hippopotamus.Engine.Core
             Entity entity = Entities.FirstOrDefault(obj => obj.Name == name);
             if(entity != null) return entity;
 
-            throw new EntityNotFoundException(name);
+            Logger.Log("Engine", $"Entity of name: \"{name}\" not found.", LoggerVerbosity.Warning);
+            return null;
         }
 
         internal static void ClearCache()

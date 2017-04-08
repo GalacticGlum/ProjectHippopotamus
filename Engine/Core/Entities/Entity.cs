@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hippopotamus.Engine.Core.Entities;
-using Hippopotamus.Engine.Core.Exceptions;
 using Hippopotamus.Engine.Utilities;
 
 namespace Hippopotamus.Engine.Core
@@ -115,7 +114,8 @@ namespace Hippopotamus.Engine.Core
             if (!IsFree()) return null;
             if (HasComponent(component.GetType()))
             {
-                throw new ComponentExistsException(this, component.GetType());
+                Logger.Log("Engine", $"Entity: \"{Name}\" already has a componentType of type \"{typeof(T).Name}\"", LoggerVerbosity.Warning);
+                return null;
             }
 
             component.Entity = this;
@@ -132,7 +132,8 @@ namespace Hippopotamus.Engine.Core
             if (!IsFree()) return null;
             if (HasComponent(component.GetType()))
             {
-                throw new ComponentExistsException(this, component.GetType());
+                Logger.Log("Engine", $"Entity: \"{Name}\" already has a componentType of type \"{component.GetType().Name}\"", LoggerVerbosity.Warning);
+                return null;
             }
 
             component.Entity = this;
@@ -177,7 +178,8 @@ namespace Hippopotamus.Engine.Core
 
             if (!HasComponent(componentType))
             {
-                throw new ComponentNotFoundException(this, componentType);
+                Logger.Log("Engine", $"Entity: \"{Name}\" already has a componentType of type \"{componentType.Name}\"", LoggerVerbosity.Warning);
+                return;
             }
 
             Component component = GetComponent(componentType);
@@ -195,7 +197,9 @@ namespace Hippopotamus.Engine.Core
             }
 
             if (Components.TryGetValue(typeof(T), out Component component)) return (T)component;
-            throw new ComponentNotFoundException(this, typeof(T));
+
+            Logger.Log("Engine", $"Entity: \"{Name}\" already has a componentType of type \"{typeof(T).Name}\"", LoggerVerbosity.Warning);
+            return null;
         }
 
         public Component GetComponent(Type componentType)
@@ -213,7 +217,8 @@ namespace Hippopotamus.Engine.Core
             Component component;
             if (Components.TryGetValue(componentType, out component)) return component;
 
-            throw new ComponentNotFoundException(this, componentType);
+            Logger.Log("Engine", $"Entity: \"{Name}\" already has a componentType of type \"{componentType.Name}\"", LoggerVerbosity.Warning);
+            return null;
         }
 
         public bool HasComponent<TComponent>() where TComponent : Component

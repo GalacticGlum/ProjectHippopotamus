@@ -71,12 +71,6 @@
     <Compile Include="Core\Entities\EntitySystem.cs" />
     <Compile Include="Core\Entities\EntitySystemManager.cs" />
     <Compile Include="Core\Entities\StartupEntitySystem.cs" />
-    <Compile Include="Core\Exceptions\ComponentExistsException.cs" />
-    <Compile Include="Core\Exceptions\ComponentNotFoundException.cs" />
-    <Compile Include="Core\Exceptions\DuplicateEntityException.cs" />
-    <Compile Include="Core\Exceptions\EntitySystemNotFoundException.cs" />
-    <Compile Include="Core\Exceptions\InvalidEntityPoolException.cs" />
-    <Compile Include="Core\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="Core\Entities\Entity.cs" />
     <Compile Include="Core\Entities\EntityPool.cs" />
     <Compile Include="Core\Entities\EntityState.cs" />

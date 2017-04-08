@@ -12,14 +12,7 @@ namespace Hippopotamus
         public override void Initialize()
         {
             Context.IsMouseVisible = true;
-
             EntitySystemManager.Register<WorldSystem>();
-            Entity test = EntityPool.Create("Test");
-            test.Transform.Position = new Vector2(101376, 1024);
-            test.Transform.Size = new Vector2(50);
-
-            SpriteRenderer spriteRenderer = test.AddComponent<SpriteRenderer>();
-            spriteRenderer.Texture = Context.Content.Load<Texture2D>("Tiles/Grass");
         }
 
         public override void Update(GameLoopEventArgs args)

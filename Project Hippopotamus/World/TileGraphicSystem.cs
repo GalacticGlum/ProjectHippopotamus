@@ -11,6 +11,7 @@ namespace Hippopotamus.World
     {
         private readonly Dictionary<Tile, Entity> tileEntities;
         private readonly Texture2D grassTexture;
+        private readonly string genericName;
 
         public TileGraphicSystem()
         {
@@ -20,6 +21,8 @@ namespace Hippopotamus.World
             World.Current.ChunkLoaded += OnChunkLoaded;
             World.Current.ChunkUnloaded += OnChunkUnloaded;
             World.Current.TileChanged += OnTileChanged;
+
+            genericName = "Tile";
         }
 
         private void OnChunkLoaded(object sender, ChunkEventArgs args)
@@ -30,7 +33,8 @@ namespace Hippopotamus.World
                 {
                     Tile tileAt = args.Chunk.GetTileAt(x, y);
 
-                    Entity entity = EntityPool.Create($"Chunk ({args.Chunk.Position.X}, {args.Chunk.Position.Y}): Tile ({x}, {y})");
+                    Entity entity = EntityPool.Create(string.IsInterned(genericName) ?? genericName);
+
                     entity.Transform.Position = new Vector2((args.Chunk.Position.X * Chunk.Size + x) * Tile.Size, (args.Chunk.Position.Y * Chunk.Size + y) * Tile.Size);
                     entity.AddComponent<SpriteRenderer>();
 

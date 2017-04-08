@@ -14,7 +14,7 @@ namespace Hippopotamus.Engine.Core
             get { return name; }
             set
             {
-                name = value;
+                name = string.IsInterned(value) ?? value;
                 EntityPool.OnEntityChanged(this);
             }
         }

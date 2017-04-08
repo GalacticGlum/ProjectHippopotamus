@@ -72,7 +72,6 @@ namespace Hippopotamus.Engine.Core
             ComponentRemoved?.Invoke(new ComponentChangedEventArgs(component));
         }
 
-        private static readonly HashSet<string> usedEntityNames;
         private static readonly Dictionary<Type, HashSet<Entity>> groups;
         private const int entityCacheCap = 16384;
 
@@ -81,18 +80,11 @@ namespace Hippopotamus.Engine.Core
             Entities = new HashSet<Entity>();
             CachedEntities = new Stack<Entity>();         
 
-            usedEntityNames = new HashSet<string>();
             groups = new Dictionary<Type, HashSet<Entity>>();
         }
 
         public static Entity Create(string name)
         {
-            if (usedEntityNames.Contains(name))
-            {
-                Logger.Log("Engine", $"An entity with name \"{name}\" already exists!", LoggerVerbosity.Warning);
-                return null;
-            }
-
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentException("The string: name provided was null or empty.");
@@ -118,7 +110,6 @@ namespace Hippopotamus.Engine.Core
             }
 
             Entities.Add(entity);
-            usedEntityNames.Add(name);
 
             OnEntityAdded(entity);
             return entity;
@@ -151,7 +142,6 @@ namespace Hippopotamus.Engine.Core
                 return;
             }
 
-            usedEntityNames.Remove(entity.Name);
             Entities.Remove(entity);
 
             OnEntityRemoved(entity);
@@ -195,7 +185,6 @@ namespace Hippopotamus.Engine.Core
         {
             Entities.Clear();
             groups.Clear();
-            usedEntityNames.Clear();
         }
 
         public static HashSet<Entity> GetGroup(params Type[] types)

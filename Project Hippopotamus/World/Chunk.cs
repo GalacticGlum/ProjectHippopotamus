@@ -27,7 +27,7 @@ namespace Hippopotamus.World
         public Vector2 Position { get; }
         public Vector2 WorldPosition { get; }
 
-        private Tile[,] tiles;
+        private TileType[,] tiles;
 
         public Chunk(Vector2 position, Vector2 worldPosition)
         {
@@ -39,12 +39,12 @@ namespace Hippopotamus.World
 
         private void Generate()
         {
-            tiles = new Tile[Size, Size];
+            tiles = new TileType[Size, Size];
             for (int x = 0; x < Size; x++)
             {
                 for (int y = 0; y < Size; y++)
                 {
-                    tiles[x, y] = new Tile(TileType.Empty);
+                    tiles[x, y] = TileType.Empty;
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace Hippopotamus.World
         public Tile GetTileAt(int x, int y)
         {
             if (x < 0 || x >= Size || y < 0 || y >= Size) return null;
-            return tiles[x, y];
+            return new Tile(tiles[x, y]);
         }
 
         public void SetTileAt(int x, int y, Tile value)
@@ -60,7 +60,7 @@ namespace Hippopotamus.World
             if (x < 0 || x >= Size || y < 0 || y >= Size) return;
             if(value == null) return;
 
-            tiles[x, y] = value;
+            tiles[x, y] = value.Type;
         }
 
         public void Load(WorldData worldData)
@@ -77,7 +77,7 @@ namespace Hippopotamus.World
             {
                 for (int y = 0; y < Size; y++)
                 {
-                    tiles[x, y].Type = worldData.Tiles[startX + x, startY + y];
+                    tiles[x, y] = worldData.Tiles[startX + x, startY + y];
                 }
             }
 

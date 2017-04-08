@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,11 +31,6 @@ namespace Hippopotamus.Engine.Rendering
                     DrawSprite(args.SpriteBatch, spriteRenderer);
                 }
             }
-
-            //foreach (Entity entity in EntityPool.GetGroup(typeof(SpriteRenderer)))
-            //{
-            //    DrawSprite(args.SpriteBatch, entity.GetComponent<SpriteRenderer>());
-            //}
 
             foreach (Entity entity in EntityPool.GetGroup(typeof(Text)))
             {

@@ -100,9 +100,12 @@
     <Compile Include="Core\Input\Input.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rendering\TextureAtlas.cs" />
     <Compile Include="Rendering\Text.cs" />
+    <Compile Include="Utilities\TextureUtilities.cs" />
     <Compile Include="Utilities\Units.cs" />
     <Compile Include="Utilities\ComponentExtensions.cs" />
+    <Compile Include="Utilities\Vector2i.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

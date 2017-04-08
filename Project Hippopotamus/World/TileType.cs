@@ -3,8 +3,7 @@
     public enum TileType : byte
     {
         Empty,
-        Grass,
         Dirt,
-        Stone
+        Grass
     }
 }

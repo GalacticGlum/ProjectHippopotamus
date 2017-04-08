@@ -11,7 +11,6 @@ namespace Hippopotamus
         private float timer;
         public override void Initialize()
         {
-            Logger.Verbosity = LoggerVerbosity.None;
             Context.IsMouseVisible = true;
 
             EntitySystemManager.Register<WorldSystem>();

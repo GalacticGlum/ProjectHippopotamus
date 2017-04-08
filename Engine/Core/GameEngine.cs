@@ -66,8 +66,6 @@ namespace Hippopotamus.Engine.Core
             {
                 GameLoop.Trigger(GameLoopType.FixedUpdate, new GameLoopEventArgs(deltaTime, FixedTimeStep, spriteBatch));
                 unprocessedTimeSteps -= FixedTimeStep;
-
-                ComponentPool.Debug();
             }
         }
 

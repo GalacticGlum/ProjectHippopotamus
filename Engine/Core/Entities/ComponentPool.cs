@@ -49,14 +49,5 @@ namespace Hippopotamus.Engine.Core.Entities
 
             return component;
         }
-
-        public static void Debug()
-        {
-            //foreach (KeyValuePair<Type, Queue<Component>> pair in pools)
-            //{
-            //    Logger.Log("ComponentPool", $"{pair.Value.Count} {pair.Key.Name}");
-            //}
-            Logger.Log("ComponentPool", $"{AllocationCount}");
-        }
     }
 }

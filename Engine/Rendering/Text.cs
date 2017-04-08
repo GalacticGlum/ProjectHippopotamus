@@ -12,6 +12,11 @@ namespace Hippopotamus.Engine.Rendering
 
         public Text()
         {
+            Reset();
+        }
+
+        public sealed override void Reset()
+        {
             Font = "Arial";
             Message = string.Empty;
             Colour = Color.White;

@@ -10,7 +10,8 @@ namespace Hippopotamus
     {
         private float timer;
         public override void Initialize()
-        { 
+        {
+            Logger.Verbosity = LoggerVerbosity.None;
             Context.IsMouseVisible = true;
 
             EntitySystemManager.Register<WorldSystem>();
@@ -18,8 +19,9 @@ namespace Hippopotamus
             test.Transform.Position = new Vector2(101376, 1024);
             test.Transform.Size = new Vector2(50);
 
-            test.AddComponent(new SpriteRenderer(Context.Content.Load<Texture2D>("Tiles/Grass")) { Colour = Color.Pink, Layer = 0 });
-;        }
+            SpriteRenderer spriteRenderer = test.AddComponent<SpriteRenderer>();
+            spriteRenderer.Texture = Context.Content.Load<Texture2D>("Tiles/Grass");
+        }
 
         public override void Update(GameLoopEventArgs args)
         {          

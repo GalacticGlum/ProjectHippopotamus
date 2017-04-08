@@ -22,5 +22,10 @@ namespace Hippopotamus.Engine.Physics
         {
             Body.Position = ConvertUnits.ToSimUnits(Transform.Position);
         }
+
+        public override void Reset()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

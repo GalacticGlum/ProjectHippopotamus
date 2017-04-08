@@ -75,13 +75,12 @@ namespace Hippopotamus.Engine.Core
 
         private static readonly HashSet<string> usedEntityNames;
         private static readonly Dictionary<Type, HashSet<Entity>> groups;
-
         private const int entityCacheCap = 16384;
 
         static EntityPool()
         {
             Entities = new HashSet<Entity>();
-            CachedEntities = new Stack<Entity>();
+            CachedEntities = new Stack<Entity>();         
 
             usedEntityNames = new HashSet<string>();
             groups = new Dictionary<Type, HashSet<Entity>>();

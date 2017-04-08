@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Bridge\Lua.cs" />
     <Compile Include="Core\Entities\Component.cs" />
+    <Compile Include="Core\Entities\ComponentPool.cs" />
     <Compile Include="Core\Entities\EntityFilter.cs" />
     <Compile Include="Core\Entities\EntitySystem.cs" />
     <Compile Include="Core\Entities\EntitySystemManager.cs" />

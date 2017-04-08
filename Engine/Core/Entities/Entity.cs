@@ -109,7 +109,25 @@ namespace Hippopotamus.Engine.Core
             State = State == EntityState.Enabled ? EntityState.Disabled : EntityState.Enabled;
         }
 
-        public Component AddComponent(Component component)
+        public T AddComponent<T>() where T : Component, new()
+        {
+            T component = ComponentPool.Get<T>();
+            if (!IsFree()) return null;
+            if (HasComponent(component.GetType()))
+            {
+                throw new ComponentExistsException(this, component.GetType());
+            }
+
+            component.Entity = this;
+            Components.Add(component.GetType(), component);
+
+            EntityPool.OnComponentAdded(component);
+            component.Start();
+
+            return component;
+        }
+
+        internal Component AddComponentUsingInstance(Component component)
         {
             if (!IsFree()) return null;
             if (HasComponent(component.GetType()))
@@ -117,19 +135,12 @@ namespace Hippopotamus.Engine.Core
                 throw new ComponentExistsException(this, component.GetType());
             }
 
-            component.Entity = this;    
+            component.Entity = this;
             Components.Add(component.GetType(), component);
-     
+
             EntityPool.OnComponentAdded(component);
             component.Start();
 
-            return component;
-        }
-
-        public T AddComponent<T>() where T : Component, new()
-        {
-            T component = new T();
-            AddComponent(component);
             return component;
         }
 
@@ -138,7 +149,7 @@ namespace Hippopotamus.Engine.Core
             if (!IsFree()) return;
             foreach (Component component in components)
             {
-                AddComponent(component);
+                AddComponentUsingInstance(component);
             }
         }
 
@@ -147,7 +158,7 @@ namespace Hippopotamus.Engine.Core
             if (!IsFree()) return;
             foreach (Component component in components)
             {
-                AddComponent(component);
+                AddComponentUsingInstance(component);
             }
         }
 
@@ -170,6 +181,8 @@ namespace Hippopotamus.Engine.Core
             }
 
             Component component = GetComponent(componentType);
+            ComponentPool.Reclaim(componentType, component);
+
             Components.Remove(componentType);
             EntityPool.OnComponentRemoved(component);
         }
@@ -181,9 +194,7 @@ namespace Hippopotamus.Engine.Core
                 return default(T);
             }
 
-            Component component;
-            if (Components.TryGetValue(typeof(T), out component)) return (T) component;
-
+            if (Components.TryGetValue(typeof(T), out Component component)) return (T)component;
             throw new ComponentNotFoundException(this, typeof(T));
         }
 
@@ -203,31 +214,6 @@ namespace Hippopotamus.Engine.Core
             if (Components.TryGetValue(componentType, out component)) return component;
 
             throw new ComponentNotFoundException(this, componentType);
-        }
-
-        /// <summary>
-        /// Moves a component from this entity
-        ///  to another.
-        /// If the destination object or component is null then throw a ComponentNotFoundException.
-        /// Otherwise, add the component to the destination object and remove it from this.
-        /// </summary>
-        /// <param name="component"></param>
-        /// <param name="destination"></param>
-        public void TransferComponent(Component component, Entity destination)
-        {
-            if (!IsFree())
-            {
-                return;
-            }
-
-            Type componentType = component.GetType();
-            if (component == null && !HasComponent(componentType))
-            {
-                throw new ComponentNotFoundException(this, componentType);
-            }
-
-            destination.AddComponent(component);
-            Components.Remove(component.GetType());
         }
 
         public bool HasComponent<TComponent>() where TComponent : Component

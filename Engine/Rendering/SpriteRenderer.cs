@@ -10,9 +10,14 @@ namespace Hippopotamus.Engine.Rendering
         public Texture2D Texture { get; set; }
         public int Layer { get; set; }
 
-        public SpriteRenderer(Texture2D texture)
+        public SpriteRenderer()
         {
-            Texture = texture;
+            Reset();
+        }
+
+        public sealed override void Reset()
+        {
+            Texture = null;
             Colour = Color.White;
         }
     }

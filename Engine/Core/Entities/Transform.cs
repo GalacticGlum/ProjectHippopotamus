@@ -21,9 +21,7 @@ namespace Hippopotamus.Engine.Core.Entities
 
         public Transform()
         {
-            Position = Vector2.Zero;
-            Size = Vector2.One;
-            Rotation = 0.0f;
+            Reset();
         }
 
         public void Translate(float x, float y) { Translate(new Vector2(x, y)); }
@@ -41,6 +39,13 @@ namespace Hippopotamus.Engine.Core.Entities
         public void Scale(Vector2 size)
         {
             Size += size;
+        }
+
+        public sealed override void Reset()
+        {
+            Position = Vector2.Zero;
+            Size = Vector2.One;
+            Rotation = 0.0f;
         }
     }
 }

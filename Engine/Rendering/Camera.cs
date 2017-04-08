@@ -13,7 +13,7 @@ namespace Hippopotamus.Engine.Rendering
             {
                 if (main == null)
                 {
-                    EntityPool.Create("Main Camera").AddComponent(new Camera(GameEngine.Context.GraphicsDevice.Viewport));
+                    EntityPool.Create("Main Camera").AddComponent<Camera>();
                 }
 
                 return main;
@@ -29,17 +29,23 @@ namespace Hippopotamus.Engine.Rendering
                                       Matrix.CreateScale(OrthographicSize, OrthographicSize, 1) *
                                       Matrix.CreateTranslation(new Vector3(Origin, 1));
 
-        public Camera(Viewport viewport)
+        public Camera()
         {
-            OrthographicSize = 1;
-            Origin  = new Vector2(viewport.Width / 2.0f, viewport.Height / 2.0f);
-
-            main = this;
+            Reset();
         }
 
         public Vector2 ScreenToWorldPoint(Vector2 screenPoint)
         {
             return Transform.Position + screenPoint;
+        }
+
+        public sealed override void Reset()
+        {
+            OrthographicSize = 1;
+            Origin = new Vector2(GameEngine.Context.GraphicsDevice.Viewport.Width / 2.0f, 
+                GameEngine.Context.GraphicsDevice.Viewport.Height / 2.0f);
+
+            main = this;
         }
     }
 }

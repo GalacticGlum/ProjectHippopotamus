@@ -32,7 +32,7 @@ namespace Hippopotamus.World
 
                     Entity entity = EntityPool.Create($"Chunk ({args.Chunk.Position.X}, {args.Chunk.Position.Y}): Tile ({x}, {y})");
                     entity.Transform.Position = new Vector2((args.Chunk.Position.X * Chunk.Size + x) * Tile.Size, (args.Chunk.Position.Y * Chunk.Size + y) * Tile.Size);
-                    entity.AddComponent(new SpriteRenderer(null));
+                    entity.AddComponent<SpriteRenderer>();
 
                     tileEntities.Add(tileAt, entity);
                     OnTileChanged(this, new TileEventArgs(tileAt));

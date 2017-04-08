@@ -1,4 +1,5 @@
-﻿using Hippopotamus.Engine.Core.Messaging;
+﻿using Hippopotamus.Engine.Core.Entities;
+using Hippopotamus.Engine.Core.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -65,6 +66,8 @@ namespace Hippopotamus.Engine.Core
             {
                 GameLoop.Trigger(GameLoopType.FixedUpdate, new GameLoopEventArgs(deltaTime, FixedTimeStep, spriteBatch));
                 unprocessedTimeSteps -= FixedTimeStep;
+
+                ComponentPool.Debug();
             }
         }
 

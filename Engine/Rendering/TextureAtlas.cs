@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Utilities;
 using Microsoft.Xna.Framework;
@@ -8,39 +10,53 @@ namespace Hippopotamus.Engine.Rendering
 {
     public class TextureAtlas
     {
-        private readonly Color[] atlasPixels;
-        private readonly Vector2i atlasSize;
+        private readonly Texture2D atlas;
 
-        private readonly Dictionary<Vector2i, Texture2D> textures;
+        private readonly Dictionary<string, Texture2D> textures;
         private readonly Vector2i individualTextureSize;
 
-        public TextureAtlas(string filePath, Vector2i individualTextureSize)
+        public TextureAtlas(string filePath)
         {
-            this.individualTextureSize = individualTextureSize;
-            textures = new Dictionary<Vector2i, Texture2D>();
+            textures = new Dictionary<string, Texture2D>();
 
-            // Copy our pixel data to a colour array
-            Texture2D texture = GameEngine.Context.Content.Load<Texture2D>(filePath);
-            atlasPixels = new Color[texture.Width * texture.Height];
-            texture.GetData(atlasPixels);
+            filePath = Path.Combine("Content", filePath);
+            using (XmlReader reader = new XmlTextReader(new StreamReader(filePath)))
+            {
+                if (!reader.ReadToDescendant("TextureAtlas")) return;
 
-            atlasSize = new Vector2i(texture.Width, texture.Height);
+                atlas = GameEngine.Context.Content.Load<Texture2D>(reader.GetAttribute("FilePath"));
+                individualTextureSize = new Vector2i(int.Parse(reader.GetAttribute("TextureWidth")), int.Parse(reader.GetAttribute("TextureHeight")));
+
+                if (!reader.ReadToDescendant("Texture")) return;
+
+
+                do
+                {
+                    string name = reader.GetAttribute("Name");
+                    int x = int.Parse(reader.GetAttribute("X"));
+                    int y = int.Parse(reader.GetAttribute("Y"));
+
+                    Load(name, x, y);
+                }
+                while (reader.ReadToNextSibling("Texture"));
+            }
         }
 
-        public Texture2D Get(int x, int y)
+        private void Load(string name, int x, int y)
         {
-            return Get(new Vector2i(x, y));
+            if (textures.ContainsKey(name)) return;
+
+            Texture2D texture = TextureUtilities.GetCroppedTexture(atlas, new Rectangle(x * individualTextureSize.X, y * individualTextureSize.Y,
+                                                                                        individualTextureSize.X, individualTextureSize.Y));
+            textures.Add(name, texture);
         }
 
-        public Texture2D Get(Vector2i position)
+        public Texture2D Get(string name)
         {
-            if (textures.ContainsKey(position)) return textures[position];
+            if (textures.ContainsKey(name)) return textures[name];
 
-            Color[] pixels = TextureUtilities.GetTextureData(atlasPixels, atlasSize.Y,new Rectangle(position.X, position.Y, individualTextureSize.X, individualTextureSize.Y));
-            Texture2D texture = new Texture2D(GameEngine.Context.GraphicsDevice, individualTextureSize.X, individualTextureSize.Y);
-            texture.SetData(pixels);
-
-            return texture;
+            Logger.Log("Engine", $"Could not find texture of name: {name} in atlas.",  LoggerVerbosity.Warning);
+            return null;
         }
     }
 }

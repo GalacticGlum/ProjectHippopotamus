@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using Hippopotamus.Engine;
+using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.World
 {
@@ -17,6 +19,9 @@ namespace Hippopotamus.World
     {
         public const int Size = 32;
 
+        public Vector2i Position { get; }
+        public Chunk Chunk { get; }
+
         private TileType type;
         public TileType Type
         {
@@ -28,12 +33,15 @@ namespace Hippopotamus.World
 
                 if (oldTileType == type) return;
                 World.Current.OnTileChanged(new TileEventArgs(this));
+                UpdateNeighbouring();
             }
         }
 
-        public Tile(TileType type)
+        public Tile(TileType type, Vector2 position, Chunk chunk)
         {
             Type = type;
+            Position = new Vector2i((int)position.X, (int)position.Y);
+            Chunk = chunk;
         }
 
         public void Save(BinaryWriter writer)
@@ -44,6 +52,43 @@ namespace Hippopotamus.World
         public void Load(BinaryReader reader)
         {
             Type = (TileType) reader.ReadByte();
+        }
+
+        private void UpdateNeighbouring()
+        {
+            foreach (Tile neighbour in GetNeighbours())
+            {
+                if (neighbour != null)
+                {
+                    World.Current.OnTileChanged(new TileEventArgs(neighbour));
+                }
+            }
+        }
+
+        public Tile[] GetNeighbours(bool diagonal = false)
+        {
+            Tile[] neighbours = !diagonal ? new Tile[4] : new Tile[8];
+            Tile tileAt = World.Current.GetTileAt(Position.X, Position.Y + 1);
+            neighbours[0] = tileAt;
+            tileAt = World.Current.GetTileAt(Position.X + 1, Position.Y);
+            neighbours[1] = tileAt;
+            tileAt = World.Current.GetTileAt(Position.X, Position.Y - 1);
+            neighbours[2] = tileAt;
+            tileAt = World.Current.GetTileAt(Position.X - 1, Position.Y);
+            neighbours[3] = tileAt;
+
+            if (!diagonal) return neighbours;
+
+            tileAt = World.Current.GetTileAt(Position.X + 1, Position.Y + 1);
+            neighbours[4] = tileAt;
+            tileAt = World.Current.GetTileAt(Position.X + 1, Position.Y - 1);
+            neighbours[5] = tileAt;
+            tileAt = World.Current.GetTileAt(Position.X - 1, Position.Y - 1);
+            neighbours[6] = tileAt;
+            tileAt = World.Current.GetTileAt(Position.X - 1, Position.Y + 1);
+            neighbours[7] = tileAt;
+
+            return neighbours;
         }
     }
 }

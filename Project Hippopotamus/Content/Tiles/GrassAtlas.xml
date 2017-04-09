@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas FilePath="Tiles/GrassAtlas" TextureWidth="32" TextureHeight="32">
+    <Texture Name="Grass_" X="1" Y="0" />
+    <Texture Name="Grass_E" X="1" Y="5" />
+    <Texture Name="Grass_ES" X="0" Y="1" />
+    <Texture Name="Grass_ESW" X="1" Y="1" />
+    <Texture Name="Grass_EW" X="2" Y="5" />
+
+    <Texture Name="Grass_N" X="0" Y="7" />
+    <Texture Name="Grass_NE" X="0" Y="3" />
+    <Texture Name="Grass_NES" X="0" Y="2" />
+    <Texture Name="Grass_NESW" X="1" Y="2" />
+    <Texture Name="Grass_NEW" X="1" Y="3" />
+    <Texture Name="Grass_NS" X="0" Y="6" />
+    <Texture Name="Grass_NSW" X="2" Y="2" />
+    <Texture Name="Grass_NW" X="2" Y="3" />
+
+    <Texture Name="Grass_S" X="0" Y="5" />
+    <Texture Name="Grass_SW" X="2" Y="1" />
+
+    <Texture Name="Grass_W" X="3" Y="5" />
+</TextureAtlas>

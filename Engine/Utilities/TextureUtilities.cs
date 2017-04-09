@@ -1,21 +1,19 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Hippopotamus.Engine.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus.Engine.Utilities
 {
     public static class TextureUtilities
     {
-        public static Color[] GetTextureData(Color[] texturePixelData, int textureWidth, Rectangle destination)
+        public static Texture2D GetCroppedTexture(Texture2D texture, Rectangle source)
         {
-            Color[] pixels = new Color[destination.Width * destination.Height];
-            for (int x = 0; x < destination.Width; x++)
-            {
-                for (int y = 0; y < destination.Height; y++)
-                {
-                    pixels[x + y * destination.Width] = texturePixelData[x + destination.X + (y + destination.Y) * textureWidth];
-                }
-            }
+            Texture2D cropTexture = new Texture2D(GameEngine.Context.GraphicsDevice, source.Width, source.Height);
+            Color[] pixels = new Color[source.Width * source.Height];
+            texture.GetData(0, source, pixels, 0, pixels.Length);
+            cropTexture.SetData(pixels);
 
-            return pixels;
+            return cropTexture;
         }
     }
 }

@@ -34,6 +34,9 @@ namespace Hippopotamus
             InputManager.RegisterInputMapping("InputSystem: Mouse Right", MappedInputModifier.None, MouseButton.Right);
             InputManager.RegisterMouseInputAction("InputSystem: Mouse Right", MappedInputType.Down, (sender, args) => PlaceTile(TileType.Empty));
 
+            InputManager.RegisterInputMapping("Simulate cave", MappedInputModifier.Control, MouseButton.Right);
+            InputManager.RegisterMouseInputAction("Simulate cave", MappedInputType.Down, (sender, args) => MakeCave());
+
             InputManager.RegisterInputMapping("SpeedUp", MappedInputModifier.None, Keys.Add);
             InputManager.RegisterKeyInputAction("SpeedUp", MappedInputType.Down, (sender, args) => speed += 10);
 
@@ -65,6 +68,19 @@ namespace Hippopotamus
 
             if (tile == null) return;
             tile.Type = type;
+        }
+
+        private static void MakeCave()
+        {
+            Vector2 mousePosition = Camera.Main.ScreenToWorldPoint(Input.MousePosition);
+
+            int x = (int)Math.Floor(mousePosition.X / Tile.Size + 0.5f);
+            int y = (int)Math.Floor(mousePosition.Y / Tile.Size + 0.5f);
+
+            Tile tile = World.World.Current.GetTileAt(x, y);
+
+            if (tile == null) return;
+            TerrainCaveGenerator.Generate(tile);
         }
     }
 }

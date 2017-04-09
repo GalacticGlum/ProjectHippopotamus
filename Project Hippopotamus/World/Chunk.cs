@@ -44,7 +44,7 @@ namespace Hippopotamus.World
             {
                 for (int y = 0; y < Size; y++)
                 {
-                    tiles[x, y] = new Tile(TileType.Empty);
+                    tiles[x, y] = new Tile(TileType.Empty, WorldPosition + new Vector2(x, y), this);
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace Hippopotamus.World
         public Tile GetTileAt(int x, int y)
         {
             if (x < 0 || x >= Size || y < 0 || y >= Size) return null;
-            return tiles[x, y];
+            return tiles?[x, y];
         }
 
         public void SetTileAt(int x, int y, Tile value)

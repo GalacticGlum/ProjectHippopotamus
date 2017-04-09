@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Hippopotamus.Engine;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus.World
 {
     public class TileGraphicSystem : EntitySystem
     {
         private readonly Dictionary<Tile, Entity> tileEntities;
-        private readonly Texture2D grassTexture;
+        private readonly TextureAtlas grassAtlas;
         private readonly string genericName;
 
         public TileGraphicSystem()
         {
-            grassTexture = GameEngine.Context.Content.Load<Texture2D>("Tiles/Grass");
+            grassAtlas = new TextureAtlas("Tiles/GrassAtlas.xml");
             tileEntities = new Dictionary<Tile, Entity>();
 
             World.Current.ChunkLoaded += OnChunkLoaded;
@@ -72,9 +73,42 @@ namespace Hippopotamus.World
                     entity.GetComponent<SpriteRenderer>().Texture = null;
                     break;
                 case TileType.Grass:
-                    entity.GetComponent<SpriteRenderer>().Texture = grassTexture;
+                    entity.GetComponent<SpriteRenderer>().Texture = grassAtlas.Get(GetSpriteNameForTile(args.Tile));
                     break;
             }
+        }
+
+        public string GetSpriteNameForTile(Tile tile)
+        {
+            string spriteName = Enum.GetName(tile.Type.GetType(), tile.Type) + "_";
+            int x = tile.Position.X;
+            int y = tile.Position.Y;
+
+            Tile tileAt = World.Current.GetTileAt(x, y - 1);
+            if (tileAt != null && tileAt.Type == tile.Type)
+            {
+                spriteName += "N";
+            }
+
+            tileAt = World.Current.GetTileAt(x + 1, y);
+            if (tileAt != null && tileAt.Type == tile.Type)
+            {
+                spriteName += "E";
+            }
+
+            tileAt = World.Current.GetTileAt(x, y + 1);
+            if (tileAt != null && tileAt.Type == tile.Type)
+            {
+                spriteName += "S";
+            }
+
+            tileAt = World.Current.GetTileAt(x - 1, y);
+            if (tileAt != null && tileAt.Type == tile.Type)
+            {
+                spriteName += "W";
+            }
+
+            return spriteName;
         }
     }
 }

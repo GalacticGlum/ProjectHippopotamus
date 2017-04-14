@@ -28,8 +28,6 @@ namespace Hippopotamus.Engine.Rendering
                 individualTextureSize = new Vector2i(int.Parse(reader.GetAttribute("TextureWidth")), int.Parse(reader.GetAttribute("TextureHeight")));
 
                 if (!reader.ReadToDescendant("Texture")) return;
-
-
                 do
                 {
                     string name = reader.GetAttribute("Name");

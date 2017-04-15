@@ -6,8 +6,12 @@ namespace Hippopotamus.Engine.Core
 {
     public class GameEngine : Game
     {
-        public static GameEngine Context{ get; private set; }
+        public static GameEngine Context { get; private set; }
         public static float FixedTimeStep { get; set; } = 1.0f / 120.0f;
+
+        public Viewport Viewport => GraphicsDevice.Viewport;
+        public int Width => Viewport.Width;
+        public int Height => Viewport.Height;
 
         public GameTimer TimeStats { get; private set; }
         public float FramesPerSecond => TimeStats.FramesPerSecond;

@@ -39,6 +39,16 @@ namespace Hippopotamus.Engine.Rendering
             args.SpriteBatch.End();
         }
 
+        public static void BeginDraw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(transformMatrix: Camera.Main.ViewMatrix, samplerState: SamplerState.PointClamp);
+        }
+
+        public static void EndDraw(SpriteBatch spriteBatch)
+        {
+           spriteBatch.End();
+        }
+
         private static void DrawSprite(SpriteBatch spriteBatch, SpriteRenderer spriteRenderer)
         {
             if (spriteRenderer?.Texture == null) return;

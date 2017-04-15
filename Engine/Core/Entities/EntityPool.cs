@@ -30,6 +30,8 @@ namespace Hippopotamus.Engine.Core
         public static HashSet<Entity> Entities { get; }
         public static Stack<Entity> CachedEntities { get; }
 
+        public static int Count => Entities.Count;
+
         public static event EntityChangedEventHandler EntityAdded;
         internal static void OnEntityAdded(Entity entity) { EntityAdded?.Invoke(new EntityChangedEventArgs(entity)); }
 

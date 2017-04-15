@@ -11,7 +11,6 @@ namespace Hippopotamus.Engine.Rendering
     public class TextureAtlas
     {
         private readonly Texture2D atlas;
-
         private readonly Dictionary<string, Texture2D> textures;
         private readonly Vector2i individualTextureSize;
 

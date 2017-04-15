@@ -1,8 +1,5 @@
 ﻿using Hippopotamus.Engine.Core;
-using Hippopotamus.Engine.Rendering;
 using Hippopotamus.World;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus
 {

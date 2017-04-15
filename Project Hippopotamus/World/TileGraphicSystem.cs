@@ -1,29 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using Hippopotamus.Engine;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Hippopotamus.World
 {
     public class TileGraphicSystem : EntitySystem
     {
-        private readonly Dictionary<Tile, Entity> tileEntities;
+        private readonly Dictionary<Tile, Texture2D> tiles;
         private readonly TextureAtlas grassAtlas;
-        private readonly string genericName;
 
         public TileGraphicSystem()
         {
             grassAtlas = new TextureAtlas("Tiles/GrassAtlas.xml");
-            tileEntities = new Dictionary<Tile, Entity>();
+            tiles = new Dictionary<Tile, Texture2D>();
 
             World.Current.ChunkLoaded += OnChunkLoaded;
             World.Current.ChunkUnloaded += OnChunkUnloaded;
             World.Current.TileChanged += OnTileChanged;
+        }
 
-            genericName = "Tile";
+        public override void Draw(GameLoopEventArgs args)
+        {
+            RenderSystem.BeginDraw(args.SpriteBatch);
+            foreach (KeyValuePair<Tile, Texture2D> pair in tiles)
+            {
+                if (pair.Key == null || pair.Value == null) continue;
+                args.SpriteBatch.Draw(pair.Value, pair.Key.Position.ToVector2() * Tile.Size, null, Color.White, 0,
+                    new Vector2(pair.Value.Width / 2.0f, pair.Value.Height / 2.0f), Vector2.One, SpriteEffects.None, 0);
+
+            }
+
+            RenderSystem.EndDraw(args.SpriteBatch);
         }
 
         private void OnChunkLoaded(object sender, ChunkEventArgs args)
@@ -33,13 +44,9 @@ namespace Hippopotamus.World
                 for (int y = 0; y < Chunk.Size; y++)
                 {
                     Tile tileAt = args.Chunk.GetTileAt(x, y);
+                    if(tileAt == null) continue;
 
-                    Entity entity = EntityPool.Create(string.IsInterned(genericName) ?? genericName);
-
-                    entity.Transform.Position = new Vector2((args.Chunk.Position.X * Chunk.Size + x) * Tile.Size, (args.Chunk.Position.Y * Chunk.Size + y) * Tile.Size);
-                    entity.AddComponent<SpriteRenderer>();
-
-                    tileEntities.Add(tileAt, entity);
+                    tiles.Add(tileAt, null);
                     OnTileChanged(this, new TileEventArgs(tileAt));
                 }
             }
@@ -52,28 +59,24 @@ namespace Hippopotamus.World
                 for (int y = 0; y < Chunk.Size; y++)
                 {
                     Tile tileAt = args.Chunk.GetTileAt(x, y);
-                    if (!tileEntities.ContainsKey(tileAt)) continue;
+                    if (tileAt == null || !tiles.ContainsKey(tileAt)) continue;
 
-                    tileEntities[tileAt].Destroy();
-                    tileEntities.Remove(tileAt);
+                    tiles.Remove(tileAt);
                 }
             }
         }
 
         private void OnTileChanged(object sender, TileEventArgs args)
         {
-            if (tileEntities.ContainsKey(args.Tile) == false) return;
-
-            Entity entity = tileEntities[args.Tile];
-            if (entity == null) return;
+            if (tiles.ContainsKey(args.Tile) == false) return;
 
             switch (args.Tile.Type)
             {
                 case TileType.Empty:
-                    entity.GetComponent<SpriteRenderer>().Texture = null;
+                    tiles[args.Tile] = null;
                     break;
                 case TileType.Grass:
-                    entity.GetComponent<SpriteRenderer>().Texture = grassAtlas.Get(GetSpriteNameForTile(args.Tile));
+                    tiles[args.Tile] = grassAtlas.Get(GetSpriteNameForTile(args.Tile));
                     break;
             }
         }

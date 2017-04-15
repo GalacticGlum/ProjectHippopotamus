@@ -45,6 +45,9 @@ namespace Hippopotamus
 
             InputManager.RegisterInputMapping("Position logger", MappedInputModifier.Control, MouseButton.Left);
             InputManager.RegisterMouseInputAction("Position logger", MappedInputType.Down, (sender, args) => Logger.Log("InputSystem", Camera.Main.Transform.Position.ToString()));
+
+            InputManager.RegisterInputMapping("Reset world", MappedInputModifier.Control, Keys.R);
+            InputManager.RegisterKeyInputAction("Reset world", MappedInputType.Down, (sender, args) => World.World.Current.Generate());
         }
 
         public override void Update(GameLoopEventArgs args)

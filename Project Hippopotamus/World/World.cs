@@ -94,7 +94,7 @@ namespace Hippopotamus.World
             }
         }
 
-        public void AddGenerator(TerrainWorldGenerator worldGenerator)
+        public void AddGenerator(IWorldGenerator worldGenerator)
         {
             worldGeneratorPasses.Add(worldGenerator);
         }

@@ -1,5 +1,7 @@
 ﻿namespace Hippopotamus.World
 {
+    // TODO: Make WorldData affect the world (even) after it has been loaded. 
+    // This can be done by telling the world to reload the affected chunks (not the worst idea) or by telling the world that a specific tile has changed (*).
     public class WorldData
     {
         public TileType[,] Tiles { get; set; }

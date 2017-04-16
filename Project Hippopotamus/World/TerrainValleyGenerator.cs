@@ -1,57 +1,119 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Hippopotamus.Engine;
 
 namespace Hippopotamus.World
 {
-    public static class TerrainValleyGenerator //: IWorldGenerator
+    public class TerrainValleyGenerator : IWorldGenerator
     {
+        private const int minimumCanyonSteps = 1;
+        private const int maximumCanyonSteps = 5;
+
+        private const int minimumCanyonSize = 5;
+        private const int maximumCanyonSize = 15;
+
+        private const int minimumCanyonDistance = 400;
+        private const float canyonChance = 0.25f;
+
         private const int minimumValleySteps = 1;
-        private const int maximumValleySteps = 5;
+        private const int maximumValleySteps = 2;
 
-        private static readonly Random random;
+        private const int minimumValleySize = 2;
+        private const int maximumValleySize = 6;
 
-        static TerrainValleyGenerator()
+        private const int minimumValleyDistance = 200;
+        private const float valleyChance = 0.4f;
+
+        private Random random;
+
+        public TerrainValleyGenerator()
         {
             random = new Random();
         }
 
-        public static void Generate()
+        public void Generate(WorldData worldData)
         {
-            
+            GenerateValleys(worldData);
+            GenerateCanyons(worldData);
         }
 
-        private static void GenerateValley()
+        private void GenerateValleys(WorldData worldData)
         {
-            int x = random.Next(0, World.Current.WidthInTiles);
-            Tile spotTile = null;
-
-            for (int y = 0; y < World.Current.HeightInTiles; y++)
+            int distanceFromLast = 0;
+            for (int x = 0; x < worldData.Width; x++)
             {
-                if (spotTile != null) continue;
-
-                Tile tileAt = World.Current.GetTileAt(x, y);
-                if (tileAt.Type != TileType.Empty)
+                if (distanceFromLast > minimumValleyDistance && random.NextDouble() < valleyChance)
                 {
-                    spotTile = tileAt;
+                    distanceFromLast = 0;
+                    GenerateValley(x, worldData);
+                }
+                else
+                {
+                    distanceFromLast++;
                 }
             }
-
-            if (spotTile == null) return;
-            TerrainUtilities.StampCircle(random.Next(5, 10), World.Current, spotTile, TileType.Empty);
         }
 
-        //public void Reseed()
-        //{
-        //    random = new Random();
-        //}
+        private void GenerateValley(int startX, WorldData worldData)
+        {
+            int steps = random.Next(minimumValleySteps, maximumValleySteps);
+            int currentX = startX;
+            for (int i = 0; i < steps; i++)
+            {
+                int radius = random.Next(minimumValleySize, maximumValleySize);
 
-        //public void Reseed(int seed)
-        //{
-        //    random = new Random(seed);
-        //}
+                int pivot = random.Next(-radius, radius);
+                int x = currentX + pivot;
+
+                Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
+                TerrainUtilities.GenerateCircle(radius, worldData, spot, TileType.Empty);
+
+                currentX = x;
+            }
+        }
+
+        private void GenerateCanyons(WorldData worldData)
+        {
+            int distanceFromLast = 0;
+            for (int x = 0; x < worldData.Width; x++)
+            {
+                if (distanceFromLast > minimumCanyonDistance && random.NextDouble() < canyonChance)
+                {
+                    distanceFromLast = 0;
+                    GenerateCanyon(x, worldData);
+                }
+                else
+                {
+                    distanceFromLast++;
+                }
+            }
+        }
+
+        private void GenerateCanyon(int startX, WorldData worldData)
+        {
+            int steps = random.Next(minimumCanyonSteps, maximumCanyonSteps);
+            int currentX = startX;
+            for (int i = 0; i < steps; i++)
+            {
+                int radius = random.Next(minimumCanyonSize, maximumCanyonSize);
+
+                int pivot = random.Next(-radius, radius);
+                int x = currentX + pivot;
+
+                Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
+                TerrainUtilities.GenerateCircle(radius, worldData, spot, TileType.Empty);
+
+                currentX = x;
+            }
+        }
+
+        public void Reseed()
+        {
+            random = new Random();
+        }
+
+        public void Reseed(int seed)
+        {
+            random = new Random(seed);
+        }
     }
 }

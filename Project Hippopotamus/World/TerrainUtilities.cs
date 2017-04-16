@@ -5,6 +5,14 @@ namespace Hippopotamus.World
 {
     public static class TerrainUtilities
     {
+        /// <summary>
+        /// Creates a circle with <paramref name="radius"/> around a given <paramref name="tile"/> with <paramref name="type"/>. 
+        /// Use this to affect the <paramref name="world"/>.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="world"></param>
+        /// <param name="tile"></param>
+        /// <param name="type"></param>
         public static void StampCircle(int radius, World world, Tile tile, TileType type)
         {
             for (int x = -radius; x <= radius; x++)
@@ -19,6 +27,14 @@ namespace Hippopotamus.World
             }
         }
 
+        /// <summary>
+        /// Creates a circle with <paramref name="radius"/> around a given <paramref name="tilePosition"/> with <paramref name="type"/>. 
+        /// Use this for terrain generation.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="worldData"></param>
+        /// <param name="tilePosition"></param>
+        /// <param name="type"></param>
         public static void GenerateCircle(int radius, WorldData worldData, Vector2i tilePosition, TileType type)
         {
             for (int x = -radius; x <= radius; x++)
@@ -31,6 +47,49 @@ namespace Hippopotamus.World
                     worldData.SetTileTypeAt(tilePosition.X + x, tilePosition.Y + y, type);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the position of the uppermost tile that matches the <paramref name="condition"/>.
+        /// Use this for <paramref name="world"/>.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="world"></param>
+        /// <param name="condition"></param>
+        /// <returns>The tile or null if none found.</returns>
+        public static Tile FindUpperMostTile(int x, World world, Func<TileType, bool> condition)
+        {
+            for (int y = 0; y < world.HeightInTiles; y++)
+            {
+                Tile tileAt = world.GetTileAt(x, y);
+                if (condition(tileAt.Type))
+                {
+                    return tileAt;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the position of the uppermost tile that matches the <paramref name="condition"/>.
+        /// Use this for terrain generation.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="worldData"></param>
+        /// <param name="condition"></param>
+        /// <returns>The tile or (-1, -1) if none found.</returns>
+        public static Vector2i FindUpperMostTile(int x, WorldData worldData, Func<TileType, bool> condition)
+        {
+            for (int y = 0; y < worldData.Height; y++)
+            {
+                if (condition(worldData.GetTileTypeAt(x, y)))
+                {
+                    return new Vector2i(x, y);
+                }
+            }
+
+            return new Vector2i(-1, -1);
         }
     }
 }

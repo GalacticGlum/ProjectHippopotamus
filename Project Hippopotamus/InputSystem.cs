@@ -80,11 +80,11 @@ namespace Hippopotamus
 
             int x = (int)Math.Floor(mousePosition.X / Tile.Size + 0.5f);
             int y = (int)Math.Floor(mousePosition.Y / Tile.Size + 0.5f);
-
+            
             Tile tile = World.World.Current.GetTileAt(x, y);
 
             if (tile == null) return;
-            TerrainValleyGenerator.Generate(tile);
+            //5TerrainValleyGenerator.Generate(x);
         }
     }
 }

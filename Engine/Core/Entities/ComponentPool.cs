@@ -49,5 +49,28 @@ namespace Hippopotamus.Engine.Core.Entities
 
             return component;
         }
+
+        internal static Component Get(Type componentType)
+        {
+            if (componentType.BaseType != typeof(Component)) return null;
+            if (!pools.ContainsKey(componentType))
+            {
+                pools.Add(componentType, new Queue<Component>());
+            }
+
+            Component component;
+            if (pools[componentType].Count > 0)
+            {
+                component = pools[componentType].Dequeue();
+                component.Reset();
+            }
+            else
+            {
+                component = (Component)Activator.CreateInstance(componentType);
+                AllocationCount++;
+            }
+
+            return component;
+        }
     }
 }

@@ -23,96 +23,20 @@ namespace Hippopotamus.World
 
         public static void Generate(Tile tile)
         {
-            bool[,] grid = new bool[size, size];
-            for (int x = 0; x < size; x++)
+
+            // Currently generates a circle around a given tile with a random radius from 0 to 3
+            int radius = random.Next(0, 3);
+            TileType type = random.NextDouble() > 0.8 ? TileType.Grass : TileType.Empty;
+
+            for (int x = -radius; x <= radius; x++)
             {
-                for (int y = 0; y < size; y++)
+                for (int y = -radius; y <= radius; y++)
                 {
-                    if (random.NextDouble() < 0.35)
-                    {
-                        grid[x, y] = true;
-                    }
+                    double distance = Math.Sqrt(x * x + y * y);
+                    if (!(distance <= radius)) continue;              
+                    World.Current.GetTileAt(tile.Position.X + x, tile.Position.Y + y).Type = type;
                 }
             }
-
-            //for (int i = 0; i < steps; i++)
-            //{
-            //    grid = SimulateCellularAutomata(grid);
-            //}
-
-            for (int offsetX = 0; offsetX < size; offsetX++)
-            {
-                for (int offsetY = 0; offsetY < size; offsetY++)
-                {
-                    int x = tile.Position.X + offsetX;
-                    int y = tile.Position.Y + offsetY;
-
-                    Tile tileAt = World.Current.GetTileAt(x, y);
-                    if (tileAt == null) return;
-                    tileAt.Type = grid[offsetX, offsetY] ? TileType.Grass : TileType.Empty;
-                }
-            }
-        }
-
-        private static bool[,] SimulateCellularAutomata(bool[,] grid)
-        {
-            bool[,] simulatedGrid = grid;
-            for (int x = 0; x < size; x++)
-            {
-                for (int y = 0; y < size; y++)
-                {
-                    int neighbourCount = CountNeighbours(grid, new Vector2i(x, y));
-                    if (grid[x, y])
-                    {
-                        if (neighbourCount < deathCellThreshold)
-                        {
-                            simulatedGrid[x, y] = false;
-                        }
-                        else
-                        {
-                            simulatedGrid[x, y] = true;
-                        }
-                    }
-                    else
-                    {
-                        if (neighbourCount > birthCellThreshold)
-                        {
-                            simulatedGrid[x, y] = true;
-                        }
-                        else
-                        {
-                            simulatedGrid[x, y] = false;
-                        }
-                    }
-                }
-            }
-
-            return simulatedGrid;
-        }
-
-        private static int CountNeighbours(bool[,] grid, Vector2i position)
-        {
-            int count = 0;
-            for (int offsetX = -1; offsetX < 2; offsetX++)
-            {
-                for (int offsetY = -1; offsetY < 2; offsetY++)
-                {
-                    int x = position.X + offsetX;
-                    int y = position.Y + offsetY;
-
-                    if (offsetX == 0 && offsetY == 0) continue;
-                    if (x < 0 || x >= size || y < 0 || y >= size)
-                    {
-                        count += 1;
-                    }
-                    else if (grid[x, y])
-                    {
-                        count += 1;
-                    }
-                }
-            }
-
-            return count;
         }
 
         //public void Reseed()

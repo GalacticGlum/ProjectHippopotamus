@@ -16,7 +16,6 @@ namespace Hippopotamus
             Context.IsMouseVisible = true;
             EntitySystemManager.Register<WorldSystem>();
 
-
             blankTexture = new Texture2D(Context.GraphicsDevice, 1, 1);
             Color[] data = new Color[32*32];
             for (int i = 0; i < data.Length; i++)

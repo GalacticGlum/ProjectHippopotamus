@@ -51,12 +51,11 @@ namespace Hippopotamus.Engine.Rendering
 
         private static void DrawSprite(SpriteBatch spriteBatch, SpriteRenderer spriteRenderer)
         {
-            if (spriteRenderer?.Texture == null) return;
+            if (spriteRenderer?.Sprite == null) return;
 
-            spriteBatch.Draw(spriteRenderer.Texture, spriteRenderer.Transform.Position, null,
+            spriteBatch.Draw(spriteRenderer.Sprite.Texture, spriteRenderer.Transform.Position, null,
                 spriteRenderer.Colour, spriteRenderer.Transform.Rotation,
-                new Vector2(spriteRenderer.Texture.Width / 2.0f, spriteRenderer.Texture.Height / 2.0f),
-                spriteRenderer.Transform.Size, SpriteEffects.None, 0f);
+                spriteRenderer.Sprite.Pivot, spriteRenderer.Transform.Size, SpriteEffects.None, 0f);
         }
 
         private static void DrawFont(SpriteBatch spriteBatch, Entity entity)

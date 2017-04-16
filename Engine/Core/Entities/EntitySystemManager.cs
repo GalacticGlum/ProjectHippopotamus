@@ -9,7 +9,7 @@ namespace Hippopotamus.Engine.Core
     public static class EntitySystemManager
     {
         private static Dictionary<Type, EntitySystem> systems = new Dictionary<Type, EntitySystem>();
-        private static bool isDirty = false;
+        private static bool isDirty;
 
         /// <summary>
         /// Does a full scan of all assemblies in the current app domain and registers any systems that need to be registered.

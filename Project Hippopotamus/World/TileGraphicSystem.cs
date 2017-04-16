@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
+using Hippopotamus.Engine.Core.Rendering;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,7 +26,8 @@ namespace Hippopotamus.World
 
         public override void Draw(GameLoopEventArgs args)
         {
-            RenderSystem.BeginDraw(args.SpriteBatch);
+            RenderSystem.BeginDraw(args.SpriteBatch);           
+
             foreach (KeyValuePair<Tile, Texture2D> pair in tiles)
             {
                 if (pair.Key == null || pair.Value == null) continue;

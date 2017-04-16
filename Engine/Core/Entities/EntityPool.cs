@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Hippopotamus.Engine.Core.Entities;
 
 namespace Hippopotamus.Engine.Core
@@ -85,7 +86,7 @@ namespace Hippopotamus.Engine.Core
             groups = new Dictionary<Type, HashSet<Entity>>();
         }
 
-        public static Entity Create(string name)
+        public static Entity Create(string name, params Type[] componentsToAdd)
         {
             if (string.IsNullOrEmpty(name))
             {

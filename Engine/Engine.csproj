@@ -94,6 +94,7 @@
     <Compile Include="Core\Rendering\Camera.cs" />
     <Compile Include="Core\Rendering\FontManager.cs" />
     <Compile Include="Core\Rendering\RenderSystem.cs" />
+    <Compile Include="Core\Rendering\Sprite.cs" />
     <Compile Include="Core\Rendering\SpriteRenderer.cs" />
     <Compile Include="Core\Rendering\Text.cs" />
     <Compile Include="Core\Rendering\TextureAtlas.cs" />

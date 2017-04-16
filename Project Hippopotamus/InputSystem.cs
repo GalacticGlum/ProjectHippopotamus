@@ -1,4 +1,5 @@
 ﻿using System;
+using Hippopotamus.Engine;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
@@ -83,7 +84,7 @@ namespace Hippopotamus
             Tile tile = World.World.Current.GetTileAt(x, y);
 
             if (tile == null) return;
-            TerrainCaveGenerator.Generate(tile);
+            TerrainValleyGenerator.Generate(tile);
         }
     }
 }

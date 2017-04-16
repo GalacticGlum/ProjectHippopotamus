@@ -18,6 +18,8 @@ namespace Hippopotamus.World
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
 
+        public WorldData WorldData { get; private set; }
+
         public event TileChangedEventHandler TileChanged;
         public void OnTileChanged(TileEventArgs args) { TileChanged?.Invoke(this, args); }
 
@@ -33,7 +35,6 @@ namespace Hippopotamus.World
         private readonly Queue<Chunk> unloadChunkQueue;
 
         private readonly List<IWorldGenerator> worldGeneratorPasses;
-        private WorldData worldData;
 
         public World()
         {
@@ -55,7 +56,7 @@ namespace Hippopotamus.World
             HeightInTiles = height * Chunk.Size;
 
             chunks = new Chunk[Width, Height];
-            worldData = new WorldData(WidthInTiles, HeightInTiles);
+            WorldData = new WorldData(WidthInTiles, HeightInTiles);
         }
 
         public void Generate()
@@ -64,7 +65,7 @@ namespace Hippopotamus.World
             foreach (IWorldGenerator pass in worldGeneratorPasses)
             {
                 pass.Reseed();
-                pass.Generate(worldData);
+                pass.Generate(WorldData);
             }
 
             Save("moo.data");
@@ -76,7 +77,7 @@ namespace Hippopotamus.World
             foreach (IWorldGenerator pass in worldGeneratorPasses)
             {
                 pass.Reseed(seed);
-                pass.Generate(worldData);
+                pass.Generate(WorldData);
             }
 
             Save("moo.data");
@@ -150,7 +151,7 @@ namespace Hippopotamus.World
                             {
                                 for (int ty = 0; ty < Chunk.Size; ty++)
                                 {
-                                    writer.Write((byte)worldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty]);
+                                    writer.Write((byte)WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty]);
                                 }
                             }
                         }
@@ -184,7 +185,7 @@ namespace Hippopotamus.World
                             {
                                 for (int ty = 0; ty < Chunk.Size; ty++)
                                 {
-                                    worldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = (TileType) reader.ReadByte();
+                                    WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = (TileType) reader.ReadByte();
                                 }
                             }
                         }
@@ -254,7 +255,7 @@ namespace Hippopotamus.World
             if (loadChunkQueue.Count > 0)
             {
                 Chunk chunk = loadChunkQueue.Dequeue();
-                chunk.Load(worldData);
+                chunk.Load(WorldData);
 
                 loadedChunks.Add(chunk);
             }

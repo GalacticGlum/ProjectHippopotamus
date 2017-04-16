@@ -21,5 +21,29 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Get's the TileType at (<paramref name="x"/>, <paramref name="y"/>).
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>The tile type at (<paramref name="x"/>, <paramref name="y"/>) or TileType.Empty if invalid coordinates. </returns>
+        public TileType GetTileTypeAt(int x, int y)
+        {
+            if(x < 0 || x >= Width || y < 0 || y >= Height) return TileType.Empty;
+            return Tiles[x, y];
+        }
+
+        /// <summary>
+        /// Sets the TileType at (<paramref name="x"/>, <paramref name="y"/>).
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="type"></param>
+        public void SetTileTypeAt(int x, int y, TileType type)
+        {
+            if(x < 0 || x >= Width || y < 0 || y >= Height) return;
+            Tiles[x, y] = type;
+        }
     }
 }

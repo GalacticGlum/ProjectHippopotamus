@@ -108,7 +108,7 @@ namespace Hippopotamus.World
         {
             if (x < 0 || x >= WidthInTiles || y < 0 || y >= HeightInTiles) return null;
 
-            int chunkX = (int) Math.Floor(x / (double) Chunk.Size);
+            int chunkX = (int)Math.Floor(x / (double)Chunk.Size);
             int chunkY = (int)Math.Floor(y / (double)Chunk.Size);
             if (chunkX < 0 || chunkX >= Width || chunkY < 0 || chunkY >= Height) return null;
 
@@ -190,7 +190,7 @@ namespace Hippopotamus.World
                             {
                                 for (int ty = 0; ty < Chunk.Size; ty++)
                                 {
-                                    WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = (TileType) reader.ReadByte();
+                                    WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = (TileType)reader.ReadByte();
                                 }
                             }
                         }
@@ -205,29 +205,62 @@ namespace Hippopotamus.World
             int screenHeight = GameEngine.Context.GraphicsDevice.Viewport.Height;
 
             float zoom = Camera.Main.OrthographicSize;
-            int viewportWidth = (int) Math.Ceiling((double)screenWidth / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
+            int viewportWidth = (int)Math.Ceiling((double)screenWidth / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
             int viewportHeight = (int)Math.Ceiling((double)screenHeight / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
 
+            // this appears to be the coordinate of the TOP-LEFT pixel, is that correct?
             Vector2 cameraPosition = Camera.Main.Transform.Position;
             Vector2 tileAtCameraPosition = new Vector2(cameraPosition.X / Tile.Size, cameraPosition.Y / Tile.Size);
             Chunk chunkContaining = GetChunkContaining((int)Math.Round(tileAtCameraPosition.X), (int)Math.Round(tileAtCameraPosition.Y));
 
             if (chunkContaining == null) return;
-            int viewpointX = (int) chunkContaining.Position.X;
-            int viewpointY = (int) chunkContaining.Position.Y;
+            int viewpointX = (int)chunkContaining.Position.X;
+            int viewpointY = (int)chunkContaining.Position.Y;
+
+            // find x-coordinate of the leftmost pixel that belongs to this chunk
+            int focusChunkLeftmostPosition = (int)(cameraPosition.X - cameraPosition.X % (Chunk.Size * Tile.Size));
+            // find x-coordinate of the rightmost pixel that belongs to this chunk
+            int focusChunkRightmostPosition = focusChunkLeftmostPosition + Chunk.Size * Tile.Size - 1;
+            // find y-coordinate of the topmost pixel that belongs to this chunk
+            int focusChunkTopmostPosition = (int)(cameraPosition.Y - cameraPosition.Y % (Chunk.Size * Tile.Size));
+            //find y-coordinate of the bottommost pixel that belongs to this chunk
+            int focusChunkBottommostPosition = focusChunkTopmostPosition + Chunk.Size * Tile.Size - 1;
+
+            int screenLeftmostPosition = (int)cameraPosition.X;
+            int screenRightmostPosition = (int)cameraPosition.X + screenWidth;
+            int screenTopmostPosition = (int)cameraPosition.Y;
+            int screenBottommostPosition = (int)cameraPosition.Y + screenHeight;
+
+            int chunksToLeft = 0;
+            while (focusChunkLeftmostPosition - chunksToLeft * Chunk.Size * Tile.Size + Tile.Size > screenLeftmostPosition)
+            {
+                ++chunksToLeft;
+            }
+
+            int chunksToRight = 0;
+            while (focusChunkRightmostPosition + chunksToRight * Chunk.Size * Tile.Size - Tile.Size < screenRightmostPosition)
+            {
+                ++chunksToRight;
+            }
+            int chunksAbove = 0;
+            while (focusChunkTopmostPosition - chunksAbove * Chunk.Size * Tile.Size + Tile.Size > screenTopmostPosition)
+            {
+                ++chunksAbove;
+            }
+            int chunksBelow = 0;
+            while (focusChunkBottommostPosition + chunksBelow * Chunk.Size * Tile.Size - Tile.Size < screenBottommostPosition)
+            {
+                ++chunksBelow;
+            }
 
             HashSet<Chunk> chunksToLoad = new HashSet<Chunk>();
-
-            for (int x = -viewportWidth; x <= viewportWidth; x++)
+            for (int x = -chunksToLeft; x <= chunksToRight; x++)
             {
-                for (int y = -viewportHeight; y <= viewportHeight; y++)
+                for (int y = -chunksAbove; y <= chunksBelow; y++)
                 {
                     int chunkX = viewpointX + x;
                     int chunkY = viewpointY + y;
-                    if (chunkX >= 0 && chunkX < Width && chunkY >= 0 && chunkY < Height)
-                    {
-                        chunksToLoad.Add(chunks[chunkX, chunkY]);
-                    }
+                    chunksToLoad.Add(chunks[chunkX, chunkY]);
                 }
             }
 

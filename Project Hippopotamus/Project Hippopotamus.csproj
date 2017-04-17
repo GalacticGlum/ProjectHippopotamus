@@ -49,7 +49,7 @@
     <Compile Include="World\ITerrainGenerator.cs" />
     <Compile Include="World\TerrainPrairieGenerator.cs" />
     <Compile Include="World\TerrainValleyGenerator.cs" />
-    <Compile Include="World\TerrainTerrainGenerator.cs" />
+    <Compile Include="World\TerrainWorldGenerator.cs" />
     <Compile Include="World\Tile.cs" />
     <Compile Include="World\TileGraphicSystem.cs" />
     <Compile Include="World\TileType.cs" />

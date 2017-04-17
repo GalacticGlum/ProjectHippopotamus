@@ -84,7 +84,6 @@ namespace Hippopotamus
             Tile tile = World.World.Current.GetTileAt(x, y);
 
             if (tile == null) return;
-            //5TerrainValleyGenerator.Generate(x);
         }
     }
 }

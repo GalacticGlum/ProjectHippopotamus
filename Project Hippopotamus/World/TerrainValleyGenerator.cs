@@ -3,6 +3,7 @@ using Hippopotamus.Engine;
 
 namespace Hippopotamus.World
 {
+    // TODO: Abstract/genericize code, currently there is alot of code duplication.
     public class TerrainValleyGenerator : IWorldGenerator
     {
         private const int minimumCanyonSteps = 1;
@@ -22,6 +23,7 @@ namespace Hippopotamus.World
 
         private const int minimumValleyDistance = 200;
         private const float valleyChance = 0.4f;
+        private const float valleyExtrusionChance = 0.2f;
 
         private Random random;
 
@@ -65,7 +67,8 @@ namespace Hippopotamus.World
                 int x = currentX + pivot;
 
                 Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
-                TerrainUtilities.GenerateCircle(radius, worldData, spot, TileType.Empty);
+                TileType spotType = random.NextDouble() < valleyExtrusionChance ? TileType.Grass : TileType.Empty;
+                TerrainUtilities.GenerateCircle(radius, worldData, spot, spotType);
 
                 currentX = x;
             }

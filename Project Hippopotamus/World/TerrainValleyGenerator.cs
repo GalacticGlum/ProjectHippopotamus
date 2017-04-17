@@ -4,7 +4,7 @@ using Hippopotamus.Engine;
 namespace Hippopotamus.World
 {
     // TODO: Abstract/genericize code, currently there is alot of code duplication.
-    public class TerrainValleyGenerator : IWorldGenerator
+    public class TerrainValleyGenerator : ITerrainGenerator
     {
         private const int minimumCanyonSteps = 1;
         private const int maximumCanyonSteps = 5;

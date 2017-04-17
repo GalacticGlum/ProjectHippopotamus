@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.World
 {
-    public class TerrainWorldGenerator : IWorldGenerator
+    public class TerrainTerrainGenerator : ITerrainGenerator
     {
         private Random random;
 
-        public TerrainWorldGenerator()
+        public TerrainTerrainGenerator()
         {
             random = new Random();
         }

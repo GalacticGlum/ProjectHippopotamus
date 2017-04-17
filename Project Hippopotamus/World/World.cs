@@ -34,7 +34,7 @@ namespace Hippopotamus.World
         private readonly Queue<Chunk> loadChunkQueue;
         private readonly Queue<Chunk> unloadChunkQueue;
 
-        private readonly List<IWorldGenerator> worldGeneratorPasses;
+        private readonly List<ITerrainGenerator> worldGeneratorPasses;
 
         public World()
         {
@@ -44,7 +44,7 @@ namespace Hippopotamus.World
             loadChunkQueue = new Queue<Chunk>();
             unloadChunkQueue = new Queue<Chunk>();
 
-            worldGeneratorPasses = new List<IWorldGenerator>();
+            worldGeneratorPasses = new List<ITerrainGenerator>();
         }
 
         public void Initialize(int width, int height)
@@ -62,7 +62,7 @@ namespace Hippopotamus.World
         public void Generate()
         {
             CreateChunks();
-            foreach (IWorldGenerator pass in worldGeneratorPasses)
+            foreach (ITerrainGenerator pass in worldGeneratorPasses)
             {
                 pass.Reseed();
                 pass.Generate(WorldData);
@@ -74,7 +74,7 @@ namespace Hippopotamus.World
         public void Generate(int seed)
         {
             CreateChunks();
-            foreach (IWorldGenerator pass in worldGeneratorPasses)
+            foreach (ITerrainGenerator pass in worldGeneratorPasses)
             {
                 pass.Reseed(seed);
                 pass.Generate(WorldData);
@@ -99,9 +99,9 @@ namespace Hippopotamus.World
             }
         }
 
-        public void AddGenerator(IWorldGenerator worldGenerator)
+        public void AddGenerator(ITerrainGenerator terrainGenerator)
         {
-            worldGeneratorPasses.Add(worldGenerator);
+            worldGeneratorPasses.Add(terrainGenerator);
         }
 
         public Chunk GetChunkContaining(int x, int y)

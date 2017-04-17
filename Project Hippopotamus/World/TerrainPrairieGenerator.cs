@@ -1,11 +1,10 @@
 ﻿using System;
 using Hippopotamus.Engine;
-using Hippopotamus.Engine.Core;
 
 namespace Hippopotamus.World
 {
     // TODO: Force prairie at start location.
-    public class TerrainPrairieGenerator : IWorldGenerator
+    public class TerrainPrairieGenerator : ITerrainGenerator
     {
         private const int minimumSize = 10;
         private const int maximumSize = 200;

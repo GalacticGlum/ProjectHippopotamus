@@ -1,6 +1,6 @@
 ﻿namespace Hippopotamus.World
 {
-    public interface IWorldGenerator
+    public interface ITerrainGenerator
     {
         void Reseed();
         void Reseed(int seed);

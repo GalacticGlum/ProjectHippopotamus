@@ -15,9 +15,9 @@ namespace Hippopotamus.World
             World.Initialize(200, 4);
             Camera.Main.Transform.Position = new Vector2((World.Width - 1) / 2 * Chunk.Size * Tile.Size, (World.Height - 1) / 2 * Chunk.Size * Tile.Size);
 
-            World.AddGenerator(new TerrainWorldGenerator());
-            World.AddGenerator(new TerrainPrairieGenerator());
+            World.AddGenerator(new TerrainTerrainGenerator());
             World.AddGenerator(new TerrainValleyGenerator());
+            World.AddGenerator(new TerrainPrairieGenerator());
 
             EntitySystemManager.Register<TileGraphicSystem>();
 

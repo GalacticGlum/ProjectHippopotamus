@@ -40,8 +40,6 @@ namespace Hippopotamus.World
 
         public void GeneratePrairie(int startX, WorldData worldData)
         {
-            Logger.Log("Generator", $"Generating prairie at x: {startX}");
-
             int size = random.Next(minimumSize, maximumSize);
             int endX = startX + size;
 

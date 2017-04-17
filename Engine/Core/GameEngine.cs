@@ -34,6 +34,10 @@ namespace Hippopotamus.Engine.Core
             IsFixedTimeStep = false;
 
             this.gameInstance = gameInstance;
+
+            graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
         }
 
         protected override void Initialize()

@@ -21,7 +21,8 @@ namespace Hippopotamus.World
 
             EntitySystemManager.Register<TileGraphicSystem>();
 
-            World.Generate();
+            // Constant seed for debugging purposes.
+            World.Generate("purplehippo");
 
         }
 

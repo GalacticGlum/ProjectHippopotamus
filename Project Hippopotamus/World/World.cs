@@ -83,6 +83,11 @@ namespace Hippopotamus.World
             Save("moo.data");
         }
 
+        public void Generate(string seed)
+        {
+            Generate(seed.GetHashCode());
+        }
+
         public void CreateChunks()
         {
             for (int x = 0; x < Width; x++)

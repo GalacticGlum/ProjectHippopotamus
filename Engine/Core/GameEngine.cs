@@ -35,9 +35,9 @@ namespace Hippopotamus.Engine.Core
 
             this.gameInstance = gameInstance;
 
-            graphics.IsFullScreen = true;
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            //graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferWidth = 1366;
+            graphics.PreferredBackBufferHeight = 768;
         }
 
         protected override void Initialize()

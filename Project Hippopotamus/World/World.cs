@@ -204,7 +204,7 @@ namespace Hippopotamus.World
             int screenWidth = GameEngine.Context.GraphicsDevice.Viewport.Width;
             int screenHeight = GameEngine.Context.GraphicsDevice.Viewport.Height;
 
-            float zoom = Camera.Main.OrthographicSize;
+            float zoom = Camera.Main.Zoom;
             int viewportWidth = (int)Math.Ceiling((double)screenWidth / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
             int viewportHeight = (int)Math.Ceiling((double)screenHeight / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
 

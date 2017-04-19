@@ -3,14 +3,14 @@ using Hippopotamus.Engine;
 
 namespace Hippopotamus.World
 {
-    // TODO: Abstract/genericize code, currently there is alot of code duplication.
+    // TODO: Abstract code, currently there is some code duplication.
     public class TerrainValleyGenerator : ITerrainGenerator
     {
         private const int minimumCanyonSteps = 1;
         private const int maximumCanyonSteps = 5;
 
-        private const int minimumCanyonSize = 5;
-        private const int maximumCanyonSize = 15;
+        private const int minimumCanyonSize = 8;
+        private const int maximumCanyonSize = 10;
 
         private const int minimumCanyonDistance = 400;
         private const float canyonChance = 0.25f;
@@ -18,8 +18,8 @@ namespace Hippopotamus.World
         private const int minimumValleySteps = 1;
         private const int maximumValleySteps = 2;
 
-        private const int minimumValleySize = 2;
-        private const int maximumValleySize = 6;
+        private const int minimumValleySize = 4;
+        private const int maximumValleySize = 5;
 
         private const int minimumValleyDistance = 200;
         private const float valleyChance = 0.4f;
@@ -68,7 +68,7 @@ namespace Hippopotamus.World
 
                 Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
                 TileType spotType = random.NextDouble() < valleyExtrusionChance ? TileType.Grass : TileType.Empty;
-                TerrainUtilities.GenerateCircle(radius, worldData, spot, spotType);
+                TerrainUtilities.GenerateFuzzyCircle(minimumValleySize, maximumValleySize, worldData, spot, spotType);
 
                 currentX = x;
             }
@@ -103,7 +103,7 @@ namespace Hippopotamus.World
                 int x = currentX + pivot;
 
                 Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
-                TerrainUtilities.GenerateCircle(radius, worldData, spot, TileType.Empty);
+                TerrainUtilities.GenerateFuzzyCircle(minimumCanyonSize, maximumCanyonSize, worldData, spot, TileType.Empty);
 
                 currentX = x;
             }

@@ -50,6 +50,33 @@ namespace Hippopotamus.World
         }
 
         /// <summary>
+        /// Creates a fuzzy circle with radius between <paramref name="minRadius"/> and <paramref name="maxRadius"/>
+        /// around a given <paramref name="tilePosition"/> with <paramref name="type"/>. 
+        /// Use this for terrain generation.
+        /// </summary>
+        /// <param name="minRadius"></param>
+        /// <param name="maxRadius"></param>
+        /// <param name="worldData"></param>
+        /// <param name="tilePosition"></param>
+        /// <param name="type"></param>
+        public static void GenerateFuzzyCircle(float minRadius, float maxRadius, WorldData worldData, Vector2i tilePosition, TileType type)
+        {
+            Random random = new Random();
+            int range = (int)Math.Ceiling(maxRadius);
+            for (int x = -range; x <= range; x++)
+            {
+                for (int y = -range; y <= range; y++)
+                {
+                    double fuzzyRadius = random.NextDouble() * (maxRadius - minRadius) + minRadius;
+                    double distance = Math.Sqrt(x * x + y * y);
+                    if (!(distance <= fuzzyRadius)) continue;
+
+                    worldData.SetTileTypeAt(tilePosition.X + x, tilePosition.Y + y, type);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the position of the uppermost tile that matches the <paramref name="condition"/>.
         /// Use this for <paramref name="world"/>.
         /// </summary>

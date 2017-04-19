@@ -18,6 +18,7 @@ namespace Hippopotamus.World
             World.AddGenerator(new TerrainWorldGenerator());
             World.AddGenerator(new TerrainValleyGenerator());
             World.AddGenerator(new TerrainPrairieGenerator());
+            World.AddGenerator(new TerrainCleanup());
 
             EntitySystemManager.Register<TileGraphicSystem>();
 

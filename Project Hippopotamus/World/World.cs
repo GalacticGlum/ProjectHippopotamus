@@ -260,7 +260,11 @@ namespace Hippopotamus.World
                 {
                     int chunkX = viewpointX + x;
                     int chunkY = viewpointY + y;
-                    chunksToLoad.Add(chunks[chunkX, chunkY]);
+                    Chunk chunkToAdd = GetChunkAt(chunkX, chunkY);
+                    if (chunkToAdd != null)
+                    {
+                        chunksToLoad.Add(chunks[chunkX, chunkY]);
+                    }
                 }
             }
 

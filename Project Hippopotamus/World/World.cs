@@ -205,13 +205,11 @@ namespace Hippopotamus.World
             int screenHeight = GameEngine.Context.GraphicsDevice.Viewport.Height;
 
             float zoom = Camera.Main.Zoom;
-            int viewportWidth = (int)Math.Ceiling((double)screenWidth / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
-            int viewportHeight = (int)Math.Ceiling((double)screenHeight / (Chunk.Size * Tile.Size * 2 * zoom)) + 2;
 
-            // this appears to be the coordinate of the TOP-LEFT pixel, is that correct?
+            // this is the coordinate of the TOP-LEFT pixel
             Vector2 cameraPosition = Camera.Main.Transform.Position;
             Vector2 tileAtCameraPosition = new Vector2(cameraPosition.X / Tile.Size, cameraPosition.Y / Tile.Size);
-            Chunk chunkContaining = GetChunkContaining((int)Math.Round(tileAtCameraPosition.X), (int)Math.Round(tileAtCameraPosition.Y));
+            Chunk chunkContaining = GetChunkContaining((int)Math.Floor(tileAtCameraPosition.X), (int)Math.Floor(tileAtCameraPosition.Y));
 
             if (chunkContaining == null) return;
             int viewpointX = (int)chunkContaining.Position.X;
@@ -223,7 +221,7 @@ namespace Hippopotamus.World
             int focusChunkRightmostPosition = focusChunkLeftmostPosition + Chunk.Size * Tile.Size - 1;
             // find y-coordinate of the topmost pixel that belongs to this chunk
             int focusChunkTopmostPosition = (int)(cameraPosition.Y - cameraPosition.Y % (Chunk.Size * Tile.Size));
-            //find y-coordinate of the bottommost pixel that belongs to this chunk
+            // find y-coordinate of the bottommost pixel that belongs to this chunk
             int focusChunkBottommostPosition = focusChunkTopmostPosition + Chunk.Size * Tile.Size - 1;
 
             int screenLeftmostPosition = (int)cameraPosition.X;
@@ -288,6 +286,7 @@ namespace Hippopotamus.World
             if (unloadChunkQueue.Count > 0)
             {
                 Chunk chunk = unloadChunkQueue.Dequeue();
+                Console.WriteLine($"Unloading chunk ({chunk.Position.X}, {chunk.Position.Y})");
                 chunk.Unload();
 
                 loadedChunks.Remove(chunk);
@@ -297,6 +296,7 @@ namespace Hippopotamus.World
             if (loadChunkQueue.Count > 0)
             {
                 Chunk chunk = loadChunkQueue.Dequeue();
+                Console.WriteLine($"Loading chunk ({chunk.Position.X}, {chunk.Position.Y})");
                 chunk.Load(WorldData);
 
                 loadedChunks.Add(chunk);

@@ -3,16 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace Hippopotamus.World
 {
-    public class TerrainWorldGenerator : ITerrainGenerator
+    public class TerrainWorldGenerator : TerrainGenerator
     {
-        private Random random;
-
-        public TerrainWorldGenerator()
-        {
-            random = new Random();
-        }
-
-        public void Generate(WorldData worldData)
+        public override void Generate(WorldData worldData)
         {
             double[] heightMap = new double[worldData.Width];
             double groundHeight = worldData.Height * 0.7f;
@@ -37,11 +30,11 @@ namespace Hippopotamus.World
 
             foreach (SineCurveParameter curveParameter in curveParameters)
             {
-                double amplitude = worldData.Height * MathHelper.Lerp((float)curveParameter.MinimumAmplitude, (float)curveParameter.MaximumAmplitude, (float)random.NextDouble());
-                double frequency = MathHelper.Lerp((float)curveParameter.MinimumFrequency, (float)curveParameter.MaximumFrequency, (float)random.NextDouble()) / 100.0;
+                double amplitude = worldData.Height * MathHelper.Lerp((float)curveParameter.MinimumAmplitude, (float)curveParameter.MaximumAmplitude, (float)Random.NextDouble());
+                double frequency = MathHelper.Lerp((float)curveParameter.MinimumFrequency, (float)curveParameter.MaximumFrequency, (float)Random.NextDouble()) / 100.0;
 
                 const double offset = 0.0;
-                double phase = random.NextDouble() * worldData.Width;
+                double phase = Random.NextDouble() * worldData.Width;
                 for (int x = 0; x < worldData.Width; x++)
                 {
                     heightMap[x] += amplitude * Math.Sin(frequency * x - phase) + offset;
@@ -51,9 +44,9 @@ namespace Hippopotamus.World
             // do noise!
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (random.NextDouble() < noiseChance)
+                if (Random.NextDouble() < noiseChance)
                 {
-                    heightMap[x] += MathHelper.Lerp((float)noiseMinimumMagnitude, (float)noiseMaxMagnitude, (float)random.NextDouble());
+                    heightMap[x] += MathHelper.Lerp((float)noiseMinimumMagnitude, (float)noiseMaxMagnitude, (float)Random.NextDouble());
                 }
             }
 
@@ -67,16 +60,6 @@ namespace Hippopotamus.World
                     }
                 }
             }
-        }
-
-        public void Reseed()
-        {
-            random = new Random();
-        }
-
-        public void Reseed(int seed)
-        {
-            random = new Random(seed);
         }
     }
 }

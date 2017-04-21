@@ -4,7 +4,7 @@ using Hippopotamus.Engine;
 namespace Hippopotamus.World
 {
     // TODO: Abstract code, currently there is some code duplication.
-    public class TerrainValleyGenerator : ITerrainGenerator
+    public class TerrainValleyGenerator : TerrainGenerator
     {
         private const int minimumCanyonSteps = 1;
         private const int maximumCanyonSteps = 5;
@@ -25,14 +25,7 @@ namespace Hippopotamus.World
         private const float valleyChance = 0.4f;
         private const float valleyExtrusionChance = 0.2f;
 
-        private Random random;
-
-        public TerrainValleyGenerator()
-        {
-            random = new Random();
-        }
-
-        public void Generate(WorldData worldData)
+        public override void Generate(WorldData worldData)
         {
             GenerateValleys(worldData);
             GenerateCanyons(worldData);
@@ -43,7 +36,7 @@ namespace Hippopotamus.World
             int distanceFromLast = 0;
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (distanceFromLast > minimumValleyDistance && random.NextDouble() < valleyChance)
+                if (distanceFromLast > minimumValleyDistance && Random.NextDouble() < valleyChance)
                 {
                     distanceFromLast = 0;
                     GenerateValley(x, worldData);
@@ -57,17 +50,17 @@ namespace Hippopotamus.World
 
         private void GenerateValley(int startX, WorldData worldData)
         {
-            int steps = random.Next(minimumValleySteps, maximumValleySteps);
+            int steps = Random.Next(minimumValleySteps, maximumValleySteps);
             int currentX = startX;
             for (int i = 0; i < steps; i++)
             {
-                int radius = random.Next(minimumValleySize, maximumValleySize);
+                int radius = Random.Next(minimumValleySize, maximumValleySize);
 
-                int pivot = random.Next(-radius, radius);
+                int pivot = Random.Next(-radius, radius);
                 int x = currentX + pivot;
 
                 Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
-                TileType spotType = random.NextDouble() < valleyExtrusionChance ? TileType.Grass : TileType.Empty;
+                TileType spotType = Random.NextDouble() < valleyExtrusionChance ? TileType.Grass : TileType.Empty;
                 TerrainUtilities.GenerateFuzzyCircle(minimumValleySize, maximumValleySize, worldData, spot, spotType);
 
                 currentX = x;
@@ -79,7 +72,7 @@ namespace Hippopotamus.World
             int distanceFromLast = 0;
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (distanceFromLast > minimumCanyonDistance && random.NextDouble() < canyonChance)
+                if (distanceFromLast > minimumCanyonDistance && Random.NextDouble() < canyonChance)
                 {
                     distanceFromLast = 0;
                     GenerateCanyon(x, worldData);
@@ -93,13 +86,13 @@ namespace Hippopotamus.World
 
         private void GenerateCanyon(int startX, WorldData worldData)
         {
-            int steps = random.Next(minimumCanyonSteps, maximumCanyonSteps);
+            int steps = Random.Next(minimumCanyonSteps, maximumCanyonSteps);
             int currentX = startX;
             for (int i = 0; i < steps; i++)
             {
-                int radius = random.Next(minimumCanyonSize, maximumCanyonSize);
+                int radius = Random.Next(minimumCanyonSize, maximumCanyonSize);
 
-                int pivot = random.Next(-radius, radius);
+                int pivot = Random.Next(-radius, radius);
                 int x = currentX + pivot;
 
                 Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
@@ -107,16 +100,6 @@ namespace Hippopotamus.World
 
                 currentX = x;
             }
-        }
-
-        public void Reseed()
-        {
-            random = new Random();
-        }
-
-        public void Reseed(int seed)
-        {
-            random = new Random(seed);
         }
     }
 }

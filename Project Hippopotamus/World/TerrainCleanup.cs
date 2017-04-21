@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hippopotamus.World
 {
-    class TerrainCleanup : ITerrainGenerator
+    public class TerrainCleanup : TerrainGenerator
     {
-        public void Generate(WorldData worldData)
+        public override void Generate(WorldData worldData)
         {
             int width = worldData.Width;
             int height = worldData.Height;
@@ -64,16 +61,13 @@ namespace Hippopotamus.World
                 }
 
                 //south
-                if (current.Item2 < height - 2)
+                if (current.Item2 >= height - 2) continue;
                 {
                     int newX = current.Item1;
                     int newY = current.Item2 + 1;
-                    if (worldData.GetTileTypeAt(newX, newY) != TileType.Empty &&
-                        !mainLand[newX, newY])
-                    {
-                        tileStack.Push(Tuple.Create(newX, newY));
-                        mainLand[newX, newY] = true;
-                    }
+                    if (worldData.GetTileTypeAt(newX, newY) == TileType.Empty || mainLand[newX, newY]) continue;
+                    tileStack.Push(Tuple.Create(newX, newY));
+                    mainLand[newX, newY] = true;
                 }
             }
 
@@ -87,14 +81,6 @@ namespace Hippopotamus.World
                     }
                 }
             }
-        }
-
-        public void Reseed()
-        {
-        }
-
-        public void Reseed(int seed)
-        {
         }
     }
 }

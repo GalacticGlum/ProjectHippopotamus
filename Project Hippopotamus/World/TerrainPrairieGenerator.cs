@@ -4,7 +4,7 @@ using Hippopotamus.Engine;
 namespace Hippopotamus.World
 {
     // TODO: Force prairie at start location.
-    public class TerrainPrairieGenerator : ITerrainGenerator
+    public class TerrainPrairieGenerator : TerrainGenerator
     {
         private const int minimumSize = 10;
         private const int maximumSize = 200;
@@ -18,14 +18,12 @@ namespace Hippopotamus.World
         private const int minimumOffsetSwitchRate = 2;
         private const int maximumOffsetSwitchRate = 8;
 
-        private Random random = new Random();
-
-        public void Generate(WorldData worldData)
+        public override void Generate(WorldData worldData)
         {
             int distanceFromLast = 0;
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (distanceFromLast > minimumDistanceBetween && random.NextDouble() < chance)
+                if (distanceFromLast > minimumDistanceBetween && Random.NextDouble() < chance)
                 {
                     distanceFromLast = 0;
                     GeneratePrairie(x, worldData);
@@ -39,7 +37,7 @@ namespace Hippopotamus.World
 
         public void GeneratePrairie(int startX, WorldData worldData)
         {
-            int size = random.Next(minimumSize, maximumSize);
+            int size = Random.Next(minimumSize, maximumSize);
             int endX = startX + size;
 
             Vector2i spotPosition = TerrainUtilities.FindUpperMostTile(startX, worldData, type => type != TileType.Empty);
@@ -77,24 +75,14 @@ namespace Hippopotamus.World
                 if (offsetSwitch >= offsetRate)
                 {
                     offsetSwitch = 0;
-                    offsetRate = random.Next(minimumOffsetSwitchRate, maximumOffsetSwitchRate);
-                    offset = random.Next(minimumOffset, maximumOffset);
+                    offsetRate = Random.Next(minimumOffsetSwitchRate, maximumOffsetSwitchRate);
+                    offset = Random.Next(minimumOffset, maximumOffset);
                 }
                 else
                 {
                     offsetSwitch++;
                 }
             }      
-        }
-
-        public void Reseed()
-        {
-            random = new Random();
-        }
-
-        public void Reseed(int seed)
-        {
-            random = new Random(seed);
         }
     }
 }

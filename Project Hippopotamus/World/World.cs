@@ -286,7 +286,6 @@ namespace Hippopotamus.World
             if (unloadChunkQueue.Count > 0)
             {
                 Chunk chunk = unloadChunkQueue.Dequeue();
-                Console.WriteLine($"Unloading chunk ({chunk.Position.X}, {chunk.Position.Y})");
                 chunk.Unload();
 
                 loadedChunks.Remove(chunk);
@@ -296,7 +295,6 @@ namespace Hippopotamus.World
             if (loadChunkQueue.Count > 0)
             {
                 Chunk chunk = loadChunkQueue.Dequeue();
-                Console.WriteLine($"Loading chunk ({chunk.Position.X}, {chunk.Position.Y})");
                 chunk.Load(WorldData);
 
                 loadedChunks.Add(chunk);

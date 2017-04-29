@@ -14,7 +14,6 @@ namespace Hippopotamus.World
             World = new World();
             World.Initialize(200, 4);
             Camera.Main.Transform.Position = new Vector2((World.Width - 1) / 2 * Chunk.Size * Tile.Size, (World.Height - 1) / 2 * Chunk.Size * Tile.Size);
-            //Camera.Main.Transform.Position = new Vector2(0, 0);
             World.AddGenerator(new TerrainWorldProcessor());
             World.AddGenerator(new TerrainValleyProcessor());
             World.AddGenerator(new TerrainPrairieProcessor());
@@ -24,9 +23,6 @@ namespace Hippopotamus.World
 
             // Constant seed for debugging purposes.
             World.Generate("purplehippo");
-
-            TerrainProcessor processor = new TerrainProcessor("Data/WorldProcessor.xml");
-            processor.Execute(World.WorldData);
         }
 
         public override void Update(GameLoopEventArgs args)

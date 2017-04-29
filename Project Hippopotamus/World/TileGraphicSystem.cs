@@ -32,7 +32,6 @@ namespace Hippopotamus.World
                 if (pair.Key == null || pair.Value == null) continue;
                 args.SpriteBatch.Draw(pair.Value, pair.Key.Position.ToVector2() * Tile.Size, null, Color.White, 0,
                     new Vector2(pair.Value.Width / 2.0f, pair.Value.Height / 2.0f), Vector2.One, SpriteEffects.None, 0);
-
             }
 
             RenderSystem.EndDraw(args.SpriteBatch);

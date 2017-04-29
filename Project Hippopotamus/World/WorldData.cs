@@ -1,4 +1,6 @@
-﻿using Hippopotamus.Engine.Bridge;
+﻿using System.Collections.Generic;
+using Hippopotamus.Engine;
+using Hippopotamus.Engine.Bridge;
 using MoonSharp.Interpreter;
 
 namespace Hippopotamus.World
@@ -51,6 +53,14 @@ namespace Hippopotamus.World
         {
             if(x < 0 || x >= Width || y < 0 || y >= Height) return;
             Tiles[x, y] = type;
+        }
+
+        public void SetTileTypes(Dictionary<Vector2i, TileType> setTileTypes)
+        {
+            foreach (Vector2i tilePosition in setTileTypes.Keys)
+            {
+                SetTileTypeAt(tilePosition.X, tilePosition.Y, setTileTypes[tilePosition]);
+            }
         }
     }
 }

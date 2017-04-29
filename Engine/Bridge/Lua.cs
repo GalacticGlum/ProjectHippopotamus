@@ -92,7 +92,7 @@ namespace Hippopotamus.Engine.Bridge
             Closure function = (Closure) lua.Globals[functionName];
             if (function == null)
             {
-                Logger.Log("Engine", $"Lua::GetFunction: Tried to get non-existent function of name: \"{functionName}\".", LoggerVerbosity.Warning);
+                Logger.Log("Lua", $"Lua::GetFunction: Tried to get non-existent function of name: \"{functionName}\".", LoggerVerbosity.Warning);
             }
 
             return function;
@@ -108,12 +108,12 @@ namespace Hippopotamus.Engine.Bridge
             }
 
             string culpritFilePath = parsedFilePaths[int.Parse(decoratedMessage.Substring(6, decoratedMessage.IndexOf(":", StringComparison.Ordinal) - 6)) - 1];
-            Logger.Log("Engine", $"{decoratedMessage}\n at {culpritFilePath}", LoggerVerbosity.Error);
+            Logger.Log("Lua", $"{decoratedMessage}\n at {culpritFilePath}", LoggerVerbosity.Error);
         }
 
         private static void Log(Exception e)
         {
-            Logger.Log("Engine", e.Message, LoggerVerbosity.Error);
+            Logger.Log("Lua", e.Message, LoggerVerbosity.Error);
         }
 
         public static void ExposeType<T>()

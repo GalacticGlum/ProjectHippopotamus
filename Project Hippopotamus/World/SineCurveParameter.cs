@@ -1,5 +1,10 @@
-﻿namespace Hippopotamus.World
+﻿using Hippopotamus.Engine.Bridge;
+using MoonSharp.Interpreter;
+
+namespace Hippopotamus.World
 {
+    [LuaExposeType]
+    [MoonSharpUserData]
     public struct SineCurveParameter
     {
         public double MinimumAmplitude { get; set; }

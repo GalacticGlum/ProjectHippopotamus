@@ -1,9 +1,11 @@
-﻿namespace Hippopotamus.Engine
+﻿using Hippopotamus.Engine.Bridge;
+
+namespace Hippopotamus.Engine
 {
+    [LuaExposeType]
     public static class Random
     {
         public static int Seed { get; }
-    
         private static System.Random randomEngine;
 
         static Random()

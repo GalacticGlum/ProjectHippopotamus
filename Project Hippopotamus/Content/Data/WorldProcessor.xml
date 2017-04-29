@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TerrainProcessor>
+    <Process FilePath="Lua/Terrain Processors/TerrainWorldProcessor.lua" FunctionName="Generate" />
+</TerrainProcessor>

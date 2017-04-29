@@ -101,6 +101,12 @@ namespace Hippopotamus.Engine.Bridge
         private static void Log(InterpreterException e)
         {
             string decoratedMessage = e.DecoratedMessage;
+            if (string.IsNullOrEmpty(decoratedMessage))
+            {
+                Log((Exception)e);
+                return;
+            }
+
             string culpritFilePath = parsedFilePaths[int.Parse(decoratedMessage.Substring(6, decoratedMessage.IndexOf(":", StringComparison.Ordinal) - 6)) - 1];
             Logger.Log("Engine", $"{decoratedMessage}\n at {culpritFilePath}", LoggerVerbosity.Error);
         }

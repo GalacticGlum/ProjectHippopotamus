@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Bridge\Lua.cs" />
     <Compile Include="Bridge\LuaApiHandler.cs" />
+    <Compile Include="Bridge\LuaExposeType.cs" />
     <Compile Include="Core\Entities\Component.cs" />
     <Compile Include="Core\Entities\ComponentPool.cs" />
     <Compile Include="Core\Entities\EntityFilter.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Utilities\Units.cs" />
     <Compile Include="Utilities\ComponentExtensions.cs" />
     <Compile Include="Utilities\Vector2i.cs" />
+    <Compile Include="Utilities\XmlUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

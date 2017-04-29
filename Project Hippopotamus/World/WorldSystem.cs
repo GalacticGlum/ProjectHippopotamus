@@ -25,6 +25,8 @@ namespace Hippopotamus.World
             // Constant seed for debugging purposes.
             World.Generate("purplehippo");
 
+            TerrainProcessor processor = new TerrainProcessor("Data/WorldProcessor.xml");
+            processor.Execute(World.WorldData);
         }
 
         public override void Update(GameLoopEventArgs args)

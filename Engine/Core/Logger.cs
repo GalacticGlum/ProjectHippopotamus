@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Hippopotamus.Engine.Bridge;
 
 namespace Hippopotamus.Engine.Core
 {
+    [LuaExposeType]
     public static class Logger
     {
         public const string AllCategoryVerbosities = "__ALL_CATEGORY_VERBOSITIES__";

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
-using Hippopotamus.Engine.Core.Rendering;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +15,7 @@ namespace Hippopotamus.World
 
         public TileGraphicSystem()
         {
-            grassAtlas = new TextureAtlas("Tiles/GrassAtlas.xml");
+            grassAtlas = new TextureAtlas("Images/Tiles/GrassAtlas.xml");
             tiles = new Dictionary<Tile, Texture2D>();
 
             World.Current.ChunkLoaded += OnChunkLoaded;

@@ -13,6 +13,7 @@ namespace Hippopotamus.Engine.Core
         public static string LogFilePath { get; set; } = "Runtime.log";
         public static LoggerTimeStampMode TimeStampMode { get; set; } = LoggerTimeStampMode.DateTimeStamp;
         public static LoggerVerbosity Verbosity { get; set; } = LoggerVerbosity.Info;
+        public static string LineSeperator { get; set; } = string.Empty;
 
         /// <summary>
         /// The category verbosity filter. If set to null, then the filter will allow all categories.
@@ -50,6 +51,11 @@ namespace Hippopotamus.Engine.Core
                 logBuffer.AppendLine(string.Concat($"[{GetVerbosityName(messageVerbosity)}]", output));
 
                 Console.WriteLine(output);
+                if (!string.IsNullOrEmpty(LineSeperator))
+                {
+                    Console.WriteLine(LineSeperator);
+                }
+
                 Console.ForegroundColor = oldConsoleColor;
             }
         }

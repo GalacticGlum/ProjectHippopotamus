@@ -1,5 +1,6 @@
 ﻿using System;
 using Hippopotamus.Engine;
+using Random = Hippopotamus.Engine.Random;
 
 namespace Hippopotamus.World
 {
@@ -61,13 +62,12 @@ namespace Hippopotamus.World
         /// <param name="type"></param>
         public static void GenerateFuzzyCircle(float minRadius, float maxRadius, WorldData worldData, Vector2i tilePosition, TileType type)
         {
-            Random random = new Random();
             int range = (int)Math.Ceiling(maxRadius);
             for (int x = -range; x <= range; x++)
             {
                 for (int y = -range; y <= range; y++)
                 {
-                    double fuzzyRadius = random.NextDouble() * (maxRadius - minRadius) + minRadius;
+                    double fuzzyRadius = Random.Range(minRadius, maxRadius);
                     double distance = Math.Sqrt(x * x + y * y);
                     if (!(distance <= fuzzyRadius)) continue;
 

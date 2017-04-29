@@ -1,10 +1,9 @@
-﻿using System;
-using Hippopotamus.Engine;
+﻿using Hippopotamus.Engine;
 
 namespace Hippopotamus.World
 {
     // TODO: Abstract code, currently there is some code duplication.
-    public class TerrainValleyGenerator : TerrainGenerator
+    public class TerrainValleyProcessor : ITerrainProcessor
     {
         private const int minimumCanyonSteps = 1;
         private const int maximumCanyonSteps = 5;
@@ -25,7 +24,7 @@ namespace Hippopotamus.World
         private const float valleyChance = 0.4f;
         private const float valleyExtrusionChance = 0.2f;
 
-        public override void Generate(WorldData worldData)
+        public void Generate(WorldData worldData)
         {
             GenerateValleys(worldData);
             GenerateCanyons(worldData);
@@ -36,7 +35,7 @@ namespace Hippopotamus.World
             int distanceFromLast = 0;
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (distanceFromLast > minimumValleyDistance && Random.NextDouble() < valleyChance)
+                if (distanceFromLast > minimumValleyDistance && Random.Value() < valleyChance)
                 {
                     distanceFromLast = 0;
                     GenerateValley(x, worldData);
@@ -50,17 +49,17 @@ namespace Hippopotamus.World
 
         private void GenerateValley(int startX, WorldData worldData)
         {
-            int steps = Random.Next(minimumValleySteps, maximumValleySteps);
+            int steps = Random.Range(minimumValleySteps, maximumValleySteps);
             int currentX = startX;
             for (int i = 0; i < steps; i++)
             {
-                int radius = Random.Next(minimumValleySize, maximumValleySize);
+                int radius = Random.Range(minimumValleySize, maximumValleySize);
 
-                int pivot = Random.Next(-radius, radius);
+                int pivot = Random.Range(-radius, radius);
                 int x = currentX + pivot;
 
                 Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
-                TileType spotType = Random.NextDouble() < valleyExtrusionChance ? TileType.Grass : TileType.Empty;
+                TileType spotType = Random.Value() < valleyExtrusionChance ? TileType.Grass : TileType.Empty;
                 TerrainUtilities.GenerateFuzzyCircle(minimumValleySize, maximumValleySize, worldData, spot, spotType);
 
                 currentX = x;
@@ -72,7 +71,7 @@ namespace Hippopotamus.World
             int distanceFromLast = 0;
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (distanceFromLast > minimumCanyonDistance && Random.NextDouble() < canyonChance)
+                if (distanceFromLast > minimumCanyonDistance && Random.Value() < canyonChance)
                 {
                     distanceFromLast = 0;
                     GenerateCanyon(x, worldData);
@@ -86,13 +85,13 @@ namespace Hippopotamus.World
 
         private void GenerateCanyon(int startX, WorldData worldData)
         {
-            int steps = Random.Next(minimumCanyonSteps, maximumCanyonSteps);
+            int steps = Random.Range(minimumCanyonSteps, maximumCanyonSteps);
             int currentX = startX;
             for (int i = 0; i < steps; i++)
             {
-                int radius = Random.Next(minimumCanyonSize, maximumCanyonSize);
+                int radius = Random.Range(minimumCanyonSize, maximumCanyonSize);
 
-                int pivot = Random.Next(-radius, radius);
+                int pivot = Random.Range(-radius, radius);
                 int x = currentX + pivot;
 
                 Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);

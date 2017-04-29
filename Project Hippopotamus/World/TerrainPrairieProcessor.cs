@@ -1,10 +1,9 @@
-﻿using System;
-using Hippopotamus.Engine;
+﻿using Hippopotamus.Engine;
 
 namespace Hippopotamus.World
 {
     // TODO: Force prairie at start location.
-    public class TerrainPrairieGenerator : TerrainGenerator
+    public class TerrainPrairieProcessor : ITerrainProcessor
     {
         private const int minimumSize = 10;
         private const int maximumSize = 200;
@@ -18,12 +17,12 @@ namespace Hippopotamus.World
         private const int minimumOffsetSwitchRate = 2;
         private const int maximumOffsetSwitchRate = 8;
 
-        public override void Generate(WorldData worldData)
+        public void Generate(WorldData worldData)
         {
-            int distanceFromLast = 0;
+            int distanceFromLast = 0; 
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (distanceFromLast > minimumDistanceBetween && Random.NextDouble() < chance)
+                if (distanceFromLast > minimumDistanceBetween && Random.Value() < chance)
                 {
                     distanceFromLast = 0;
                     GeneratePrairie(x, worldData);
@@ -37,7 +36,7 @@ namespace Hippopotamus.World
 
         public void GeneratePrairie(int startX, WorldData worldData)
         {
-            int size = Random.Next(minimumSize, maximumSize);
+            int size = Random.Range(minimumSize, maximumSize);
             int endX = startX + size;
 
             Vector2i spotPosition = TerrainUtilities.FindUpperMostTile(startX, worldData, type => type != TileType.Empty);
@@ -75,8 +74,8 @@ namespace Hippopotamus.World
                 if (offsetSwitch >= offsetRate)
                 {
                     offsetSwitch = 0;
-                    offsetRate = Random.Next(minimumOffsetSwitchRate, maximumOffsetSwitchRate);
-                    offset = Random.Next(minimumOffset, maximumOffset);
+                    offsetRate = Random.Range(minimumOffsetSwitchRate, maximumOffsetSwitchRate);
+                    offset = Random.Range(minimumOffset, maximumOffset);
                 }
                 else
                 {

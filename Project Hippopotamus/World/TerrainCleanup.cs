@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Hippopotamus.World
 {
-    public class TerrainCleanup : TerrainGenerator
+    public class TerrainCleanup : ITerrainProcessor
     {
-        public override void Generate(WorldData worldData)
+        public void Generate(WorldData worldData)
         {
             int width = worldData.Width;
             int height = worldData.Height;

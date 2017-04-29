@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas FilePath="Tiles/GrassAtlas" TextureWidth="32" TextureHeight="32">
+<TextureAtlas FilePath="Images/Tiles/GrassAtlas" TextureWidth="32" TextureHeight="32">
     <Texture Name="Grass_" X="1" Y="0" />
     <Texture Name="Grass_E" X="1" Y="5" />
     <Texture Name="Grass_ES" X="0" Y="1" />

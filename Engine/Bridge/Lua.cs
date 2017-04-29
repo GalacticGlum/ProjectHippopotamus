@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Hippopotamus.Engine.Core;
 using MoonSharp.Interpreter;
 
 namespace Hippopotamus.Engine.Bridge
@@ -13,6 +14,8 @@ namespace Hippopotamus.Engine.Bridge
         static Lua()
         {
             lua = new Script();
+            LuaApiHandler.Register();
+
             parsedFilePaths = new List<string>();
         }
 
@@ -89,7 +92,7 @@ namespace Hippopotamus.Engine.Bridge
             Closure function = (Closure) lua.Globals[functionName];
             if (function == null)
             {
-                Console.WriteLine($"Lua::GetFunction: Tried to get non-existent function of name: \"{functionName}\".");
+                Logger.Log("Engine", $"Lua::GetFunction: Tried to get non-existent function of name: \"{functionName}\".", LoggerVerbosity.Warning);
             }
 
             return function;
@@ -99,12 +102,34 @@ namespace Hippopotamus.Engine.Bridge
         {
             string decoratedMessage = e.DecoratedMessage;
             string culpritFilePath = parsedFilePaths[int.Parse(decoratedMessage.Substring(6, decoratedMessage.IndexOf(":", StringComparison.Ordinal) - 6)) - 1];
-            Console.WriteLine($"{decoratedMessage}\n at {culpritFilePath}");
+            Logger.Log("Engine", $"{decoratedMessage}\n at {culpritFilePath}", LoggerVerbosity.Error);
         }
 
         private static void Log(Exception e)
         {
-            Console.WriteLine(e.Message);
+            Logger.Log("Engine", e.Message, LoggerVerbosity.Error);
+        }
+
+        public static void ExposeType<T>()
+        {
+            if (!UserData.IsTypeRegistered<T>())
+            {
+                UserData.RegisterType<T>();
+            }
+
+            if (lua == null) return;
+            lua.Globals[typeof(T).Name] = UserData.CreateStatic<T>();
+        }
+
+        public static void ExposeType(Type type)
+        {
+            if (!UserData.IsTypeRegistered(type))
+            {
+                UserData.RegisterType(type);
+            }
+
+            if (lua == null) return;
+            lua.Globals[type.Name] = UserData.CreateStatic(type);
         }
     }
 }

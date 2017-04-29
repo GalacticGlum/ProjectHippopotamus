@@ -1,13 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Hippopotamus", "Project Hippopotamus\Project Hippopotamus.csproj", "{C79440A3-EBE1-4149-A951-86BD8ABC951B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3C0E2858-E8CD-45EF-B6D0-668D90850A97} = {3C0E2858-E8CD-45EF-B6D0-668D90850A97}
+		{0E4C068D-813F-489A-AFAF-54D5633FBCE8} = {0E4C068D-813F-489A-AFAF-54D5633FBCE8}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{0E4C068D-813F-489A-AFAF-54D5633FBCE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.UI", "Engine.UI\Engine.UI.csproj", "{3C0E2858-E8CD-45EF-B6D0-668D90850A97}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E4C068D-813F-489A-AFAF-54D5633FBCE8} = {0E4C068D-813F-489A-AFAF-54D5633FBCE8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

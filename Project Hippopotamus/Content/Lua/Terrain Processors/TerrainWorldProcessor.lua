@@ -1,12 +1,26 @@
 -- FIXME
+-- terrainValleyProcessor = require("TerrainValleyProcessor") 
+
+worldData = {}
+worldWidth = 0
+worldHeight = 0
+
+function BeginProcess(width, height)
+    worldWidth = width
+    worldHeight = height
+    Generate()
+    -- terrainValleyProcessor.Generate()
+
+    Logger.Log("TerrainWorldProcessor", "I WORK!")
+end
 
 function Lerp(a, b, time)
     return a + (b - a) * time
 end
 
-function Generate(worldData)
-    heightMap = {}
-    groundHeight = worldData.Height * 0.7
+function Generate()
+    local heightMap = {}
+    groundHeight = worldHeight * 0.7
 
     -- { MinimumAmplitude, MaximumAmplitude, MinimumFrequency, MaximumFrequency }
     curveParameters = 
@@ -20,36 +34,33 @@ function Generate(worldData)
     noiseMinimumMagnitude = -2
     noiseMaxMagnitude = 1
 
-    for x = 0, worldData.Width do
+    for x = 0, worldWidth do
         heightMap[x] = groundHeight
     end
 
     for _, curveParameter in pairs(curveParameters) do
-        amplitude = worldData.Height * Lerp(curveParameter[1], curveParameter[2], Random.Value())
+        amplitude = worldHeight * Lerp(curveParameter[1], curveParameter[2], Random.Value())
         frequency = Lerp(curveParameter[3], curveParameter[4], Random.Value()) / 100
 
         offset = 0
-        phase = Random.Value() * worldData.Width
-        for x = 0, worldData.Width do
+        phase = Random.Value() * worldWidth
+        for x = 0, worldWidth do
             heightMap[x] = heightMap[x] + amplitude * math.sin(frequency * x - phase) + offset
         end
     end
 
     -- Do noise!
-    for x = 0, worldData.Width do
+    for x = 0, worldWidth do
         if Random.Value() < noiseChance then
             heightMap[x] = heightMap[x] + Lerp(noiseMinimumMagnitude, noiseMaxMagnitude, Random.Value())
         end
     end
 
-    tilePositions = {}
-    for x = 0, worldData.Width do
-        for y = 0, worldData.Height do
-            if worldData.Height - 1 - y <= heightMap[x] then
-                tilePositions[{x, y}] = TileType.Grass
+    for x = 0, worldWidth do
+        for y = 0, worldHeight do
+            if worldHeight - 1 - y <= heightMap[x] then
+                worldData[x * worldHeight + y] = true--TileType.Grass
             end
         end
     end
-
-    worldData.SetTileTypes(tilePositions)   
 end

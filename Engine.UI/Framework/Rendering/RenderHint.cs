@@ -13,8 +13,10 @@ namespace Engine.UI.Framework.Rendering
         public bool IsLoaded { get; set; }
 
         protected internal RenderManager RenderManager { get; set; }
-        protected virtual Rectangle PadArea { get; set; }
-        protected virtual Rectangle ClippingArea => RenderManager.GraphicsDevice.Viewport.Bounds;
+
+        public abstract Rectangle Area{ get; set; }
+        public virtual Rectangle SafeArea => Area;
+        public virtual Rectangle ClippingArea => RenderManager.GraphicsDevice.Viewport.Bounds;
 
         protected string DefaultSkin => RenderManager.DefaultSkin;
         protected string DefaultText => RenderManager.DefaultTextRenderer;

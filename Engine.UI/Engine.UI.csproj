@@ -47,6 +47,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\Input\Buttons.cs" />
+    <Compile Include="Framework\Input\CharacterEventArgs.cs" />
+    <Compile Include="Framework\Input\GamePadButtonEventArgs.cs" />
+    <Compile Include="Framework\Input\GamePadEventArgs.cs" />
+    <Compile Include="Framework\Input\GamePadEvents.cs" />
+    <Compile Include="Framework\Input\GamePadThumbstickEventArgs.cs" />
+    <Compile Include="Framework\Input\GamePadTriggerEventArgs.cs" />
+    <Compile Include="Framework\Input\InputEventArgs.cs" />
+    <Compile Include="Framework\Input\InputManager.cs" />
+    <Compile Include="Framework\Input\KeyboardEventArgs.cs" />
+    <Compile Include="Framework\Input\KeyboardEvents.cs" />
+    <Compile Include="Framework\Input\KeyboardUtil.cs" />
+    <Compile Include="Framework\Input\KeySequence.cs" />
+    <Compile Include="Framework\Input\Modifiers.cs" />
+    <Compile Include="Framework\Input\MouseButton.cs" />
+    <Compile Include="Framework\Input\MouseEventArgs.cs" />
+    <Compile Include="Framework\Input\MouseEvents.cs" />
+    <Compile Include="Framework\Input\PolarCoordinate.cs" />
+    <Compile Include="Framework\Input\Thumbsticks.cs" />
+    <Compile Include="Framework\Input\Triggers.cs" />
     <Compile Include="Framework\Node.cs" />
     <Compile Include="Framework\Pin.cs" />
     <Compile Include="Anchor.cs" />
@@ -59,6 +79,8 @@
     <Compile Include="Framework\Rendering\TextRenderer.cs" />
     <Compile Include="Framework\RootNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIManager.cs" />
+    <Compile Include="Widget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

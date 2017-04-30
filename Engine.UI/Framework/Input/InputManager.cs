@@ -50,8 +50,8 @@ namespace Engine.UI.Framework.Input
             }
         }
 
-        private MouseEvents mouseEvents;
-        private KeyboardEvents keyboardEvents;
+        private readonly MouseEvents mouseEvents;
+        private readonly KeyboardEvents keyboardEvents;
         private readonly RootNode<Widget> rootWidget;
 
         internal InputManager(RootNode<Widget> rootWidget)
@@ -69,7 +69,7 @@ namespace Engine.UI.Framework.Input
             MouseEvents.MouseMoved += (sender, args) =>
             {
                 if (FocusedWidget != null && FocusedWidget.InputArea.Contains(MousePosition) && FocusedWidget.BlocksInput) return;
-                HoveringWidget = GetHoveringWidget();
+                HoveringWidget = GetHoverWidget();
 
                 if (PressedWidget == null) return;
                 if (!PressedWidget.InputArea.Contains(MousePosition))
@@ -81,11 +81,7 @@ namespace Engine.UI.Framework.Input
             MouseEvents.ButtonReleased += (sender, args) =>
             {
                 if(args.Button != MouseButton.Left) return;
-                if (PressedWidget != null)
-                {
-                    PressedWidget.MouseClicked(args);
-                }
-
+                PressedWidget?.MouseClicked(args);
                 PressedWidget = null;
             };
 
@@ -107,69 +103,14 @@ namespace Engine.UI.Framework.Input
                 PressedWidget = HoveringWidget;
             };
 
-            KeyboardEvents.KeyTyped += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.CharacterTyped(args);
-                }
-            };
-
-            KeyboardEvents.KeyPressed += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.KeyDown(args);
-                }
-            };
-
-            KeyboardEvents.KeyReleased += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.KeyUp(args);
-                }
-            };
-
-            MouseEvents.ButtonDoubleClicked += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.MouseDoubleClicked(args);
-                }
-            };
-
-            MouseEvents.ButtonPressed += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.MouseDown(args);
-                }
-            };
-
-            MouseEvents.MouseMoved += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.MouseMove(args);
-                }
-            };
-
-            MouseEvents.ButtonReleased += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.MouseUp(args);
-                }
-            };
-
-            MouseEvents.MouseWheelMoved += (sender, args) =>
-            {
-                if (FocusedWidget != null)
-                {
-                    FocusedWidget.MouseWheel(args);
-                }
-            };
+            KeyboardEvents.KeyTyped += (sender, args) => FocusedWidget?.CharacterTyped(args); 
+            KeyboardEvents.KeyPressed += (sender, args) => FocusedWidget?.KeyDown(args);
+            KeyboardEvents.KeyReleased += (sender, args) => FocusedWidget?.KeyUp(args);
+            MouseEvents.ButtonDoubleClicked += (sender, args) => FocusedWidget?.MouseDoubleClicked(args);
+            MouseEvents.ButtonPressed += (sender, args) =>FocusedWidget?.MouseDown(args);
+            MouseEvents.MouseMoved += (sender, args) => FocusedWidget?.MouseMove(args);
+            MouseEvents.ButtonReleased += (sender, args) => FocusedWidget?.MouseUp(args);
+            MouseEvents.MouseWheelMoved += (sender, args) => FocusedWidget?.MouseWheel(args);
         }
 
         internal void Update(GameTime gameTime, MouseState mouseState)
@@ -193,8 +134,8 @@ namespace Engine.UI.Framework.Input
         private void FindHover(ref Widget hover, Node<Widget> node)
         {
             if (!node.UserData.AbsoluteArea.Contains(MousePosition)) return;
-            if (node.Parent.UserData != null && !child.UserData.InputArea.Contains(MousePosition)) return;
-            if (!node.UserData.Active || !child.UserData.Visible) return;
+            if (node.Parent.UserData != null && !node.UserData.InputArea.Contains(MousePosition)) return;
+            if (!node.UserData.Active || !node.UserData.Visible) return;
 
             hover = node.UserData;
             foreach (Node<Widget> child in node.Children)

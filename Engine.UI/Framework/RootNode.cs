@@ -2,7 +2,10 @@
 {
     public class RootNode<T> : Node<T> where T : class
     {
-        public RootNode(T userData) : base(userData) {}
+        public RootNode() : base(null)
+        {
+            Root = this;
+        }
 
         public event NodeEventHandler<T> AttachedToRootEventHandler;
         public void OnAttachedToRoot(Node<T> node)

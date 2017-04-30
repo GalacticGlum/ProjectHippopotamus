@@ -1,12 +1,12 @@
-﻿using Hippopotamus.Engine.Core;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Engine.UI.Framework
 {
     public class Pin
     {
         public bool IsPushed { get; private set; }
-        public Vector2 Shift => start - Input.MousePosition;
+        public Vector2 Shift => start - Mouse.GetState().Position.ToVector2();
 
         private Vector2 start;
 
@@ -18,7 +18,7 @@ namespace Engine.UI.Framework
         public void Push()
         {
             IsPushed = true;
-            start = Input.MousePosition;
+            start = Mouse.GetState().Position.ToVector2();
         }
 
         public void Pull()

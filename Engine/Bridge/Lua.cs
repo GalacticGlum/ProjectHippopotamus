@@ -87,6 +87,25 @@ namespace Hippopotamus.Engine.Bridge
             return result;
         }
 
+        public static DynValue RunSourceCode(string sourceCode)
+        {
+            DynValue result = DynValue.Nil;
+            try
+            {
+                result = lua.DoString(sourceCode);
+            }
+            catch(InterpreterException e)
+            {
+                Log(e);
+            }
+            catch(Exception e)
+            {
+                Log(e);
+            }
+
+            return result;
+        }
+
         public static Closure GetFunction(string functionName)
         {
             Closure function = (Closure) lua.Globals[functionName];
@@ -96,6 +115,17 @@ namespace Hippopotamus.Engine.Bridge
             }
 
             return function;
+        }
+
+        public static DynValue GetVariable(string variableName)
+        {
+            DynValue value = DynValue.FromObject(lua, lua.Globals[variableName]);
+            if (value == null)
+            {
+                Logger.Log("Lua", $"Lua::GetVariable: Tried to get non-existent global of name: \"{variableName}\".", LoggerVerbosity.Warning);
+            }
+
+            return value;
         }
 
         private static void Log(InterpreterException e)

@@ -5,6 +5,9 @@ using System.Linq;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
+using Hippopotamus.Engine.Bridge;
+
+using MoonSharp.Interpreter;
 
 namespace Hippopotamus.World
 {
@@ -34,9 +37,9 @@ namespace Hippopotamus.World
         private readonly Queue<Chunk> loadChunkQueue;
         private readonly Queue<Chunk> unloadChunkQueue;
 
-        private readonly List<ITerrainProcessor> worldGeneratorPasses;
+        private readonly TerrainProcessor terrainProcessor;
 
-        public World()
+        public World(string terrainProcessorConfiguration)
         {
             Current = this;
 
@@ -44,7 +47,7 @@ namespace Hippopotamus.World
             loadChunkQueue = new Queue<Chunk>();
             unloadChunkQueue = new Queue<Chunk>();
 
-            worldGeneratorPasses = new List<ITerrainProcessor>();
+            terrainProcessor = new TerrainProcessor(terrainProcessorConfiguration);
         }
 
         public void Initialize(int width, int height)
@@ -62,10 +65,24 @@ namespace Hippopotamus.World
         public void Generate()
         {
             CreateChunks();
-            foreach (ITerrainProcessor pass in worldGeneratorPasses)
+            terrainProcessor.Execute(WorldData);
+
+            Table generatedData = Lua.GetVariable("worldData").Table;
+            for (int x = 0; x < WorldData.Width; ++x)
             {
-                pass.Generate(WorldData);
+                for (int y = 0; y < WorldData.Height; ++y)
+                {
+                    int key = x * WorldData.Height + y;
+                    DynValue value = generatedData.Get(key);
+
+                    if (value.IsNotNil())
+                    {
+                        WorldData.SetTileTypeAt(x, y, TileType.Grass/*(TileType)generatedData[key]*/);
+                    }
+                }
             }
+
+            //Lua.RunSourceCode("worldData = nil; collectgarbage()");
 
             Save("moo.data");
         }
@@ -85,11 +102,6 @@ namespace Hippopotamus.World
                     chunks[x, y] = new Chunk(new Vector2(x, y), new Vector2(x, y) * Chunk.Size);
                 }
             }
-        }
-
-        public void AddGenerator(ITerrainProcessor terrainProcessor)
-        {
-            worldGeneratorPasses.Add(terrainProcessor);
         }
 
         public Chunk GetChunkContaining(int x, int y)

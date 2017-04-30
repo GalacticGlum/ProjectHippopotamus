@@ -21,10 +21,12 @@ namespace Hippopotamus.Engine.Utilities
                 if (!reader.ReadToDescendant(rootElementName)) return;
                 rootReadAction?.Invoke(reader);
 
+                if (childReadAction == null) return;
+
                 if (!reader.ReadToDescendant(elementName)) return;
                 do
                 {
-                    childReadAction?.Invoke(reader);
+                    childReadAction(reader);
                 }
                 while (reader.ReadToNextSibling(elementName));
             }

@@ -61,3 +61,9 @@
 /processorParam:TextureFormat=Color
 /build:Images/Tiles/Sheet_GrassB.png
 
+#begin Fonts/Arial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Arial.spritefont
+

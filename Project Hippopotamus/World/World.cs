@@ -38,6 +38,7 @@ namespace Hippopotamus.World
         private readonly Queue<Chunk> unloadChunkQueue;
 
         private readonly TerrainProcessor terrainProcessor;
+        private readonly List<ITerrainProcessor> terrainProcesses;
 
         public World(string terrainProcessorConfiguration)
         {
@@ -48,6 +49,7 @@ namespace Hippopotamus.World
             unloadChunkQueue = new Queue<Chunk>();
 
             terrainProcessor = new TerrainProcessor(terrainProcessorConfiguration);
+            terrainProcesses = new List<ITerrainProcessor>();
         }
 
         public void Initialize(int width, int height)
@@ -65,24 +67,28 @@ namespace Hippopotamus.World
         public void Generate()
         {
             CreateChunks();
-            terrainProcessor.Execute(WorldData);
-
-            Table generatedData = Lua.GetVariable("worldData").Table;
-            for (int x = 0; x < WorldData.Width; ++x)
+            foreach (ITerrainProcessor process in terrainProcesses)
             {
-                for (int y = 0; y < WorldData.Height; ++y)
-                {
-                    int key = x * WorldData.Height + y;
-                    DynValue value = generatedData.Get(key);
-
-                    if (value.IsNotNil())
-                    {
-                        WorldData.SetTileTypeAt(x, y, TileType.Grass/*(TileType)generatedData[key]*/);
-                    }
-                }
+                process.Generate(WorldData);
             }
 
-            //Lua.RunSourceCode("worldData = nil; collectgarbage()");
+            //terrainProcessor.Execute(WorldData);
+            //Table generatedData = Lua.GetVariable("worldData").Table;
+            //for (int x = 0; x < WorldData.Width; ++x)
+            //{
+            //    for (int y = 0; y < WorldData.Height; ++y)
+            //    {
+            //        int key = x * WorldData.Height + y;
+            //        DynValue value = generatedData.Get(key);
+
+            //        if (value.IsNotNil())
+            //        {
+            //            WorldData.SetTileTypeAt(x, y, TileType.Grass/*(TileType)generatedData[key]*/);
+            //        }
+            //    }
+            //}
+
+            ////Lua.RunSourceCode("worldData = nil; collectgarbage()");
 
             Save("moo.data");
         }
@@ -299,6 +305,11 @@ namespace Hippopotamus.World
 
                 loadedChunks.Add(chunk);
             }
+        }
+
+        public void AddGenerator(ITerrainProcessor terrainProcess)
+        {
+            terrainProcesses.Add(terrainProcess);
         }
     }
 }

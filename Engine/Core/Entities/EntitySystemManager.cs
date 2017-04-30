@@ -86,7 +86,18 @@ namespace Hippopotamus.Engine.Core
 
         public static void Register<T>(uint executionLayer = 0) where T : EntitySystem, new()
         {
-            Register(typeof(T), executionLayer);
+            Type type = typeof(T);
+            if (type.BaseType != typeof(EntitySystem) || systems.ContainsKey(type)) return;
+
+            EntitySystem system = new T()
+            {
+                ExecutionLayer = executionLayer
+            };
+
+            systems.Add(type, system);
+
+            isDirty = true;
+            system.IsStartDirty = true;
         }
 
         public static void Unregister(Type type)

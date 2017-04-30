@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3C0E2858-E8CD-45EF-B6D0-668D90850A97}</ProjectGuid>
+    <ProjectGuid>{A62AAF91-81D2-461C-AB3E-DEC5CF8EBC65}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Engine.UI</RootNamespace>
@@ -30,6 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.5.1.1679, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Project Hippopotamus.Engine">
+      <HintPath>..\Engine\bin\Debug\Project Hippopotamus.Engine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,6 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\Node.cs" />
+    <Compile Include="Framework\Pin.cs" />
+    <Compile Include="Anchor.cs" />
+    <Compile Include="Framework\Rendering\FontRenderHint.cs" />
+    <Compile Include="Framework\Rendering\Layout.cs" />
+    <Compile Include="Framework\Rendering\Renderer.cs" />
+    <Compile Include="Framework\Rendering\RenderHint.cs" />
+    <Compile Include="Framework\Rendering\RenderManager.cs" />
+    <Compile Include="Framework\Rendering\Skin.cs" />
+    <Compile Include="Framework\Rendering\TextRenderer.cs" />
+    <Compile Include="Framework\RootNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

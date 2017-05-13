@@ -53,6 +53,7 @@
     <Compile Include="World\TerrainValleyProcessor.cs" />
     <Compile Include="World\TerrainWorldProcessor.cs" />
     <Compile Include="World\Tile.cs" />
+    <Compile Include="World\TileCollisionSystem.cs" />
     <Compile Include="World\TileGraphicSystem.cs" />
     <Compile Include="World\TileType.cs" />
     <Compile Include="World\World.cs" />

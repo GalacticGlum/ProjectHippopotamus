@@ -20,6 +20,7 @@ namespace Hippopotamus.World
             World.AddGenerator(new TerrainCleanup());
 
             EntitySystemManager.Register<TileGraphicSystem>();
+            EntitySystemManager.Register<TileCollisionSystem>();
 
             // Constant seed for debugging purposes.
             World.Generate("purplehippo");

@@ -30,7 +30,7 @@ namespace Hippopotamus.World
             foreach (KeyValuePair<Tile, Texture2D> pair in tiles)
             {
                 if (pair.Key == null || pair.Value == null) continue;
-                args.SpriteBatch.Draw(pair.Value, pair.Key.Position.ToVector2() * Tile.Size, null, Color.White, 0,
+                args.SpriteBatch.Draw(pair.Value, pair.Key.WorldPosition.ToVector2() * Tile.Size, null, Color.White, 0,
                     new Vector2(pair.Value.Width / 2.0f, pair.Value.Height / 2.0f), Vector2.One, SpriteEffects.None, 0);
             }
 
@@ -84,8 +84,8 @@ namespace Hippopotamus.World
         public string GetSpriteNameForTile(Tile tile)
         {
             string spriteName = Enum.GetName(tile.Type.GetType(), tile.Type) + "_";
-            int x = tile.Position.X;
-            int y = tile.Position.Y;
+            int x = tile.WorldPosition.X;
+            int y = tile.WorldPosition.Y;
 
             Tile tileAt = World.Current.GetTileAt(x, y - 1);
             if (tileAt != null && tileAt.Type == tile.Type)

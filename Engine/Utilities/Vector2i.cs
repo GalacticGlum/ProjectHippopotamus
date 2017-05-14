@@ -8,6 +8,9 @@ namespace Hippopotamus.Engine
     [MoonSharpUserData]
     public struct Vector2i
     {
+        public static Vector2i Zero { get; } = new Vector2i(0);
+        public static Vector2i One { get; } = new Vector2i(1);
+
         public int X;
         public int Y;
 
@@ -15,6 +18,25 @@ namespace Hippopotamus.Engine
         {
             X = x;
             Y = y;
+        }
+
+        public Vector2i(int scalar)
+        {
+            X = scalar;
+            Y = scalar;
+        }
+
+        public Vector2i Negative()
+        {
+            return new Vector2i(-X, -Y);
+        }
+
+        public Vector2i Negate()
+        {
+            X *= -1;
+            Y *= -1;
+
+            return this;
         }
 
         public Vector2 ToVector2()

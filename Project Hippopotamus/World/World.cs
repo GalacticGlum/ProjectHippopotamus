@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Hippopotamus.Engine;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
-using Hippopotamus.Engine.Bridge;
-
-using MoonSharp.Interpreter;
 
 namespace Hippopotamus.World
 {

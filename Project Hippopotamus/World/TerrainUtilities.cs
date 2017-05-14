@@ -16,6 +16,19 @@ namespace Hippopotamus.World
         /// <param name="type"></param>
         public static void StampCircle(int radius, World world, Tile tile, TileType type)
         {
+            StampCircle(radius, world, tile.WorldPosition, type);
+        }
+
+        /// <summary>
+        /// Creates a circle with <paramref name="radius"/> around a given <paramref name="tilePosition"/> with <paramref name="type"/>. 
+        /// Use this to affect the <paramref name="world"/>.
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="world"></param>
+        /// <param name="tilePosition"></param>
+        /// <param name="type"></param>
+        public static void StampCircle(int radius, World world, Vector2i tilePosition, TileType type)
+        {
             for (int x = -radius; x <= radius; x++)
             {
                 for (int y = -radius; y <= radius; y++)
@@ -23,7 +36,7 @@ namespace Hippopotamus.World
                     double distance = Math.Sqrt(x * x + y * y);
                     if (!(distance <= radius)) continue;
 
-                    world.GetTileAt(tile.Position.X + x, tile.Position.Y + y).Type = type;
+                    world.GetTileAt(tilePosition.X + x, tilePosition.Y + y).Type = type;
                 }
             }
         }
@@ -49,6 +62,49 @@ namespace Hippopotamus.World
                 }
             }
         }
+
+        /// <summary>
+        /// Creates a fuzzy circle with radius between <paramref name="minRadius"/> and <paramref name="maxRadius"/>
+        /// around a given <paramref name="tile"/> with <paramref name="type"/>. 
+        /// Use this to affect the <paramref name="world"/>.
+        /// </summary>
+        /// <param name="minRadius"></param>
+        /// <param name="maxRadius"></param>
+        /// <param name="world"></param>
+        /// <param name="tile"></param>
+        /// <param name="type"></param>
+        public static void StampFuzzyCircle(float minRadius, float maxRadius, World world, Tile tile, TileType type)
+        {
+            StampFuzzyCircle(minRadius, maxRadius, world, tile.WorldPosition, type);
+        }
+
+        /// <summary>
+        /// Creates a fuzzy circle with radius between <paramref name="minRadius"/> and <paramref name="maxRadius"/>
+        /// around a given <paramref name="tilePosition"/> with <paramref name="type"/>. 
+        /// Use this to affect the <paramref name="world"/>.
+        /// </summary>
+        /// <param name="minRadius"></param>
+        /// <param name="maxRadius"></param>
+        /// <param name="world"></param>
+        /// <param name="tilePosition"></param>
+        /// <param name="type"></param>
+        public static void StampFuzzyCircle(float minRadius, float maxRadius, World world, Vector2i tilePosition, TileType type)
+        {
+            int range = (int)Math.Ceiling(maxRadius);
+            for (int x = -range; x <= range; x++)
+            {
+                for (int y = -range; y <= range; y++)
+                {
+                    double fuzzyRadius = Random.Range(minRadius, maxRadius);
+                    double distance = Math.Sqrt(x * x + y * y);
+                    if (!(distance <= fuzzyRadius)) continue;
+
+                    Tile tileAt = world.GetTileAt(tilePosition.X + x, tilePosition.Y + y);
+                    tileAt.Type = type;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Creates a fuzzy circle with radius between <paramref name="minRadius"/> and <paramref name="maxRadius"/>
@@ -116,7 +172,7 @@ namespace Hippopotamus.World
                 }
             }
 
-            return new Vector2i(-1, -1);
+            return new Vector2i(-1);
         }
     }
 }

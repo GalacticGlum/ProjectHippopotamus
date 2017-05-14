@@ -30,7 +30,7 @@ namespace Hippopotamus.World
             GenerateCanyons(worldData);
         }
 
-        private void GenerateValleys(WorldData worldData)
+        private static void GenerateValleys(WorldData worldData)
         {
             int distanceFromLast = 0;
             for (int x = 0; x < worldData.Width; x++)
@@ -47,7 +47,7 @@ namespace Hippopotamus.World
             }
         }
 
-        private void GenerateValley(int startX, WorldData worldData)
+        private static void GenerateValley(int startX, WorldData worldData)
         {
             int steps = Random.Range(minimumValleySteps, maximumValleySteps);
             int currentX = startX;
@@ -66,7 +66,7 @@ namespace Hippopotamus.World
             }
         }
 
-        private void GenerateCanyons(WorldData worldData)
+        public void GenerateCanyons(WorldData worldData)
         {
             int distanceFromLast = 0;
             for (int x = 0; x < worldData.Width; x++)
@@ -83,7 +83,7 @@ namespace Hippopotamus.World
             }
         }
 
-        private void GenerateCanyon(int startX, WorldData worldData)
+        private static void GenerateCanyon(int startX, WorldData worldData)
         {
             int steps = Random.Range(minimumCanyonSteps, maximumCanyonSteps);
             int currentX = startX;

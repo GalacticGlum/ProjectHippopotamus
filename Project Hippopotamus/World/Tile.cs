@@ -19,7 +19,8 @@ namespace Hippopotamus.World
     {
         public const int Size = 32;
 
-        public Vector2i Position { get; }
+        public Vector2i WorldPosition { get; }
+        public Vector2i Position{ get; }
         public Chunk Chunk { get; }
 
         private TileType type;
@@ -37,10 +38,11 @@ namespace Hippopotamus.World
             }
         }
 
-        public Tile(TileType type, Vector2 position, Chunk chunk)
+        public Tile(TileType type, Vector2 position, Vector2 worldPosition, Chunk chunk)
         {
             Type = type;
             Position = new Vector2i((int)position.X, (int)position.Y);
+            WorldPosition = new Vector2i((int)worldPosition.X, (int)worldPosition.Y);
             Chunk = chunk;
         }
 
@@ -68,24 +70,24 @@ namespace Hippopotamus.World
         public Tile[] GetNeighbours(bool diagonal = false)
         {
             Tile[] neighbours = !diagonal ? new Tile[4] : new Tile[8];
-            Tile tileAt = World.Current.GetTileAt(Position.X, Position.Y + 1);
+            Tile tileAt = World.Current.GetTileAt(WorldPosition.X, WorldPosition.Y + 1);
             neighbours[0] = tileAt;
-            tileAt = World.Current.GetTileAt(Position.X + 1, Position.Y);
+            tileAt = World.Current.GetTileAt(WorldPosition.X + 1, WorldPosition.Y);
             neighbours[1] = tileAt;
-            tileAt = World.Current.GetTileAt(Position.X, Position.Y - 1);
+            tileAt = World.Current.GetTileAt(WorldPosition.X, WorldPosition.Y - 1);
             neighbours[2] = tileAt;
-            tileAt = World.Current.GetTileAt(Position.X - 1, Position.Y);
+            tileAt = World.Current.GetTileAt(WorldPosition.X - 1, WorldPosition.Y);
             neighbours[3] = tileAt;
 
             if (!diagonal) return neighbours;
 
-            tileAt = World.Current.GetTileAt(Position.X + 1, Position.Y + 1);
+            tileAt = World.Current.GetTileAt(WorldPosition.X + 1, WorldPosition.Y + 1);
             neighbours[4] = tileAt;
-            tileAt = World.Current.GetTileAt(Position.X + 1, Position.Y - 1);
+            tileAt = World.Current.GetTileAt(WorldPosition.X + 1, WorldPosition.Y - 1);
             neighbours[5] = tileAt;
-            tileAt = World.Current.GetTileAt(Position.X - 1, Position.Y - 1);
+            tileAt = World.Current.GetTileAt(WorldPosition.X - 1, WorldPosition.Y - 1);
             neighbours[6] = tileAt;
-            tileAt = World.Current.GetTileAt(Position.X - 1, Position.Y + 1);
+            tileAt = World.Current.GetTileAt(WorldPosition.X - 1, WorldPosition.Y + 1);
             neighbours[7] = tileAt;
 
             return neighbours;

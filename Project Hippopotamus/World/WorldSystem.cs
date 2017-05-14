@@ -1,4 +1,5 @@
-﻿using Hippopotamus.Engine.Core;
+﻿using System;
+using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
 using Microsoft.Xna.Framework;
@@ -17,6 +18,7 @@ namespace Hippopotamus.World
             World.AddGenerator(new TerrainWorldProcessor());
             World.AddGenerator(new TerrainValleyProcessor());
             World.AddGenerator(new TerrainPrairieProcessor());
+            World.AddGenerator(new TerrainCaveProcessor());
             World.AddGenerator(new TerrainCleanup());
 
             EntitySystemManager.Register<TileGraphicSystem>();

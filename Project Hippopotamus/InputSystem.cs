@@ -1,5 +1,4 @@
 ﻿using System;
-using Hippopotamus.Engine;
 using Hippopotamus.Engine.Core;
 using Hippopotamus.Engine.Core.Entities;
 using Hippopotamus.Engine.Rendering;
@@ -44,8 +43,8 @@ namespace Hippopotamus
             InputManager.RegisterInputMapping("SpeedDown", MappedInputModifier.None, Keys.Subtract);
             InputManager.RegisterKeyInputAction("SpeedDown", MappedInputType.Down, (sender, args) => speed -= 10);
 
-            InputManager.RegisterInputMapping("Position logger", MappedInputModifier.Control, MouseButton.Left);
-            InputManager.RegisterMouseInputAction("Position logger", MappedInputType.Down, (sender, args) => Logger.Log("InputSystem", Camera.Main.Transform.Position.ToString()));
+            InputManager.RegisterInputMapping("WorldPosition logger", MappedInputModifier.Control, MouseButton.Left);
+            InputManager.RegisterMouseInputAction("WorldPosition logger", MappedInputType.Down, (sender, args) => Logger.Log("InputSystem", Camera.Main.Transform.Position.ToString()));
 
             InputManager.RegisterInputMapping("Reset world", MappedInputModifier.Control, Keys.R);
             InputManager.RegisterKeyInputAction("Reset world", MappedInputType.Down, (sender, args) => World.World.Current.Generate());
@@ -76,14 +75,6 @@ namespace Hippopotamus
 
         private static void MakeCave()
         {
-            Vector2 mousePosition = Camera.Main.ScreenToWorldPoint(Input.MousePosition);
-
-            int x = (int)Math.Floor(mousePosition.X / Tile.Size + 0.5f);
-            int y = (int)Math.Floor(mousePosition.Y / Tile.Size + 0.5f);
-            
-            Tile tile = World.World.Current.GetTileAt(x, y);
-
-            if (tile == null) return;
         }
     }
 }

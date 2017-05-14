@@ -44,7 +44,8 @@ namespace Hippopotamus.World
             {
                 for (int y = 0; y < Size; y++)
                 {
-                    tiles[x, y] = new Tile(TileType.Empty, WorldPosition + new Vector2(x, y), this);
+                    Vector2 position = new Vector2(x, y);
+                    tiles[x, y] = new Tile(TileType.Empty, position, WorldPosition + position, this);
                 }
             }
         }

@@ -13,7 +13,10 @@ public class TileGraphicController
     {
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
         tileParent = new GameObject("Tiles");
-        tilePrefab = new GameObject("Tile_Prefab");
+
+        // Initialize tile prefab
+        tilePrefab = new GameObject("Tile_Prefab", typeof(SpriteRenderer));
+        tilePrefab.SetActive(false);
 
         World.Current.ChunkLoaded += OnChunkLoaded;
         World.Current.ChunkUnloaded += OnChunkUnloaded;
@@ -43,8 +46,8 @@ public class TileGraphicController
                 Tile tileAt = args.Chunk.GetTileAt(x, y);
                 if (tileAt == null || !tileGameObjectMap.ContainsKey(tileAt)) continue;
 
-                tileGameObjectMap.Remove(tileAt);
                 ObjectPool.Destroy(tileGameObjectMap[tileAt]);
+                tileGameObjectMap.Remove(tileAt);
             }
         }
     }
@@ -109,8 +112,7 @@ public class TileGraphicController
         tileGameObjectMap.Add(tileAt, tileGameObject);
         tileGameObject.transform.SetParent(tileParent.transform);
 
-        SpriteRenderer spriteRenderer = tileGameObject.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = SpriteManager.GetSprite("Tile", "Empty");
+        tileGameObject.GetComponent<SpriteRenderer>().sprite = null;
         //spriteRenderer.sortingLayerName = "Tiles";
 
         OnTileChanged(this, new TileEventArgs(tileAt));

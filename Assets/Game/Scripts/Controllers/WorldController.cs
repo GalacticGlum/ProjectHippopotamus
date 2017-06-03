@@ -19,7 +19,7 @@ public class WorldController : MonoBehaviour
         World.AddGenerator(new TerrainCaveProcessor());
         World.AddGenerator(new TerrainCleanup());
 
-        Camera.main.transform.position = new Vector2((World.Width - 1) / 2.0f, (World.Height - 1) / 2.0f);
+        Camera.main.transform.position = new Vector3((World.Width - 1) / 2.0f * Chunk.Size, (World.Height - 1) / 2.0f * Chunk.Size, -1);
 
         // Constant seed for debugging purposes.
         World.Generate("purplehippo");

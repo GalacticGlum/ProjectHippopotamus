@@ -78,7 +78,7 @@ public class TileGraphicController
         int x = tile.WorldPosition.X;
         int y = tile.WorldPosition.Y;
 
-        Tile tileAt = World.Current.GetTileAt(x, y - 1);
+        Tile tileAt = World.Current.GetTileAt(x, y + 1);
         if (tileAt != null && tileAt.Type == tile.Type)
         {
             spriteName += "N";
@@ -90,7 +90,7 @@ public class TileGraphicController
             spriteName += "E";
         }
 
-        tileAt = World.Current.GetTileAt(x, y + 1);
+        tileAt = World.Current.GetTileAt(x, y - 1);
         if (tileAt != null && tileAt.Type == tile.Type)
         {
             spriteName += "S";

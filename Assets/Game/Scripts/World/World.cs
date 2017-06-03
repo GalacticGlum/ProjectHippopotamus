@@ -226,7 +226,7 @@ public class World
         float zoom = Camera.main.orthographicSize;
 
         // This is the coordinate of the TOP-LEFT pixel
-        Vector2 cameraPosition = Camera.main.transform.position;
+        Vector2 cameraPosition = Camera.main.transform.position + -(new Vector3(zoom, zoom) * 2);
         Vector2 tileAtCameraPosition = new Vector2(cameraPosition.x, cameraPosition.y);
         Chunk chunkContaining = GetChunkContaining((int)Math.Floor(tileAtCameraPosition.x), (int)Math.Floor(tileAtCameraPosition.y));
 

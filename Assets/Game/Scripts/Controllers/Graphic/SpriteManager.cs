@@ -8,7 +8,6 @@ public static class SpriteManager
     public static Texture2D MissingTexture { get; private set; }
     private static Dictionary<string, Sprite> sprites;
 
-
     static SpriteManager()
     {
         MissingTexture = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -89,7 +88,6 @@ public static class SpriteManager
         {
             pivotX = 0.5f;
         }
-
 
         string pivotYAttribute = reader.GetAttribute("PivotY");
         float pivotY;

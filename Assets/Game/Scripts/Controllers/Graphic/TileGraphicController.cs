@@ -15,7 +15,9 @@ public class TileGraphicController
         tileParent = new GameObject("Tiles");
 
         // Initialize tile prefab
-        tilePrefab = new GameObject("Tile_Prefab", typeof(SpriteRenderer));
+        tilePrefab = new GameObject("Tile_Prefab", typeof(SpriteRenderer), typeof(BoxCollider2D));
+        tilePrefab.GetComponent<BoxCollider2D>().size = Vector2.one;
+
         tilePrefab.SetActive(false);
 
         World.Current.ChunkLoaded += OnChunkLoaded;

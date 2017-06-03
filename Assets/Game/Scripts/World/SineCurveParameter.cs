@@ -1,5 +1,4 @@
-﻿using Hippopotamus.Engine.Bridge;
-using MoonSharp.Interpreter;
+﻿using MoonSharp.Interpreter;
 
 [LuaExposeType]
 [MoonSharpUserData]

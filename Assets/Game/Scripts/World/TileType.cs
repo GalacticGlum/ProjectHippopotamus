@@ -1,6 +1,4 @@
-﻿using Hippopotamus.Engine.Bridge;
-
-[LuaExposeType]
+﻿[LuaExposeType]
 public enum TileType : byte
 {
     Empty,

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Hippopotamus.Engine.Bridge;
 using UnityEngine;
 
 [LuaExposeType]

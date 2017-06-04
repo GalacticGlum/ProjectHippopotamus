@@ -6,10 +6,17 @@ using UnityUtilities.ObjectPool;
 public class TileGraphicController
 {
     private readonly Dictionary<Tile, GameObject> tileGameObjectMap;
+    private readonly GameObject tilePrefab;
+    private readonly GameObject tileParent;
 
     public TileGraphicController()
     {
         tileGameObjectMap = new Dictionary<Tile, GameObject>();
+
+        tileParent = new GameObject("Tiles");
+        tilePrefab = new GameObject("Tile_Prefab", typeof(SpriteRenderer), typeof(BoxCollider2D));
+        tilePrefab.GetComponent<BoxCollider2D>().size = Vector2.one;
+        tilePrefab.SetActive(false);
 
         World.Current.ChunkLoaded += OnChunkLoaded;
         World.Current.ChunkUnloaded += OnChunkUnloaded;
@@ -100,10 +107,10 @@ public class TileGraphicController
 
     private void CreateTileGameObject(Tile tileAt)
     {
-        GameObject tileGameObject = ObjectPool.Spawn(WorldController.Instance.TilePrefab, new Vector3(tileAt.WorldPosition.X, tileAt.WorldPosition.Y), Quaternion.identity);
+        GameObject tileGameObject = ObjectPool.Spawn(tilePrefab, tileAt.WorldPosition.ToVector3(), Quaternion.identity);
         tileGameObject.name = "Tile_" + tileAt.WorldPosition.X + "_" + tileAt.WorldPosition.Y;
         tileGameObjectMap.Add(tileAt, tileGameObject);
-        tileGameObject.transform.SetParent(WorldController.Instance.TileParent.transform);
+        tileGameObject.transform.SetParent(tileParent.transform);
         tileGameObject.GetComponent<SpriteRenderer>().sprite = null;
         //spriteRenderer.sortingLayerName = "Tiles";
 

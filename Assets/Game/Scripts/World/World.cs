@@ -18,6 +18,8 @@ public class World
 
     public WorldData WorldData { get; private set; }
 
+    public List<Character> Characters { get; private set; }
+
     public event TileChangedEventHandler TileChanged;
     public void OnTileChanged(TileEventArgs args)
     {
@@ -45,6 +47,15 @@ public class World
         }
     }
 
+    public event CharacterCreatedEventHandler CharacterCreated;
+    public void OnCharacterCreated(CharacterEventArgs args)
+    {
+        if (CharacterCreated != null)
+        {
+            CharacterCreated(this, args);
+        }
+    }
+
     private Chunk[,] chunks;
     private readonly HashSet<Chunk> loadedChunks;
     private readonly Queue<Chunk> loadChunkQueue;
@@ -52,6 +63,7 @@ public class World
 
     private readonly TerrainProcessor terrainProcessor;
     private readonly List<ITerrainProcessor> terrainProcesses;
+    private Character player;
 
     public World(string terrainProcessorConfiguration)
     {
@@ -63,6 +75,8 @@ public class World
 
         terrainProcessor = new TerrainProcessor(terrainProcessorConfiguration);
         terrainProcesses = new List<ITerrainProcessor>();
+
+        Characters = new List<Character>();
     }
 
     public void Initialize(int width, int height)
@@ -103,6 +117,10 @@ public class World
 
         ////Lua.RunSourceCode("worldData = nil; collectgarbage()");
 
+        Vector2 cameraPosition = Camera.main.transform.position;
+        Tile upperMostTile = TerrainUtilities.FindUpperMostTile(Mathf.RoundToInt(cameraPosition.x), this, type => type != TileType.Empty);
+        Tile tile = GetTileAt(upperMostTile.Position.X, upperMostTile.Position.Y + 1);
+        player = CreateCharacter(tile.Position);
         Save("moo.data");
     }
 
@@ -326,6 +344,14 @@ public class World
     public void AddGenerator(ITerrainProcessor terrainProcess)
     {
         terrainProcesses.Add(terrainProcess);
+    }
+
+    public Character CreateCharacter(Vector2i position)
+    {
+        Character instance = new Character(position);
+        Characters.Add(instance);
+
+        return instance;
     }
 }
 

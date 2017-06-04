@@ -14,9 +14,9 @@ public class TileEventArgs : EventArgs
 
 public class Tile
 {
-    public readonly Vector2i WorldPosition;
-    public readonly Vector2i Position;
-    public readonly Chunk Chunk;
+    public Vector2i WorldPosition { get; private set; }
+    public Vector2i Position { get; private set; }
+    public Chunk Chunk { get; private set; }
 
     private TileType type;
     public TileType Type

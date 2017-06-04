@@ -1,4 +1,6 @@
-﻿public struct Vector2i
+﻿using UnityEngine;
+
+public struct Vector2i
 {
     public int X { get; set; }
     public int Y { get; set; }
@@ -48,4 +50,20 @@
     {
         return string.Format("({0}, {1})", X, Y);
     }
+
+    public Vector2 ToVector2()
+    {
+        return new Vector2(X, Y);
+    }
+
+    public Vector3 ToVector3(int z = 0)
+    {
+        return new Vector3(X, Y, z);
+    }
+
+    public Vector4 ToVector4(int z = 0, int w = 0)
+    {
+        return new Vector4(X, Y, z, w);
+    }
 }
+

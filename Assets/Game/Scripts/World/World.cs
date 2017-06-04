@@ -223,52 +223,53 @@ public class World
         int screenWidth = Screen.width;
         int screenHeight = Screen.height;
 
-        float zoom = Camera.main.orthographicSize;
-
-        // This is the coordinate of the TOP-LEFT pixel
-        Vector2 cameraPosition = Camera.main.transform.position + -(new Vector3(zoom, zoom) * 2);
-        Vector2 tileAtCameraPosition = new Vector2(cameraPosition.x, cameraPosition.y);
-        Chunk chunkContaining = GetChunkContaining((int)Math.Floor(tileAtCameraPosition.x), (int)Math.Floor(tileAtCameraPosition.y));
+        // This is the coordinate of the centre
+        Vector2 cameraPosition = Camera.main.transform.position;
+        Chunk chunkContaining = GetChunkContaining((int)Math.Floor(cameraPosition.x), (int)Math.Floor(cameraPosition.y));
 
         if (chunkContaining == null) return;
         int viewpointX = (int)chunkContaining.Position.x;
         int viewpointY = (int)chunkContaining.Position.y;
 
-        // find x-coordinate of the leftmost pixel that belongs to this chunk
-        int focusChunkLeftmostPosition = (int)(cameraPosition.x - cameraPosition.x % (Chunk.Size * Tile.Size));
-        // find x-coordinate of the rightmost pixel that belongs to this chunk
-        int focusChunkRightmostPosition = focusChunkLeftmostPosition + Chunk.Size * Tile.Size - 1;
-        // find y-coordinate of the topmost pixel that belongs to this chunk
-        int focusChunkTopmostPosition = (int)(cameraPosition.y - cameraPosition.y % (Chunk.Size * Tile.Size));
-        // find y-coordinate of the bottommost pixel that belongs to this chunk
-        int focusChunkBottommostPosition = focusChunkTopmostPosition + Chunk.Size * Tile.Size - 1;
+        // find x-coordinate of the leftmost tile that belongs to this chunk
+        int focusChunkLeftmostPosition = (int)(cameraPosition.x - cameraPosition.x % Chunk.Size);
+        // find x-coordinate of the rightmost tile that belongs to this chunk
+        int focusChunkRightmostPosition = focusChunkLeftmostPosition + Chunk.Size - 1;
+        // find y-coordinate of the bottommost tile that belongs to this chunk
+        int focusChunkBottommostPosition = (int)(cameraPosition.y - cameraPosition.y % Chunk.Size);
+        // find y-coordinate of the topmost tile that belongs to this chunk
+        int focusChunkTopmostPosition = (int)(focusChunkBottommostPosition + Chunk.Size - 1);
 
-        int screenLeftmostPosition = (int)cameraPosition.x;
-        int screenRightmostPosition = (int)cameraPosition.x + screenWidth;
-        int screenTopmostPosition = (int)cameraPosition.y;
-        int screenBottommostPosition = (int)cameraPosition.y + screenHeight;
+
+        float aspectRatio = (float)screenWidth / screenHeight;
+        float cameraHeight = Camera.main.orthographicSize;
+
+        int screenLeftmostPosition = (int)(cameraPosition.x - cameraHeight * aspectRatio / 2.0f);
+        int screenRightmostPosition = (int)(cameraPosition.x + cameraHeight * aspectRatio / 2.0f);
+        int screenBottommostPosition = (int)(cameraPosition.y - cameraHeight / 2.0f);
+        int screenTopmostPosition = (int)(cameraPosition.y + cameraHeight / 2.0f);
 
         int chunksToLeft = 0;
-        while (focusChunkLeftmostPosition - chunksToLeft * Chunk.Size * Tile.Size + Tile.Size > screenLeftmostPosition)
+        while (focusChunkLeftmostPosition - (chunksToLeft + 1) * Chunk.Size > screenLeftmostPosition)
         {
             ++chunksToLeft;
         }
-
         int chunksToRight = 0;
-        while (focusChunkRightmostPosition + chunksToRight * Chunk.Size * Tile.Size - Tile.Size < screenRightmostPosition)
+        while (focusChunkRightmostPosition + (chunksToRight + 1) * Chunk.Size < screenRightmostPosition)
         {
             ++chunksToRight;
         }
-        int chunksAbove = 0;
-        while (focusChunkTopmostPosition - chunksAbove * Chunk.Size * Tile.Size + Tile.Size > screenTopmostPosition)
-        {
-            ++chunksAbove;
-        }
         int chunksBelow = 0;
-        while (focusChunkBottommostPosition + chunksBelow * Chunk.Size * Tile.Size - Tile.Size < screenBottommostPosition)
+        while (focusChunkBottommostPosition - (chunksBelow + 1) * Chunk.Size > screenBottommostPosition)
         {
             ++chunksBelow;
         }
+        int chunksAbove = 0;
+        while (focusChunkTopmostPosition + (chunksAbove + 1) * Chunk.Size < screenTopmostPosition)
+        {
+            ++chunksAbove;
+        }
+
 
         HashSet<Chunk> chunksToLoad = new HashSet<Chunk>();
         for (int x = -chunksToLeft; x <= chunksToRight; x++)

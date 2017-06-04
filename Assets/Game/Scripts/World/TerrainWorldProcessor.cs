@@ -48,7 +48,7 @@ public class TerrainWorldProcessor : ITerrainProcessor
         {
             for (int y = 0; y < worldData.Height; y++)
             {
-                if (worldData.Height - 1 - y <= heightMap[x])
+                if (y <= heightMap[x])
                 {
                     worldData.Tiles[x, y] = TileType.Grass;
                 }

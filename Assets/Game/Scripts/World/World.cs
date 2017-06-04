@@ -244,28 +244,30 @@ public class World
         float aspectRatio = (float)screenWidth / screenHeight;
         float cameraHeight = Camera.main.orthographicSize;
 
-        int screenLeftmostPosition = (int)(cameraPosition.x - cameraHeight * aspectRatio / 2.0f);
-        int screenRightmostPosition = (int)(cameraPosition.x + cameraHeight * aspectRatio / 2.0f);
-        int screenBottommostPosition = (int)(cameraPosition.y - cameraHeight / 2.0f);
-        int screenTopmostPosition = (int)(cameraPosition.y + cameraHeight / 2.0f);
+        int screenLeftmostPosition = (int)(cameraPosition.x - cameraHeight * aspectRatio);
+        int screenRightmostPosition = (int)(cameraPosition.x + cameraHeight * aspectRatio);
+        int screenBottommostPosition = (int)(cameraPosition.y - cameraHeight);
+        int screenTopmostPosition = (int)(cameraPosition.y + cameraHeight);
+
+        int buffer = 2;
 
         int chunksToLeft = 0;
-        while (focusChunkLeftmostPosition - (chunksToLeft + 1) * Chunk.Size > screenLeftmostPosition)
+        while (focusChunkLeftmostPosition - (chunksToLeft) * Chunk.Size > screenLeftmostPosition - buffer)
         {
             ++chunksToLeft;
         }
         int chunksToRight = 0;
-        while (focusChunkRightmostPosition + (chunksToRight + 1) * Chunk.Size < screenRightmostPosition)
+        while (focusChunkRightmostPosition + (chunksToRight) * Chunk.Size < screenRightmostPosition + buffer)
         {
             ++chunksToRight;
         }
         int chunksBelow = 0;
-        while (focusChunkBottommostPosition - (chunksBelow + 1) * Chunk.Size > screenBottommostPosition)
+        while (focusChunkBottommostPosition - (chunksBelow) * Chunk.Size > screenBottommostPosition - buffer)
         {
             ++chunksBelow;
         }
         int chunksAbove = 0;
-        while (focusChunkTopmostPosition + (chunksAbove + 1) * Chunk.Size < screenTopmostPosition)
+        while (focusChunkTopmostPosition + (chunksAbove) * Chunk.Size < screenTopmostPosition + buffer)
         {
             ++chunksAbove;
         }
@@ -274,7 +276,7 @@ public class World
         HashSet<Chunk> chunksToLoad = new HashSet<Chunk>();
         for (int x = -chunksToLeft; x <= chunksToRight; x++)
         {
-            for (int y = -chunksAbove; y <= chunksBelow; y++)
+            for (int y = -chunksBelow; y <= chunksAbove; y++)
             {
                 int chunkX = viewpointX + x;
                 int chunkY = viewpointY + y;

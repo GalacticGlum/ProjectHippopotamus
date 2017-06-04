@@ -100,6 +100,8 @@ public static class SpriteManager
         pivotX = Mathf.Clamp01(pivotX);
         pivotY = Mathf.Clamp01(pivotY);
 
+        y = imageTexture.height - y - height;
+
         LoadSprite(spriteCategory, spriteName, imageTexture, new Rect(x, y, width, height), int.Parse(reader.GetAttribute("PixelPerUnit")), new Vector2(pivotX, pivotY));
     }
 

@@ -14,8 +14,6 @@ public class TileEventArgs : EventArgs
 
 public class Tile
 {
-    public const int Size = 32;
-
     public readonly Vector2i WorldPosition;
     public readonly Vector2i Position;
     public readonly Chunk Chunk;

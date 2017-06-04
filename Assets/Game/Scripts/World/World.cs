@@ -252,22 +252,22 @@ public class World
         int buffer = 2;
 
         int chunksToLeft = 0;
-        while (focusChunkLeftmostPosition - (chunksToLeft) * Chunk.Size > screenLeftmostPosition - buffer)
+        while (focusChunkLeftmostPosition - chunksToLeft * Chunk.Size > screenLeftmostPosition - buffer)
         {
             ++chunksToLeft;
         }
         int chunksToRight = 0;
-        while (focusChunkRightmostPosition + (chunksToRight) * Chunk.Size < screenRightmostPosition + buffer)
+        while (focusChunkRightmostPosition + chunksToRight * Chunk.Size < screenRightmostPosition + buffer)
         {
             ++chunksToRight;
         }
         int chunksBelow = 0;
-        while (focusChunkBottommostPosition - (chunksBelow) * Chunk.Size > screenBottommostPosition - buffer)
+        while (focusChunkBottommostPosition - chunksBelow * Chunk.Size > screenBottommostPosition - buffer)
         {
             ++chunksBelow;
         }
         int chunksAbove = 0;
-        while (focusChunkTopmostPosition + (chunksAbove) * Chunk.Size < screenTopmostPosition + buffer)
+        while (focusChunkTopmostPosition + chunksAbove * Chunk.Size < screenTopmostPosition + buffer)
         {
             ++chunksAbove;
         }

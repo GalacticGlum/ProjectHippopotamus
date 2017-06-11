@@ -27,6 +27,11 @@ public struct Vector2i
         return !(left == right);
     }
 
+    public static Vector2i operator +(Vector2i left, Vector2i right)
+    {
+        return new Vector2i(left.X + right.X, left.Y + left.X);
+    }
+
     public bool Equals(Vector2i other)
     {
         return X == other.X && Y == other.Y;

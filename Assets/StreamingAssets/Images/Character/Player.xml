@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Sprites>
     <Sprite Name="Player" X="0" Y="0" Width="32" Height="46" PixelPerUnit="32" />
 </Sprites>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityUtilities.ObjectPool;
+using Object = UnityEngine.Object;
 
 public class TileGraphicController
 {
@@ -17,6 +18,8 @@ public class TileGraphicController
         tilePrefab = new GameObject("Tile_Prefab", typeof(SpriteRenderer), typeof(BoxCollider2D));
         tilePrefab.GetComponent<BoxCollider2D>().size = Vector2.one;
         tilePrefab.SetActive(false);
+
+        ObjectPool.Warm(tilePrefab, (uint)Mathf.Pow(32, 3));
 
         World.Current.ChunkLoaded += OnChunkLoaded;
         World.Current.ChunkUnloaded += OnChunkUnloaded;
@@ -112,7 +115,6 @@ public class TileGraphicController
         tileGameObjectMap.Add(tileAt, tileGameObject);
         tileGameObject.transform.SetParent(tileParent.transform);
         tileGameObject.GetComponent<SpriteRenderer>().sprite = null;
-        //spriteRenderer.sortingLayerName = "Tiles";
 
         OnTileChanged(this, new TileEventArgs(tileAt));
     }

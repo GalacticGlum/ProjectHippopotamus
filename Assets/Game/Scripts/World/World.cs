@@ -17,8 +17,7 @@ public class World
     public int HeightInTiles { get; private set; }
 
     public WorldData WorldData { get; private set; }
-
-    public List<Character> Characters { get; private set; }
+    public Player Player { get; private set; }
 
     public event TileChangedEventHandler TileChanged;
     public void OnTileChanged(TileEventArgs args)
@@ -47,15 +46,6 @@ public class World
         }
     }
 
-    public event CharacterCreatedEventHandler CharacterCreated;
-    public void OnCharacterCreated(CharacterEventArgs args)
-    {
-        if (CharacterCreated != null)
-        {
-            CharacterCreated(this, args);
-        }
-    }
-
     private Chunk[,] chunks;
     private readonly HashSet<Chunk> loadedChunks;
     private readonly Queue<Chunk> loadChunkQueue;
@@ -63,7 +53,8 @@ public class World
 
     private readonly TerrainProcessor terrainProcessor;
     private readonly List<ITerrainProcessor> terrainProcesses;
-    private Character player;
+
+    private bool playerLoaded = false;
 
     public World(string terrainProcessorConfiguration)
     {
@@ -75,8 +66,6 @@ public class World
 
         terrainProcessor = new TerrainProcessor(terrainProcessorConfiguration);
         terrainProcesses = new List<ITerrainProcessor>();
-
-        Characters = new List<Character>();
     }
 
     public void Initialize(int width, int height)
@@ -115,12 +104,9 @@ public class World
         //    }
         //}
 
-        ////Lua.RunSourceCode("worldData = nil; collectgarbage()");
+        //Lua.RunSourceCode("worldData = nil; collectgarbage()");
 
-        Vector2 cameraPosition = Camera.main.transform.position;
-        Tile upperMostTile = TerrainUtilities.FindUpperMostTile(Mathf.RoundToInt(cameraPosition.x), this, type => type != TileType.Empty);
-        Tile tile = GetTileAt(upperMostTile.Position.X, upperMostTile.Position.Y + 1);
-        player = CreateCharacter(tile.Position);
+        //CreatePlayer();
         Save("moo.data");
     }
 
@@ -164,6 +150,11 @@ public class World
 
         if (tileX < 0 || tileX >= Chunk.Size || tileY < 0 || tileY >= Chunk.Size) return null;
         return chunk.GetTileAt(tileX, tileY);
+    }
+
+    public Tile GetTileAt(Vector2i position)
+    {
+        return GetTileAt(position.X, position.Y);
     }
 
     public Chunk GetChunkAt(int x, int y)
@@ -238,23 +229,42 @@ public class World
 
     public void Update()
     {
-        int screenWidth = Screen.width;
-        int screenHeight = Screen.height;
+        if (!playerLoaded)
+        {
+            Vector2i playerSpawnPosition = ChoosePlayerSpawnLocation();
+            Camera.main.transform.position = playerSpawnPosition.ToVector3();
+        }
 
         // This is the coordinate of the centre
         Vector2 cameraPosition = Camera.main.transform.position;
-        Chunk chunkContaining = GetChunkContaining((int)Math.Floor(cameraPosition.x), (int)Math.Floor(cameraPosition.y));
+        LoadChunks(cameraPosition);
+
+        if (!playerLoaded)
+        {
+            CreatePlayer(cameraPosition.ToVector2i());
+            playerLoaded = true;
+        }
+
+        Player.Update();
+    }
+
+    private void LoadChunks(Vector2 loadFromPosition)
+    {
+        int screenWidth = Screen.width;
+        int screenHeight = Screen.height;
+
+        Chunk chunkContaining = GetChunkContaining((int)Math.Floor(loadFromPosition.x), (int)Math.Floor(loadFromPosition.y));
 
         if (chunkContaining == null) return;
         int viewpointX = (int)chunkContaining.Position.x;
         int viewpointY = (int)chunkContaining.Position.y;
 
         // find x-coordinate of the leftmost tile that belongs to this chunk
-        int focusChunkLeftmostPosition = (int)(cameraPosition.x - cameraPosition.x % Chunk.Size);
+        int focusChunkLeftmostPosition = (int)(loadFromPosition.x - loadFromPosition.x % Chunk.Size);
         // find x-coordinate of the rightmost tile that belongs to this chunk
         int focusChunkRightmostPosition = focusChunkLeftmostPosition + Chunk.Size - 1;
         // find y-coordinate of the bottommost tile that belongs to this chunk
-        int focusChunkBottommostPosition = (int)(cameraPosition.y - cameraPosition.y % Chunk.Size);
+        int focusChunkBottommostPosition = (int)(loadFromPosition.y - loadFromPosition.y % Chunk.Size);
         // find y-coordinate of the topmost tile that belongs to this chunk
         int focusChunkTopmostPosition = (int)(focusChunkBottommostPosition + Chunk.Size - 1);
 
@@ -262,13 +272,12 @@ public class World
         float aspectRatio = (float)screenWidth / screenHeight;
         float cameraHeight = Camera.main.orthographicSize;
 
-        int screenLeftmostPosition = (int)(cameraPosition.x - cameraHeight * aspectRatio);
-        int screenRightmostPosition = (int)(cameraPosition.x + cameraHeight * aspectRatio);
-        int screenBottommostPosition = (int)(cameraPosition.y - cameraHeight);
-        int screenTopmostPosition = (int)(cameraPosition.y + cameraHeight);
+        int screenLeftmostPosition = (int)(loadFromPosition.x - cameraHeight * aspectRatio);
+        int screenRightmostPosition = (int)(loadFromPosition.x + cameraHeight * aspectRatio);
+        int screenBottommostPosition = (int)(loadFromPosition.y - cameraHeight);
+        int screenTopmostPosition = (int)(loadFromPosition.y + cameraHeight);
 
-        int buffer = 2;
-
+        const int buffer = 2;
         int chunksToLeft = 0;
         while (focusChunkLeftmostPosition - chunksToLeft * Chunk.Size > screenLeftmostPosition - buffer)
         {
@@ -346,12 +355,24 @@ public class World
         terrainProcesses.Add(terrainProcess);
     }
 
-    public Character CreateCharacter(Vector2i position)
+    private Vector2i ChoosePlayerSpawnLocation()
     {
-        Character instance = new Character(position);
-        Characters.Add(instance);
+        int x = Mathf.RoundToInt((Width - 1) / 2.0f * Chunk.Size);
+        int positionY = 0;
+        for (int y = WorldData.Height; y >= 0; --y)
+        {
+            if (WorldData.GetTileTypeAt(x, y) == TileType.Empty) continue;
 
-        return instance;
+            positionY = y + 6;
+            break;
+        }
+
+        return new Vector2i(x, positionY);
+    }
+
+    private void CreatePlayer(Vector2i position)
+    {
+        Player = new Player(position);
     }
 }
 

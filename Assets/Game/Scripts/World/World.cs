@@ -54,7 +54,7 @@ public class World
     private readonly TerrainProcessor terrainProcessor;
     private readonly List<ITerrainProcessor> terrainProcesses;
 
-    private bool playerLoaded = false;
+    private bool playerLoaded;
 
     public World(string terrainProcessorConfiguration)
     {
@@ -244,8 +244,6 @@ public class World
             CreatePlayer(cameraPosition.ToVector2i());
             playerLoaded = true;
         }
-
-        Player.Update();
     }
 
     private void LoadChunks(Vector2 loadFromPosition)
@@ -372,7 +370,7 @@ public class World
 
     private void CreatePlayer(Vector2i position)
     {
-        Player = new Player(position);
+        Player = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/PlayerPrefab"), position.ToVector3(), Quaternion.identity).GetComponent<Player>();
     }
 }
 

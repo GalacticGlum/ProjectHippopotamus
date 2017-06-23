@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityUtilities.ObjectPool;
-using Object = UnityEngine.Object;
 
 public class TileGraphicController
 {
@@ -19,6 +18,7 @@ public class TileGraphicController
         tilePrefab.GetComponent<BoxCollider2D>().size = Vector2.one;
         tilePrefab.SetActive(false);
 
+        // TODO: Optimize me! Seriously, spread the initialization of the object pool (maybe an IEnemurator???)
         ObjectPool.Warm(tilePrefab, (uint)Mathf.Pow(32, 3));
 
         World.Current.ChunkLoaded += OnChunkLoaded;

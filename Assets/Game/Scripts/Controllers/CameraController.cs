@@ -9,6 +9,6 @@ public class CameraController : MonoBehaviour
 	// Update is called once per frame
 	private void LateUpdate ()
 	{
-	    Camera.main.transform.position = World.Current.Player.CharacterGameObject.transform.position + new Vector3(0, 0, -10);
+	    Camera.main.transform.position = World.Current.Player.transform.position + new Vector3(0, 0, -10);
 	}
 }

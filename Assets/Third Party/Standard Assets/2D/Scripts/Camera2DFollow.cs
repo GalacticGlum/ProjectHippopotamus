@@ -17,7 +17,7 @@ public class Camera2DFollow : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-        target = World.Current.Player.CharacterGameObject.transform;
+        target = World.Current.Player.transform;
 
         m_LastTargetPosition = target.position;
         m_OffsetZ = (transform.position - target.position).z;

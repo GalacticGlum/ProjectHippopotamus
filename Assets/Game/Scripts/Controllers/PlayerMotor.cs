@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public class PlatformerCharacter2D : MonoBehaviour
+public class PlayerMotor : MonoBehaviour
 {
-    [SerializeField] private float maxSpeed = 10f;
-    [SerializeField] private float jumpForce = 400f;
-    [SerializeField] private LayerMask groundLayerMask;
+    public bool IsGrounded { get; private set; }
+
+    [SerializeField]
+    private LayerMask groundLayerMask;
 
     private Transform groundCheck;
     private const float groundedRadius = .2f;
-    private bool isGrounded;
     private new Rigidbody2D rigidbody2D;
     private bool facingRight = true;
 
@@ -20,20 +20,20 @@ public class PlatformerCharacter2D : MonoBehaviour
 
     private void FixedUpdate()
     {
-        isGrounded = false;
+        IsGrounded = false;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, groundedRadius, groundLayerMask);
         foreach (Collider2D collider2d in colliders)
         {
             if (collider2d.gameObject != gameObject)
             {
-                isGrounded = true;
+                IsGrounded = true;
             }
         }
     }
 
-    public void Move(float move, bool jump)
+    public void Move(float move, bool jump, float speed, float jumpForce)
     {
-        rigidbody2D.velocity = new Vector2(move * maxSpeed, rigidbody2D.velocity.y);
+        rigidbody2D.velocity = new Vector2(move * speed, rigidbody2D.velocity.y);
         if (move > 0 && !facingRight)
         {
             Flip();
@@ -44,8 +44,8 @@ public class PlatformerCharacter2D : MonoBehaviour
         }
 
 
-        if (!isGrounded || !jump) return;
-        isGrounded = false;
+        if (!jump) return;
+        IsGrounded = false;
         rigidbody2D.AddForce(new Vector2(0f, jumpForce));
     }
 

@@ -8,6 +8,7 @@ public class WorldController : MonoBehaviour
     public World World { get; private set; }
 
     public bool HasLoaded { get; private set; }
+
     private MouseController mouseController;
     private TileGraphicController tileGraphicController;
 

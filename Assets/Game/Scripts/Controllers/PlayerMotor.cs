@@ -11,6 +11,7 @@ public class PlayerMotor : MonoBehaviour
     private const float groundedRadius = .2f;
     private new Rigidbody2D rigidbody2D;
     private bool facingRight = true;
+    private int concurrentJumpCount;
 
     private void Awake()
     {
@@ -33,7 +34,19 @@ public class PlayerMotor : MonoBehaviour
 
     public void Move(float move, bool jump, float speed, float jumpForce)
     {
-        rigidbody2D.velocity = new Vector2(move * speed, rigidbody2D.velocity.y);
+        if (!IsGrounded)
+        {
+            if (move == 0) return;
+            Vector2 direction = facingRight ? transform.right : -transform.right;
+            rigidbody2D.velocity = new Vector2(Mathf.Sign(move), rigidbody2D.velocity.y) + (direction * (speed / 2));
+
+        }
+        else
+        {
+            concurrentJumpCount = 0;
+            rigidbody2D.velocity = new Vector2(move * speed, rigidbody2D.velocity.y);
+        }
+
         if (move > 0 && !facingRight)
         {
             Flip();
@@ -43,10 +56,12 @@ public class PlayerMotor : MonoBehaviour
             Flip();
         }
 
-
-        if (!jump) return;
+        if (!jump || !IsGrounded) return;
+        ++concurrentJumpCount;
         IsGrounded = false;
-        rigidbody2D.AddForce(new Vector2(0f, jumpForce));
+
+        rigidbody2D.AddForce(new Vector2(move * speed, jumpForce));
+        Player.Current.HasJumped();
     }
 
     private void Flip()
@@ -56,5 +71,4 @@ public class PlayerMotor : MonoBehaviour
         theScale.x *= -1;
         transform.localScale = theScale;
     }
-
 }

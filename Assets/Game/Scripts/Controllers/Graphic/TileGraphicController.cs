@@ -18,9 +18,8 @@ public class TileGraphicController
         tilePrefab.GetComponent<BoxCollider2D>().size = Vector2.one;
         tilePrefab.SetActive(false);
 
-        // TODO: Optimize me! Seriously, spread the initialization of the object pool (maybe an IEnemurator???)
-        ObjectPool.Warm(tilePrefab, (uint)Mathf.Pow(32, 3));
-
+        WorldController.Instance.StartCoroutine(ObjectPool.WarmAsync(tilePrefab, (uint)Mathf.Pow(32, 3)));
+       
         World.Current.ChunkLoaded += OnChunkLoaded;
         World.Current.ChunkUnloaded += OnChunkUnloaded;
         World.Current.TileChanged += OnTileChanged;

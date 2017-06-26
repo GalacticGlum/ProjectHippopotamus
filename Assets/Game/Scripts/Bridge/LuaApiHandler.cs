@@ -2,7 +2,6 @@
 using System.Reflection;
 using MoonSharp.Interpreter;
 
-
 internal static class LuaApiHandler
 {
     public static void Register()

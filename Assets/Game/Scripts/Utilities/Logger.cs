@@ -54,7 +54,27 @@ public static class Logger
         }
     }
 
+    public static void Log(string category, int message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info)
+    {
+        Log(category, message.ToString(), messageVerbosity);
+    }
+
+    public static void Log(string category, float message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info)
+    {
+        Log(category, message.ToString(), messageVerbosity);
+    }
+
     public static void Log(string message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info)
+    {
+        Log(string.Empty, message, messageVerbosity);
+    }
+
+    public static void Log(int message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info)
+    {
+        Log(string.Empty, message, messageVerbosity);
+    }
+
+    public static void Log(float message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info)
     {
         Log(string.Empty, message, messageVerbosity);
     }

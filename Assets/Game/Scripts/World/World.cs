@@ -241,7 +241,7 @@ public class World
 
         if (!playerLoaded)
         {
-            CreatePlayer(cameraPosition.ToVector2i());
+            Player = WorldController.Instance.CreatePlayer(cameraPosition.ToVector2i());
             playerLoaded = true;
         }
     }
@@ -366,11 +366,6 @@ public class World
         }
 
         return new Vector2i(x, positionY);
-    }
-
-    private void CreatePlayer(Vector2i position)
-    {
-        Player = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/PlayerPrefab"), position.ToVector3(), Quaternion.identity).GetComponent<Player>();
     }
 }
 

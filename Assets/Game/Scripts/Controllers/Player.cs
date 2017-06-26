@@ -1,16 +1,20 @@
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
+/* TODO:
+ *      - Make jumping more smooth.
+ *      - Refactor movement code into the PlayerController.
+ */
 [RequireComponent(typeof(PlayerMotor))]
 public class Player : MonoBehaviour
 {
-    public float Power { get { return currentPower; } }
-    public float MaximumPower{ get { return maximumPower; } }
+    public static Player Current { get; private set; }
+    public CharacterAttributeContainer Attributes { get { return attributes; } }
 
     [SerializeField]
-    private float maximumPower = 100f;
+    private CharacterAttributeContainer attributes = new CharacterAttributeContainer();
     [SerializeField]
-    private float jumpPowerCost = 25f;
+    private int jumpPowerCost = 25;
     [SerializeField]
     private float walkSpeed = 10f;
     [SerializeField]
@@ -26,16 +30,19 @@ public class Player : MonoBehaviour
     private bool jump;
     private float currentJumpForce;
     private float currentSpeed;
-    private float currentPower;
 
     private void Awake()
     {
-        currentPower = maximumPower;
+        Current = this;
+
         motor = GetComponent<PlayerMotor>();
+        attributes.Initialize();
+        currentSpeed = walkSpeed;
     }
 
     private void Update()
     {
+        attributes.Update();
         if (!jump)
         {
             jump = CrossPlatformInputManager.GetButtonDown("Jump");
@@ -47,10 +54,9 @@ public class Player : MonoBehaviour
         if (motor.IsGrounded)
         {
             currentJumpForce = jumpForce;
-            currentSpeed = walkSpeed;
         }
 
-        if (currentPower <= 0)
+        if (Attributes.Get("Energy").Value <= 0 || Attributes.Get("Energy").Value < jumpPowerCost)
         {
             jump = false;
         }
@@ -58,13 +64,12 @@ public class Player : MonoBehaviour
         float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
         motor.Move(horizontal, jump, currentSpeed, currentJumpForce);
 
-        if (jump)
-        {
-            currentPower -= jumpPowerCost;
-            //currentJumpForce *= jumpDeteriorationPercent;
-        }
-
         jump = false;
+    }
+
+    public void HasJumped()
+    {
+        Attributes.Get("Energy").Modify(-jumpPowerCost);
     }
 }
 

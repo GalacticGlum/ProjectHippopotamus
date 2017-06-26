@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityUtilities.ObjectPool;
+﻿using UnityEngine;
 
 public class WorldController : MonoBehaviour 
 {
@@ -8,6 +6,9 @@ public class WorldController : MonoBehaviour
     public World World { get; private set; }
 
     public bool HasLoaded { get; private set; }
+
+    [SerializeField]
+    private GameObject playerObject;
 
     private MouseController mouseController;
     private TileGraphicController tileGraphicController;
@@ -42,6 +43,20 @@ public class WorldController : MonoBehaviour
         mouseController = new MouseController();
 
         HasLoaded = true;
+    }
+
+    public Player CreatePlayer(Vector2i position)
+    {
+        if (playerObject == null) return null;
+        playerObject.transform.position = position.ToVector3();
+        return playerObject.GetComponent<Player>();
+    }
+
+    public Tile GetTileFromWorldCoordinates(Vector2 worldCoordinates)
+    {
+        int x = Mathf.FloorToInt(worldCoordinates.x + 0.5f);
+        int y = Mathf.FloorToInt(worldCoordinates.y + 0.5f);
+        return World.GetTileAt(x, y);
     }
 }
 

@@ -8,7 +8,7 @@ public static class SpriteManager
     public static Texture2D MissingTexture { get; private set; }
     private static Dictionary<string, Sprite> sprites;
 
-    static SpriteManager()
+    public static void Initialize()
     {
         MissingTexture = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         Color32[] pixels = MissingTexture.GetPixels32();
@@ -114,7 +114,7 @@ public static class SpriteManager
         sprites[spriteName] = sprite;
     }
 
-    public static Sprite GetSprite(string categoryName, string spriteName)
+    public static Sprite Get(string categoryName, string spriteName)
     {
         spriteName = categoryName + "/" + spriteName;
         return sprites.ContainsKey(spriteName) == false ? Sprite.Create(MissingTexture, 

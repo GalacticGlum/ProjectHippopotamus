@@ -27,7 +27,7 @@ public class PlayerMotor : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
-    public void Move(float move, bool jump, float speed, float jumpForce)
+    public void Move(float move, bool jump, bool isPowerJump, float speed, float jumpForce)
     {
         // Increment tick count
         tickFromLastJump++;
@@ -55,9 +55,16 @@ public class PlayerMotor : MonoBehaviour
 
         if (!jump || !IsGrounded) return;
 
-        rigidbody2D.AddForce(new Vector2(move * speed, jumpForce));
-        Player.Current.HasJumped();
+        float force = 200;
+        if (isPowerJump)
+        {
+            force = jumpForce;
+            Player.Current.HasJumped(25);
+        }
 
+        Player.Current.HasJumped(5);
+        rigidbody2D.AddForce(new Vector2(move * speed, force));
+        Debug.Log("Jump: " + Time.frameCount);
         tickFromLastJump = 0;
         didPressJump = true;
     }

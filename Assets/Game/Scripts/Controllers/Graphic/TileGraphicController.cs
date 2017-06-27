@@ -71,7 +71,7 @@ public class TileGraphicController
         }
 
         tileGameObject.SetActive(true);
-        tileGameObject.GetComponent<SpriteRenderer>().sprite = SpriteManager.GetSprite("Tile", GetSpriteNameForTile(args.Tile));
+        tileGameObject.GetComponent<SpriteRenderer>().sprite = SpriteManager.Get("Tile", GetSpriteNameForTile(args.Tile));
     }
 
     public string GetSpriteNameForTile(Tile tile)

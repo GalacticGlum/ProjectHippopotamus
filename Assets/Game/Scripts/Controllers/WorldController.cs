@@ -29,6 +29,7 @@ public class WorldController : MonoBehaviour
     private GameObject playerObject;
 
     private MouseController mouseController;
+    private AudioController audioController;
     private WorldGraphicController worldGraphicController;
     private TileGraphicController tileGraphicController;
 
@@ -56,13 +57,18 @@ public class WorldController : MonoBehaviour
         if (!HasLoaded) return;
         World.Update();
         mouseController.Update();
+        audioController.Update();
     }
 
     private void Generate()
     {
+        SpriteManager.Initialize();
+        AudioManager.Initialize();
+
         worldGraphicController = new WorldGraphicController();
         tileGraphicController = new TileGraphicController();
         mouseController = new MouseController();
+        audioController = new AudioController();
 
         HasLoaded = true;
     }

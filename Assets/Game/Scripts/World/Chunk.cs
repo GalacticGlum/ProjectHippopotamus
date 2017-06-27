@@ -13,7 +13,7 @@ public class ChunkEventArgs : EventArgs
 
 public class Chunk
 {
-    public const int Size = 16;
+    public const int Size = 32;
 
     public Tile this[int x, int y]
     {

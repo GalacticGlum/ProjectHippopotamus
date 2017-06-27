@@ -58,5 +58,10 @@ public class WorldController : MonoBehaviour
         int y = Mathf.FloorToInt(worldCoordinates.y + 0.5f);
         return World.GetTileAt(x, y);
     }
+
+    public Tile GetTileFromMousePosition()
+    {
+        return GetTileFromWorldCoordinates(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+    }
 }
 

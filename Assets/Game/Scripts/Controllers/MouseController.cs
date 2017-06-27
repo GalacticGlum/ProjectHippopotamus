@@ -6,7 +6,7 @@ public class MouseController
     {
         if (Input.GetMouseButtonDown(1))
         {
-            Tile tile = WorldController.Instance.GetTileFromWorldCoordinates(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            Tile tile = WorldController.Instance.GetTileFromMousePosition();
             if (tile != null)
             {
                 tile.Type = TileType.Empty;
@@ -15,7 +15,7 @@ public class MouseController
 
         if (Input.GetMouseButtonDown(0))
         {
-            Tile tile = WorldController.Instance.GetTileFromWorldCoordinates(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            Tile tile = WorldController.Instance.GetTileFromMousePosition();
             if (tile != null)
             {
                 tile.Type = TileType.Grass;

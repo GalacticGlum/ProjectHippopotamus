@@ -11,7 +11,7 @@ public class PlayerMotor : MonoBehaviour
     private const float groundedRadius = .2f;
     private new Rigidbody2D rigidbody2D;
     private bool facingRight = true;
-    private int concurrentJumpCount;
+    private bool didPressJump;
 
     private void Awake()
     {
@@ -34,16 +34,17 @@ public class PlayerMotor : MonoBehaviour
 
     public void Move(float move, bool jump, float speed, float jumpForce)
     {
-        if (!IsGrounded)
+        if (!IsGrounded || didPressJump)
         {
             if (move == 0) return;
             Vector2 direction = facingRight ? transform.right : -transform.right;
-            rigidbody2D.velocity = new Vector2(Mathf.Sign(move), rigidbody2D.velocity.y) + (direction * (speed / 2));
+            rigidbody2D.velocity = new Vector2(Mathf.Sign(move), rigidbody2D.velocity.y) + direction * (speed / 2);
 
         }
-        else
+
+        if(IsGrounded || !didPressJump)
         {
-            concurrentJumpCount = 0;
+            didPressJump = false;
             rigidbody2D.velocity = new Vector2(move * speed, rigidbody2D.velocity.y);
         }
 
@@ -57,8 +58,9 @@ public class PlayerMotor : MonoBehaviour
         }
 
         if (!jump || !IsGrounded) return;
-        ++concurrentJumpCount;
+
         IsGrounded = false;
+        didPressJump = true;
 
         rigidbody2D.AddForce(new Vector2(move * speed, jumpForce));
         Player.Current.HasJumped();

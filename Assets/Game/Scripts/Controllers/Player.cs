@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
 /* TODO:
- *      - Make jumping more smooth.
  *      - Refactor movement code into the PlayerController.
  */
 [RequireComponent(typeof(PlayerMotor))]
@@ -45,12 +44,9 @@ public class Player : MonoBehaviour
         attributes.Update();
         if (!jump)
         {
-            jump = CrossPlatformInputManager.GetButtonDown("Jump");
+            jump = Input.GetKeyDown(KeyCode.Space);
         }
-    }
 
-    private void FixedUpdate()
-    {
         if (motor.IsGrounded)
         {
             currentJumpForce = jumpForce;
@@ -60,7 +56,10 @@ public class Player : MonoBehaviour
         {
             jump = false;
         }
+    }
 
+    private void FixedUpdate()
+    {
         float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
         motor.Move(horizontal, jump, currentSpeed, currentJumpForce);
 

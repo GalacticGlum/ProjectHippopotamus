@@ -1,51 +1,47 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMotor : MonoBehaviour
 {
-    public bool IsGrounded { get; private set; }
+    public bool IsGrounded
+    {
+        get { return Physics2D.Raycast(groundCheck.position, -Vector2.up, distanceFromGround); }
+    }
 
     [SerializeField]
     private LayerMask groundLayerMask;
-
+    [SerializeField]
     private Transform groundCheck;
-    private const float groundedRadius = .2f;
+    [SerializeField]
+    private float distanceFromGround = .2f;
+
     private new Rigidbody2D rigidbody2D;
+
+    // Jump control
     private bool facingRight = true;
     private bool didPressJump;
+    private int tickFromLastJump;
 
     private void Awake()
     {
-        groundCheck = transform.Find("GroundCheck");
         rigidbody2D = GetComponent<Rigidbody2D>();
-    }
-
-    private void FixedUpdate()
-    {
-        IsGrounded = false;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, groundedRadius, groundLayerMask);
-        foreach (Collider2D collider2d in colliders)
-        {
-            if (collider2d.gameObject != gameObject)
-            {
-                IsGrounded = true;
-            }
-        }
     }
 
     public void Move(float move, bool jump, float speed, float jumpForce)
     {
-        if (!IsGrounded || didPressJump)
+        // Increment tick count
+        tickFromLastJump++;
+
+        if (!IsGrounded && didPressJump)
         {
             if (move == 0) return;
             Vector2 direction = facingRight ? transform.right : -transform.right;
             rigidbody2D.velocity = new Vector2(Mathf.Sign(move), rigidbody2D.velocity.y) + direction * (speed / 2);
-
         }
-
-        if(IsGrounded || !didPressJump)
+        else if ((IsGrounded || !IsGrounded && !didPressJump) && tickFromLastJump > 1)
         {
-            didPressJump = false;
             rigidbody2D.velocity = new Vector2(move * speed, rigidbody2D.velocity.y);
+            didPressJump = false;
         }
 
         if (move > 0 && !facingRight)
@@ -59,18 +55,18 @@ public class PlayerMotor : MonoBehaviour
 
         if (!jump || !IsGrounded) return;
 
-        IsGrounded = false;
-        didPressJump = true;
-
         rigidbody2D.AddForce(new Vector2(move * speed, jumpForce));
         Player.Current.HasJumped();
+
+        tickFromLastJump = 0;
+        didPressJump = true;
     }
 
     private void Flip()
     {
         facingRight = !facingRight;
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 }

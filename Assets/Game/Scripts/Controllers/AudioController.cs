@@ -15,7 +15,6 @@ public class AudioController
 
     private void OnPlayerJumped(object sender, PlayerEventArgs args)
     {
-        Debug.Log(Time.frameCount);
         AudioClip audioClip = AudioManager.Get("Power_Jump");
         if (audioClip == null) return;
         PlayAudioClip(audioClip);

@@ -64,7 +64,6 @@ public class PlayerMotor : MonoBehaviour
 
         Player.Current.HasJumped(5);
         rigidbody2D.AddForce(new Vector2(move * speed, force));
-        Debug.Log("Jump: " + Time.frameCount);
         tickFromLastJump = 0;
         didPressJump = true;
     }

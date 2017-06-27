@@ -1,4 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+
+public delegate void WorldControllerLoadedEventHandler(object sender, WorldControllerEventArgs args);
+public class WorldControllerEventArgs : EventArgs
+{
+    public readonly WorldController WorldController;
+    public WorldControllerEventArgs(WorldController worldController)
+    {
+        WorldController = worldController;
+    }
+}
 
 public class WorldController : MonoBehaviour 
 {
@@ -7,10 +18,18 @@ public class WorldController : MonoBehaviour
 
     public bool HasLoaded { get; private set; }
 
+    public event WorldControllerLoadedEventHandler Loaded;
+    private void OnLoaded()
+    {
+        if (Loaded == null) return;
+        Loaded(this, new WorldControllerEventArgs(this));
+    }
+
     [SerializeField]
     private GameObject playerObject;
 
     private MouseController mouseController;
+    private WorldGraphicController worldGraphicController;
     private TileGraphicController tileGraphicController;
 
     private void OnEnable()
@@ -28,6 +47,8 @@ public class WorldController : MonoBehaviour
         // Constant seed for debugging purposes.
         World.Generate();
         Generate();
+
+        OnLoaded();
     }
 
     private void Update()
@@ -39,6 +60,7 @@ public class WorldController : MonoBehaviour
 
     private void Generate()
     {
+        worldGraphicController = new WorldGraphicController();
         tileGraphicController = new TileGraphicController();
         mouseController = new MouseController();
 

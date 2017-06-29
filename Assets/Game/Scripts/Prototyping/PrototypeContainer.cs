@@ -49,7 +49,7 @@ public class PrototypeContainer<T> : IEnumerable<T> where T : IPrototypable, new
                             prototypeXmlListTag, prototypeXmlElementTag, e.Message), LoggerVerbosity.Error);   
                     }
 
-
+                    Set(prototype);
                 }
                 while (reader.ReadToNextSibling(prototypeXmlElementTag));
             }
@@ -87,13 +87,13 @@ public class PrototypeContainer<T> : IEnumerable<T> where T : IPrototypable, new
         prototypes[prototype.Type] = prototype;
     }
 
-    public IEnumerator<T> GetEnumerator()
-    {
-        return ((IEnumerable<T>)prototypes).GetEnumerator();
-    }
-
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return GetEnumerator();
+        return prototypes.GetEnumerator();
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        return prototypes.Values.GetEnumerator();
     }
 }

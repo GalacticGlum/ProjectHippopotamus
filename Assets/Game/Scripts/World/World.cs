@@ -6,6 +6,7 @@ using Hippopotamus.World;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public delegate void ItemPlacedEventHandler(object sender, ItemEventArgs args);
 public class World
 {
     public static World Current { get; private set; }
@@ -18,6 +19,8 @@ public class World
 
     public WorldData WorldData { get; private set; }
     public Player Player { get; private set; }
+
+    public Dictionary<string, List<Item>> Items { get; private set; }
 
     public event TileChangedEventHandler TileChanged;
     public void OnTileChanged(TileEventArgs args)
@@ -44,6 +47,13 @@ public class World
         {
             ChunkUnloaded(this, args);
         }
+    }
+
+    public event ItemPlacedEventHandler ItemPlaced;
+    private void OnItemPlaced(ItemEventArgs args)
+    {
+        if (ItemPlaced == null) return;
+        ItemPlaced(this, args);
     }
 
     private Chunk[,] chunks;
@@ -78,6 +88,22 @@ public class World
 
         chunks = new Chunk[Width, Height];
         WorldData = new WorldData(WidthInTiles, HeightInTiles);
+        Items = new Dictionary<string, List<Item>>();
+
+        LoadPrototypes();
+    }
+
+    private static void LoadPrototypes()
+    {
+        string filePath = Path.Combine(Path.Combine(Application.streamingAssetsPath, "Data"), "Items.xml");
+        PrototypeManager.Items.Load(File.ReadAllText(filePath));
+
+        foreach (ItemPrototype item in PrototypeManager.Items)
+        {
+            Debug.Log(item.Type);
+            Debug.Log(item.MaxStackSize);
+            Debug.Log("------");
+        }
     }
 
     public void Generate()
@@ -233,17 +259,30 @@ public class World
         {
             Vector2i playerSpawnPosition = ChoosePlayerSpawnLocation();
             Camera.main.transform.position = playerSpawnPosition.ToVector3();
-        }
 
-        // This is the coordinate of the centre
-        Vector2 cameraPosition = Camera.main.transform.position;
-        LoadChunks(cameraPosition);
-
-        if (!playerLoaded)
-        {
-            Player = WorldController.Instance.CreatePlayer(cameraPosition.ToVector2i());
+            Player = WorldController.Instance.CreatePlayer(playerSpawnPosition);
             playerLoaded = true;
         }
+
+        LoadChunks(Camera.main.transform.position);
+    }
+
+    /// <summary>
+    /// Place an item into the world.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="position"></param>
+    public void PlaceItem(Item item, Vector2i position)
+    {
+        if (Items.ContainsKey(item.Type) == false)
+        {
+            Items[item.Type] = new List<Item>();
+        }
+
+        Items[item.Type].Add(item);
+        item.SpawnPosition = position;
+
+        OnItemPlaced(new ItemEventArgs(item));
     }
 
     private void LoadChunks(Vector2 loadFromPosition)

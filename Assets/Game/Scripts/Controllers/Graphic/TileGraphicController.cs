@@ -17,6 +17,7 @@ public class TileGraphicController
         tileParent = new GameObject("Tiles");
         tilePrefab = new GameObject("Tile_Prefab", typeof(SpriteRenderer), typeof(BoxCollider2D));
         tilePrefab.GetComponent<BoxCollider2D>().size = Vector2.one;
+        tilePrefab.GetComponent<SpriteRenderer>().sortingLayerName = "Tiles";
         tilePrefab.SetActive(false);
 
         //ObjectPool.Warm(tilePrefab, (uint)Mathf.Pow(32, 3));

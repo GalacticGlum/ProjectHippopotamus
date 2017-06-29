@@ -32,6 +32,7 @@ public class WorldController : MonoBehaviour
     private AudioController audioController;
     private WorldGraphicController worldGraphicController;
     private TileGraphicController tileGraphicController;
+    private ItemGraphicController itemGraphicController;
 
     private void OnEnable()
     {
@@ -67,6 +68,7 @@ public class WorldController : MonoBehaviour
 
         worldGraphicController = new WorldGraphicController();
         tileGraphicController = new TileGraphicController();
+        itemGraphicController = new ItemGraphicController();
         mouseController = new MouseController();
         audioController = new AudioController();
 
@@ -90,6 +92,13 @@ public class WorldController : MonoBehaviour
     public Tile GetTileFromMousePosition()
     {
         return GetTileFromWorldCoordinates(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+    }
+
+    public Vector2i WorldCoordiantesToGridSpace(Vector2 worldCoordinates)
+    {
+        int x = Mathf.FloorToInt(worldCoordinates.x + 0.5f);
+        int y = Mathf.FloorToInt(worldCoordinates.y + 0.5f);
+        return new Vector2i(x, y);
     }
 }
 

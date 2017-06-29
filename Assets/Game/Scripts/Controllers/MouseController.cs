@@ -13,7 +13,12 @@ public class MouseController
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl))
+        {
+            World.Current.PlaceItem(new Item("Ice", 1), WorldController.Instance.GetTileFromMousePosition().WorldPosition);
+        }
+
+        if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl))
         {
             Tile tile = WorldController.Instance.GetTileFromMousePosition();
             if (tile != null)
@@ -21,5 +26,6 @@ public class MouseController
                 tile.Type = TileType.Grass;
             }
         }
+
     }
 }

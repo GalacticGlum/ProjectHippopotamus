@@ -16,6 +16,7 @@ public class Item
 
     public string Type { get; set; }
     public int MaxStackSize { get; set; }
+    public ItemInstance ItemInstance { get; set; }
 
     private int stackSize = 1;
     public int StackSize
@@ -29,6 +30,8 @@ public class Item
             OnItemChanged();
         }
     }
+
+    public Vector2i SpawnPosition { get; set; }
 
     public event ItemChangedEventHandler Changed;
     private void OnItemChanged()

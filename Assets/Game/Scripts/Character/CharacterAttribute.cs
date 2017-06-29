@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System;
 
-public delegate void CharacterAttributeValueChangedEventHandler(object sender, CharacterAttributeEventArgs args);
-public class CharacterAttributeEventArgs : EventArgs
+public delegate void CharacterAttributeValueChangedEventHandler(object sender, CharacterAttributeValueChangedEventArgs args);
+public class CharacterAttributeValueChangedEventArgs : EventArgs
 {
     public readonly CharacterAttribute CharacterAttribute;
-    public CharacterAttributeEventArgs(CharacterAttribute characterAttribute)
+    public readonly int OldValue;
+    public readonly int ByValue;
+
+    public CharacterAttributeValueChangedEventArgs(CharacterAttribute characterAttribute, int oldValue, int byValue)
     {
         CharacterAttribute = characterAttribute;
+        OldValue = oldValue;
+        ByValue = byValue;
     }
 }
 
@@ -20,10 +25,10 @@ public class CharacterAttribute : ScriptableObject
     public int Value { get; private set; }
 
     public event CharacterAttributeValueChangedEventHandler ValueChanged;
-    private void OnValueChanged()
+    private void OnValueChanged(int oldValue, int byValue)
     {
         if (ValueChanged == null) return;
-        ValueChanged(this, new CharacterAttributeEventArgs(this));
+        ValueChanged(this, new CharacterAttributeValueChangedEventArgs(this, oldValue, byValue));
     }
 
     [SerializeField]
@@ -59,9 +64,10 @@ public class CharacterAttribute : ScriptableObject
 
     public void Modify(int byValue)
     {
+        int oldValue = Value;
         Value += byValue;
         Value = Mathf.Clamp(Value, minimumValue, maximumValue);
-        OnValueChanged();
+        OnValueChanged(oldValue, byValue);
     }
 
     private void Regenerate()

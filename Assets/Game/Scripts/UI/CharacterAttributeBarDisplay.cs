@@ -19,16 +19,16 @@ public class CharacterAttributeBarDisplay : MonoBehaviour
 	    CharacterAttribute attribute = Player.Current.Attributes.Get(attributeName);
         if (attribute == null) return;
         attribute.ValueChanged += OnValueChanged;
-	    OnValueChanged(this, new CharacterAttributeEventArgs(attribute));
+	    OnValueChanged(this, new CharacterAttributeValueChangedEventArgs(attribute, attribute.MaximumValue, 0));
 	}
 
-    private void OnValueChanged(object sender, CharacterAttributeEventArgs args)
+    private void OnValueChanged(object sender, CharacterAttributeValueChangedEventArgs args)
     {
         if (text != null)
         {
             text.text = string.Format(textFormat, args.CharacterAttribute.Value, args.CharacterAttribute.MaximumValue);
         }
 
-        slider.value = args.CharacterAttribute.Value / (float)args.CharacterAttribute.MaximumValue;
+        slider.value = args.CharacterAttribute.Value / (float)args.CharacterAttribute.MaximumValue;           
     }
 }

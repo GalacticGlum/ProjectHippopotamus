@@ -17,7 +17,7 @@ public class AudioController
     {
         AudioClip audioClip = AudioManager.Get("Power_Jump");
         if (audioClip == null) return;
-        PlayAudioClip(audioClip);
+        //PlayAudioClip(audioClip);
     }
 
     private void PlayAudioClip(AudioClip audioClip)

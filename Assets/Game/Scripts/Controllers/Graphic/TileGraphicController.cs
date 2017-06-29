@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityUtilities.ObjectPool;
@@ -18,7 +19,8 @@ public class TileGraphicController
         tilePrefab.GetComponent<BoxCollider2D>().size = Vector2.one;
         tilePrefab.SetActive(false);
 
-        WorldController.Instance.StartCoroutine(ObjectPool.WarmAsync(tilePrefab, (uint)Mathf.Pow(32, 3)));
+        //ObjectPool.Warm(tilePrefab, (uint)Mathf.Pow(32, 3));
+        //WorldController.Instance.StartCoroutine(ObjectPool.WarmAsync(tilePrefab, (uint)Mathf.Pow(32, 3)));
        
         World.Current.ChunkLoaded += OnChunkLoaded;
         World.Current.ChunkUnloaded += OnChunkUnloaded;

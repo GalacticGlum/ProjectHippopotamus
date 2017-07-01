@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<WorldEvents>
+    <WorldEvent Name="Test">
+        <Precondition FilePath="Lua/TestWorldEvent.lua" FunctionName="TestPrecondition" />
+        <OnExecute FilePath="Lua/TestWorldEvent.lua" FunctionName="TestAction" />
+    </WorldEvent>
+</WorldEvents>

@@ -13,8 +13,9 @@ public static class Lua
     static Lua()
     {
         lua = new Script();
-        LuaApiHandler.Register();
+        lua.Options.DebugPrint += Debug.Log;
 
+        LuaApiHandler.Register();
         parsedFilePaths = new List<string>();
     }
 

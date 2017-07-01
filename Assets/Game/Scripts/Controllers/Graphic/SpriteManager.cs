@@ -7,6 +7,7 @@ public static class SpriteManager
 {
     public static Texture2D MissingTexture { get; private set; }
     private static Dictionary<string, Sprite> sprites;
+    private static Dictionary<string, Reroute> reroutes;
 
     public static void Initialize()
     {
@@ -20,6 +21,7 @@ public static class SpriteManager
         MissingTexture.SetPixels32(pixels);
         MissingTexture.Apply();
 
+        reroutes = new Dictionary<string, Reroute>();
         LoadSprites();
     }
 
@@ -40,10 +42,13 @@ public static class SpriteManager
         }
 
         string[] files = Directory.GetFiles(filePath);
+        string spriteCategory = new DirectoryInfo(filePath).Name;
+        reroutes.Add(spriteCategory, new Reroute(filePath));
+
         foreach (string file in files)
         {
-            string spriteCategory = new DirectoryInfo(filePath).Name;
             LoadImage(spriteCategory, file);
+
         }
     }
 
@@ -116,6 +121,13 @@ public static class SpriteManager
 
     public static Sprite Get(string categoryName, string spriteName)
     {
+        if (reroutes.ContainsKey(categoryName))
+        {
+            string absoluteName = spriteName.Split('_')[0];
+            string suffix = spriteName.Split('_')[1];
+            spriteName = string.Concat(reroutes[categoryName].Get(absoluteName), "_", suffix);
+        }
+
         spriteName = categoryName + "/" + spriteName;
         return sprites.ContainsKey(spriteName) == false ? Sprite.Create(MissingTexture, 
             new Rect(Vector2.zero, new Vector3(32, 32)), 

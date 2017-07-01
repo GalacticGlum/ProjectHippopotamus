@@ -30,6 +30,7 @@ public class WorldController : MonoBehaviour
 
     private MouseController mouseController;
     private AudioController audioController;
+    private WorldEventController worldEventController;
     private WorldGraphicController worldGraphicController;
     private TileGraphicController tileGraphicController;
     private ItemGraphicController itemGraphicController;
@@ -59,6 +60,7 @@ public class WorldController : MonoBehaviour
         World.Update();
         mouseController.Update();
         audioController.Update();
+        worldEventController.Update();
     }
 
     private void Generate()
@@ -71,6 +73,7 @@ public class WorldController : MonoBehaviour
         itemGraphicController = new ItemGraphicController();
         mouseController = new MouseController();
         audioController = new AudioController();
+        worldEventController = new WorldEventController();
 
         HasLoaded = true;
     }

@@ -97,13 +97,6 @@ public class World
     {
         string filePath = Path.Combine(Path.Combine(Application.streamingAssetsPath, "Data"), "Items.xml");
         PrototypeManager.Items.Load(File.ReadAllText(filePath));
-
-        foreach (ItemPrototype item in PrototypeManager.Items)
-        {
-            Debug.Log(item.Type);
-            Debug.Log(item.MaxStackSize);
-            Debug.Log("------");
-        }
     }
 
     public void Generate()

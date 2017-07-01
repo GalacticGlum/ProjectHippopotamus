@@ -1,28 +1,18 @@
+using System;
 using UnityEngine;
 
-public class FollowPlayer : MonoBehaviour
+
+namespace UnityStandardAssets.Utility
 {
-    public Transform target;
-    public Vector3 offset;
-
-    private void Start()
+    public class FollowTarget : MonoBehaviour
     {
-        Follow(true);
-    }
+        public Transform target;
+        public Vector3 offset = new Vector3(0f, 7.5f, 0f);
 
-    private void LateUpdate()
-    {
-        Follow(false);
-    }
 
-    private void Follow(bool includeYAxis)
-    {
-        Vector3 position = target.position;
-        if (!includeYAxis)
+        private void LateUpdate()
         {
-            position.y = 0;
+            transform.position = target.position + offset;
         }
-
-        transform.position = position + offset;
     }
 }

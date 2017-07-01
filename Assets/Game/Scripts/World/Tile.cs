@@ -18,7 +18,7 @@ public class Tile
     public Vector2i Position { get; private set; }
     public Chunk Chunk { get; private set; }
 
-    private TileType type;
+    private TileType type = TileType.Empty;
     public TileType Type
     {
         get { return type; }
@@ -43,12 +43,12 @@ public class Tile
 
     public void Save(BinaryWriter writer)
     {
-        writer.Write((byte)Type);
+        writer.Write(Type.Id);
     }
 
     public void Load(BinaryReader reader)
     {
-        Type = (TileType)reader.ReadByte();
+        Type = TileType.Get(reader.ReadByte());
     }
 
     private void UpdateNeighbouring()

@@ -47,4 +47,3 @@ public class TerrainCaveProcessor : ITerrainProcessor
         while (depth < maximumCaveDepth);
     }
 }
-

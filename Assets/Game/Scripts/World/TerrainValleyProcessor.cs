@@ -57,7 +57,7 @@ public class TerrainValleyProcessor : ITerrainProcessor
             int x = currentX + pivot;
 
             Vector2i spot = TerrainUtilities.FindUpperMostTile(x, worldData, type => type != TileType.Empty);
-            TileType spotType = Random.value < valleyExtrusionChance ? TileType.Quartz : TileType.Empty;
+            TileType spotType = Random.value < valleyExtrusionChance ? TileType.Get("Quartz") : TileType.Empty;
             TerrainUtilities.GenerateFuzzyCircle(minimumValleySize, maximumValleySize, worldData, spot, spotType);
 
             currentX = x;

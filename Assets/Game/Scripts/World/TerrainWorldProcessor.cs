@@ -50,7 +50,7 @@ public class TerrainWorldProcessor : ITerrainProcessor
             {
                 if (y <= heightMap[x])
                 {
-                    worldData.Tiles[x, y] = TileType.Quartz;
+                    worldData.Tiles[x, y] = TileType.Get("Quartz");
                 }
             }
         }

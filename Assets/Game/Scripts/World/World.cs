@@ -203,7 +203,7 @@ public class World
                         {
                             for (int ty = 0; ty < Chunk.Size; ty++)
                             {
-                                writer.Write((byte)WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty]);
+                                writer.Write(WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty].Id);
                             }
                         }
                     }
@@ -237,7 +237,7 @@ public class World
                         {
                             for (int ty = 0; ty < Chunk.Size; ty++)
                             {
-                                WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = (TileType)reader.ReadByte();
+                                WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = TileType.Get(reader.ReadByte());
                             }
                         }
                     }

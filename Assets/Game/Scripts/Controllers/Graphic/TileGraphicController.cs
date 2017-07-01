@@ -83,7 +83,7 @@ public class TileGraphicController
 
     public string GetSpriteNameForTile(Tile tile)
     {
-        string spriteName = Enum.GetName(tile.Type.GetType(), tile.Type) + "_";
+        string spriteName = tile.Type.Name + "_";
         int x = tile.WorldPosition.X;
         int y = tile.WorldPosition.Y;
 

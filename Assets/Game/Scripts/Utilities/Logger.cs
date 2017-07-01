@@ -79,6 +79,16 @@ public static class Logger
         Log(string.Empty, message, messageVerbosity);
     }
 
+    public static void LogFormat(string category, string message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info, params object[] args)
+    {
+        Log(category, string.Format(message, args));
+    }
+
+    public static void LogFormat(string message, LoggerVerbosity messageVerbosity = LoggerVerbosity.Info, params object[] args)
+    {
+        Log(string.Empty, string.Format(message, args), messageVerbosity);
+    }
+
     private static string GetMessageHeader(string category)
     {
         string dateTimeStamp = string.Empty;

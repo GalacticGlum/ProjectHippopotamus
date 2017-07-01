@@ -21,6 +21,7 @@ public class World
     public Player Player { get; private set; }
 
     public Dictionary<string, List<Item>> Items { get; private set; }
+    public string Seed { get; private set; }
 
     public event TileChangedEventHandler TileChanged;
     public void OnTileChanged(TileEventArgs args)
@@ -97,9 +98,17 @@ public class World
         PrototypeManager.Items.Load(File.ReadAllText(filePath));
     }
 
-    public void Generate()
+    public void Generate(string seed = null)
     {
+        if (string.IsNullOrEmpty(seed))
+        {
+            seed = RandomUtilities.GenerateSeed();
+        }
+
+        Seed = seed;
+        Random.InitState(seed.GetHashCode());
         CreateChunks();
+
         foreach (ITerrainProcessor process in terrainProcesses)
         {
             process.Generate(WorldData);
@@ -122,15 +131,7 @@ public class World
         //}
 
         //Lua.RunSourceCode("worldData = nil; collectgarbage()");
-
-        //CreatePlayer();
         Save("moo.data");
-    }
-
-    public void Generate(string seed)
-    {
-        Random.InitState(seed.GetHashCode());
-        Generate();
     }
 
     public void CreateChunks()

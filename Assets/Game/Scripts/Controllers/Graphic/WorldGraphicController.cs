@@ -23,7 +23,7 @@ public class WorldGraphicController
         FileInfo[] files = directoryInfo.GetFiles("*.mat", SearchOption.AllDirectories);
         if (files.Length > 0)
         {
-            FileInfo file = files[(int) Random.value * files.Length];
+            FileInfo file = files[Random.Range(0, files.Length)];
             if (!string.IsNullOrEmpty(file.DirectoryName))
             {
                 string resourcePath = Path.Combine(file.DirectoryName.Substring(file.DirectoryName.IndexOf("Skyboxes", StringComparison.Ordinal)), file.Name);

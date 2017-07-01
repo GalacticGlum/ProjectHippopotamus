@@ -26,5 +26,14 @@ public class MouseController
                 tile.Type = TileType.Get("Quartz");
             }
         }
+
+        if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
+        {
+            Tile tile = WorldController.Instance.GetTileFromMousePosition();
+            if (tile != null)
+            {
+                WorldController.Instance.AsteroidController.Spawn(5, 10, tile);
+            }
+        }
     }
 }

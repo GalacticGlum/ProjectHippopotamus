@@ -16,6 +16,14 @@ public class WorldController : MonoBehaviour
     public static WorldController Instance { get; private set; }
     public World World { get; private set; }
 
+    public MouseController MouseController { get; private set; }
+    public AudioController AudioController { get; private set; }
+    public AsteroidController AsteroidController { get; private set; }
+    public WorldEventController WorldEventController { get; private set; }
+    public WorldGraphicController WorldGraphicController { get; private set; }
+    public TileGraphicController TileGraphicController { get; private set; }
+    public ItemGraphicController ItemGraphicController { get; private set; }
+
     public bool HasLoaded { get; private set; }
 
     public event WorldControllerLoadedEventHandler Loaded;
@@ -27,13 +35,6 @@ public class WorldController : MonoBehaviour
 
     [SerializeField]
     private GameObject playerObject;
-
-    private MouseController mouseController;
-    private AudioController audioController;
-    private WorldEventController worldEventController;
-    private WorldGraphicController worldGraphicController;
-    private TileGraphicController tileGraphicController;
-    private ItemGraphicController itemGraphicController;
 
     private void OnEnable()
     {
@@ -58,9 +59,9 @@ public class WorldController : MonoBehaviour
     {
         if (!HasLoaded) return;
         World.Update();
-        mouseController.Update();
-        audioController.Update();
-        worldEventController.Update();
+        MouseController.Update();
+        AudioController.Update();
+        WorldEventController.Update();
     }
 
     private void Generate()
@@ -68,12 +69,13 @@ public class WorldController : MonoBehaviour
         SpriteManager.Initialize();
         AudioManager.Initialize();
 
-        worldGraphicController = new WorldGraphicController();
-        tileGraphicController = new TileGraphicController();
-        itemGraphicController = new ItemGraphicController();
-        mouseController = new MouseController();
-        audioController = new AudioController();
-        worldEventController = new WorldEventController();
+        WorldGraphicController = new WorldGraphicController();
+        TileGraphicController = new TileGraphicController();
+        ItemGraphicController = new ItemGraphicController();
+        MouseController = new MouseController();
+        AudioController = new AudioController();
+        WorldEventController = new WorldEventController();
+        AsteroidController = new AsteroidController();
 
         HasLoaded = true;
     }

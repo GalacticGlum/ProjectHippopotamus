@@ -95,6 +95,12 @@ public class Tile
         return neighbours;
     }
 
+    /*
+     * TODO: Fix me, this is a completely valid solution yet it is not elegant.
+     * There should be a way to flag whether the WorldData is setting a TileType. 
+     * (so the world knows that it shouldn't update the WorldData as that would cause
+     * A StackOverflow exception).
+     */
     /// <summary>
     /// INTERNAL_METHOD
     /// This sets the Tile type without updating the WorldData.

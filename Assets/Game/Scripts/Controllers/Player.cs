@@ -13,7 +13,7 @@ public class PlayerEventArgs : EventArgs
 
 /* TODO:
  *      - Refactor movement code into the PlayerController.
- *      - Jump audio played before actuall jump force.
+ *      - Jump audio played before actual jump force.
  */
 [RequireComponent(typeof(PlayerMotor))]
 public class Player : MonoBehaviour

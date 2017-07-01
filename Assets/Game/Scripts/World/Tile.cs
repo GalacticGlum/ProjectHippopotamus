@@ -14,7 +14,13 @@ public class TileEventArgs : EventArgs
 
 public class Tile
 {
+    /// <summary>
+    /// Position in world space.
+    /// </summary>
     public Vector2i WorldPosition { get; private set; }
+    /// <summary>
+    /// Position inside the chunk.
+    /// </summary>
     public Vector2i Position { get; private set; }
     public Chunk Chunk { get; private set; }
 
@@ -30,6 +36,7 @@ public class Tile
             if (oldTileType == type) return;
             World.Current.OnTileChanged(new TileEventArgs(this));
             UpdateNeighbouring();
+            World.Current.WorldData.SetTileTypeAt(WorldPosition.X, WorldPosition.Y, Type);
         }
     }
 
@@ -86,6 +93,21 @@ public class Tile
         neighbours[7] = tileAt;
 
         return neighbours;
+    }
+
+    /// <summary>
+    /// INTERNAL_METHOD
+    /// This sets the Tile type without updating the WorldData.
+    /// </summary>
+    /// <param name="value"></param>
+    public void WorldDataSetType(TileType value)
+    {
+        TileType oldTileType = type;
+        type = value;
+
+        if (oldTileType == type) return;
+        World.Current.OnTileChanged(new TileEventArgs(this));
+        UpdateNeighbouring();
     }
 }
 

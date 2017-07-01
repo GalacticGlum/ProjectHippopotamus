@@ -25,10 +25,8 @@ public class World
     public event TileChangedEventHandler TileChanged;
     public void OnTileChanged(TileEventArgs args)
     {
-        if (TileChanged != null)
-        {
-            TileChanged(this, args);
-        }
+        if (TileChanged == null) return;
+        TileChanged(this, args);
     }
 
     public event ChunkLoadedEventHandler ChunkLoaded;
@@ -296,7 +294,7 @@ public class World
         // find y-coordinate of the bottommost tile that belongs to this chunk
         int focusChunkBottommostPosition = (int)(loadFromPosition.y - loadFromPosition.y % Chunk.Size);
         // find y-coordinate of the topmost tile that belongs to this chunk
-        int focusChunkTopmostPosition = (int)(focusChunkBottommostPosition + Chunk.Size - 1);
+        int focusChunkTopmostPosition = focusChunkBottommostPosition + Chunk.Size - 1;
 
 
         float aspectRatio = (float)screenWidth / screenHeight;

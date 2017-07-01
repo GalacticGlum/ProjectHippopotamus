@@ -50,6 +50,10 @@ public class WorldData
     {
         if (x < 0 || x >= Width || y < 0 || y >= Height) return;
         Tiles[x, y] = type;
+
+        Tile tileAt = World.Current.GetTileAt(x, y);
+        if (tileAt == null) return;
+        tileAt.WorldDataSetType(type);
     }
 
     public void SetTileTypes(Dictionary<Vector2i, TileType> setTileTypes)

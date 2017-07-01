@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class Asteroid : MonoBehaviour
+public class AsteroidInstance : MonoBehaviour
 {
     [SerializeField]
     private Rigidbody2D rigidbody2D;

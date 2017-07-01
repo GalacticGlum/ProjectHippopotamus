@@ -4,7 +4,6 @@ using System.IO;
 using MoonSharp.Interpreter;
 using UnityEngine;
 
-
 public static class Lua
 {
     private static readonly List<string> parsedFilePaths;

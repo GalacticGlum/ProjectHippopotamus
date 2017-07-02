@@ -88,25 +88,25 @@ public class TileGraphicController
         int y = tile.WorldPosition.Y;
 
         Tile tileAt = World.Current.GetTileAt(x, y + 1);
-        if (tileAt != null && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
         {
             spriteName += "N";
         }
 
         tileAt = World.Current.GetTileAt(x + 1, y);
-        if (tileAt != null && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
         {
             spriteName += "E";
         }
 
         tileAt = World.Current.GetTileAt(x, y - 1);
-        if (tileAt != null && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
         {
             spriteName += "S";
         }
 
         tileAt = World.Current.GetTileAt(x - 1, y);
-        if (tileAt != null && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
         {
             spriteName += "W";
         }

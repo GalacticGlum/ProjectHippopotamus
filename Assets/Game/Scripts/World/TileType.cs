@@ -6,6 +6,7 @@ using UnityEngine;
 public struct TileType
 {
     public static readonly TileType Empty;
+    public static readonly TileType NonEmpty;
     private static readonly Dictionary<byte, string> tileTypeIdMap;
     private static readonly Dictionary<string, byte> tileTypeNameMap;
 
@@ -19,7 +20,9 @@ public struct TileType
 
         // Initialize defaults
         Empty = new TileType(0, "Empty");
+        NonEmpty = new TileType(255, "NonEmpty");
         Add(Empty);
+        Add(NonEmpty);
 
         string filePath = Path.Combine(Path.Combine(Application.streamingAssetsPath, "Data"), "TileTypes.xml");
         XmlUtilities.Read("TileTypes", "TileType", filePath, ReadTileType);

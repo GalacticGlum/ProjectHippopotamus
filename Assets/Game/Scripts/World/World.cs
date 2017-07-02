@@ -106,6 +106,7 @@ public class World
         }
 
         Seed = seed;
+        seed = seed.ToLower();
         Random.InitState(seed.GetHashCode());
         CreateChunks();
 

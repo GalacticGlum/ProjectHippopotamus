@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sprites>
+    <Sprite Name="Quartz_" X="32" Y="0" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_E" X="32" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_ES" X="0" Y="32" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_ESW" X="32" Y="32" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_EW" X="64" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+
+    <Sprite Name="Quartz_N" X="0" Y="224" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_NE" X="0" Y="96" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_NES" X="0" Y="64" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_NESW" X="32" Y="64" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_NEW" X="32" Y="96" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_NS" X="0" Y="192" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_NSW" X="64" Y="64" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_NW" X="64" Y="96" Width="32" Height="32" PixelPerUnit="32" />
+
+    <Sprite Name="Quartz_S" X="0" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Quartz_SW" X="64" Y="32" Width="32" Height="32" PixelPerUnit="32" />
+
+    <Sprite Name="Quartz_W" X="96" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+</Sprites>

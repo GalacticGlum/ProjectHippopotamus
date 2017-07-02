@@ -61,7 +61,7 @@ public class TerrainPrairieProcessor : ITerrainProcessor
                 TileType tileAt = worldData.GetTileTypeAt(x, y + offset);
                 if (tileAt == TileType.Empty)
                 {
-                    worldData.SetTileTypeAt(x, y + offset, TileType.Get("Quartz"));
+                    worldData.SetTileTypeAt(x, y + offset, TileType.NonEmpty);
                 }
                 else
                 {

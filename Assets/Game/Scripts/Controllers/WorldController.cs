@@ -47,9 +47,9 @@ public class WorldController : MonoBehaviour
         World.AddGenerator(new TerrainPrairieProcessor());
         World.AddGenerator(new TerrainCaveProcessor());
         World.AddGenerator(new TerrainCleanup());
+        World.AddGenerator(new TerrainLayerProcessor());
 
-        // Constant seed for debugging purposes.
-        World.Generate("unpleasantMustang");
+        World.Generate();
         Generate();
 
         OnLoaded();

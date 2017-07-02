@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TerrainLayers>
+    <TerrainLayer TileType="Grass" Top="0.4" Bottom="1"/>
+    <TerrainLayer TileType="Quartz" Top="0" Bottom="0.55"/>
+</TerrainLayers>

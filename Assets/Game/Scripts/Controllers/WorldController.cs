@@ -49,7 +49,7 @@ public class WorldController : MonoBehaviour
         World.AddGenerator(new TerrainCleanup());
 
         // Constant seed for debugging purposes.
-        World.Generate();
+        World.Generate("unpleasantMustang");
         Generate();
 
         OnLoaded();

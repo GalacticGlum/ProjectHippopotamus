@@ -18,5 +18,10 @@ public static class MathHelper
     {
         return new Vector2i(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y));
     }
+
+    public static bool Approximately(Vector3 a, Vector3 b, double precision = 0.0001)
+    {
+        return Vector3.SqrMagnitude(a - b) < precision;
+    }
 }
 

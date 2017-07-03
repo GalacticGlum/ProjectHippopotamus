@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
     private float jumpForce = 400f;
     [SerializeField]
     private float jumpDeteriorationPercent = 0.5f;
+    private bool canMove;
 
     private PlayerMotor motor;
     private bool jump;
@@ -63,6 +64,7 @@ public class Player : MonoBehaviour
     {
         attributes.Update();
 
+        if(!canMove) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jump = true;
@@ -88,6 +90,8 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(!canMove) return;
+
         float horizontal = Input.GetAxis("Horizontal");
         motor.Move(horizontal, jump, isPowerJump, currentSpeed, currentJumpForce);
 
@@ -99,6 +103,27 @@ public class Player : MonoBehaviour
     {
         OnJumped();
         Attributes.Get("Energy").Modify(-cost);
+    }
+
+    public void Freeze(float duration = 0)
+    {
+        canMove = false;
+        if (duration > 0)
+        {
+            Invoke("Unfreeze", duration);
+        }
+    }
+
+    public void Unfreeze()
+    {
+        canMove = true;
+    }
+
+    public void Shock(float duration, float cameraShakeAmount = 0.5f, float cameraShakeDegradationFactor = 1)
+    {
+        Freeze(duration);
+        CameraController.Instance.Freeze(duration);
+        CameraShakeAgent.Create(duration, cameraShakeAmount, cameraShakeDegradationFactor);
     }
 }
 

@@ -30,6 +30,11 @@ public class AsteroidInstance : MonoBehaviour
         GameObject impactGameObject = Instantiate(impactPrefab, transform.position + new Vector3(0, 0, -1), Quaternion.identity);
         impactGameObject.transform.localScale = new Vector3(size, size, size);
 
+        if (Vector3.Distance(transform.position, Player.Current.transform.position) <= impactRadius)
+        {
+            Player.Current.Shock(0.5f);
+        }
+
         Destroy(impactGameObject, impactGameObject.GetComponent<ParticleSystem>().main.duration);
         Destroy(gameObject);
     }

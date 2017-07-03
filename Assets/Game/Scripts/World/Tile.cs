@@ -97,7 +97,7 @@ public class Tile
     }
 
     /*
-     * TODO: Fix me, this is a completely valid solution yet it is not elegant.
+     * TODO: Fix me, this is a completely valid solution but it is not elegant.
      * There should be a way to flag whether the WorldData is setting a TileType. 
      * (so the world knows that it shouldn't update the WorldData as that would cause
      * A StackOverflow exception).
@@ -115,13 +115,18 @@ public class Tile
         if (oldTileType == type) return;
         World.Current.OnTileChanged(new TileEventArgs(this));
         UpdateNeighbouring();
+        TileChanged(oldTileType, true);
     }
 
-    private void TileChanged(TileType oldTileType)
+    private void TileChanged(TileType oldTileType, bool isWorldData = false)
     {
         World.Current.OnTileChanged(new TileEventArgs(this));
         UpdateNeighbouring();
-        World.Current.WorldData.SetTileTypeAt(WorldPosition.X, WorldPosition.Y, Type);
+
+        if (!isWorldData)
+        {
+            World.Current.WorldData.SetTileTypeAt(WorldPosition.X, WorldPosition.Y, Type);
+        }
 
         if (Type == TileType.Empty)
         {

@@ -55,7 +55,7 @@ public class Tile
 
     public void Load(BinaryReader reader)
     {
-        Type = TileType.Get(reader.ReadByte());
+        Type = TileType.Parse(reader.ReadByte());
     }
 
     private void UpdateNeighbouring()

@@ -32,7 +32,7 @@ public static class WordDictionary
     {
         if (wordMap.ContainsKey(name)) return wordMap[name][Random.Range(0, wordMap[name].Length)];
 
-        Logger.LogFormat("Engine", "WordDictionary::Get: Word Collection of name \"{0}\" does not exist!", LoggerVerbosity.Warning, name);
+        Logger.LogFormat("Engine", "WordDictionary::Parse: Word Collection of name \"{0}\" does not exist!", LoggerVerbosity.Warning, name);
         return string.Empty;
     }
 }

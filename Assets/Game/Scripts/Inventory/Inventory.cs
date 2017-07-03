@@ -1,4 +1,4 @@
-﻿// TODO: Get back to me.
+﻿// TODO: Parse back to me.
 public class Inventory
 {
 }

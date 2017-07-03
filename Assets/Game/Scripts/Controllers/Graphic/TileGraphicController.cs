@@ -88,30 +88,45 @@ public class TileGraphicController
         int y = tile.WorldPosition.Y;
 
         Tile tileAt = World.Current.GetTileAt(x, y + 1);
-        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty && DoesLinkWithNeighbour(tile, tileAt))
         {
             spriteName += "N";
         }
 
         tileAt = World.Current.GetTileAt(x + 1, y);
-        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty && DoesLinkWithNeighbour(tile, tileAt))
         {
             spriteName += "E";
         }
 
         tileAt = World.Current.GetTileAt(x, y - 1);
-        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty && DoesLinkWithNeighbour(tile, tileAt))
         {
             spriteName += "S";
         }
 
         tileAt = World.Current.GetTileAt(x - 1, y);
-        if (tileAt != null && tileAt.Type != TileType.Empty)// && tileAt.Type == tile.Type)
+        if (tileAt != null && tileAt.Type != TileType.Empty && DoesLinkWithNeighbour(tile, tileAt))
         {
             spriteName += "W";
         }
 
         return spriteName;
+    }
+
+    private static bool DoesLinkWithNeighbour(Tile tile, Tile neighbour)
+    {
+        switch (tile.Type.LinkType)
+        {
+            case LinkType.None:
+                return false;
+            case LinkType.All:
+                return true;
+            case LinkType.Same:
+                return tile.Type == neighbour.Type;
+        }
+
+        return false;
     }
 
     private void CreateTileGameObject(Tile tileAt)

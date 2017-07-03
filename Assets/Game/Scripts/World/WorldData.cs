@@ -29,7 +29,7 @@ public class WorldData
     }
 
     /// <summary>
-    /// Get's the TileType at (<paramref name="x"/>, <paramref name="y"/>).
+    /// Parse's the TileType at (<paramref name="x"/>, <paramref name="y"/>).
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>

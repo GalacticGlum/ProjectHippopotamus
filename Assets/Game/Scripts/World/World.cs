@@ -122,7 +122,7 @@ public class World
         //    for (int y = 0; y < WorldData.Height; ++y)
         //    {
         //        int key = x * WorldData.Height + y;
-        //        DynValue value = generatedData.Get(key);
+        //        DynValue value = generatedData.Parse(key);
 
         //        if (value.IsNotNil())
         //        {
@@ -237,7 +237,7 @@ public class World
                         {
                             for (int ty = 0; ty < Chunk.Size; ty++)
                             {
-                                WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = TileType.Get(reader.ReadByte());
+                                WorldData.Tiles[x * Chunk.Size + tx, y * Chunk.Size + ty] = TileType.Parse(reader.ReadByte());
                             }
                         }
                     }

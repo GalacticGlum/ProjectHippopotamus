@@ -4,27 +4,14 @@ using System.Linq;
 using System.Xml;
 using UnityEngine;
 
-internal struct LayerInfo
-{
-    public TileType tileType;
-    public float top;
-    public float bottom;
-
-    public LayerInfo(TileType tileType, float top, float bottom)
-    {
-        this.tileType = tileType;
-        this.top = top;
-        this.bottom = bottom;
-    }
-}
-
 public class TerrainLayerProcessor : ITerrainProcessor
 {
-    private List<LayerInfo> layers;
+    private List<TerrainLayer> layers;
     private HashSet<byte>[] layersAtHeight;
+
     public TerrainLayerProcessor()
     {
-        layers = new List<LayerInfo>();
+        layers = new List<TerrainLayer>();
 
         string filePath = Path.Combine(Path.Combine(Application.streamingAssetsPath, "Data"), "TerrainLayers.xml");
         XmlUtilities.Read("TerrainLayers", "TerrainLayer", filePath, ReadLayer);
@@ -38,17 +25,16 @@ public class TerrainLayerProcessor : ITerrainProcessor
 
         layersAtHeight = new HashSet<byte>[worldData.Height];
         CalculateLayersAtHeight();
-        //int 
+
         for (int y = 0; y < worldData.Height; y++)
         {
             for (int x = 0; x < worldData.Width; x++)
             {
-                if (worldData.Tiles[x, y] == TileType.NonEmpty)
-                {
-                    LayerInfo layerInfo = layers[layersAtHeight[y].ElementAt(Random.Range(0, layersAtHeight[y].Count))];
-                    TileType tileType = layerInfo.tileType;
-                    worldData.Tiles[x, y] = tileType;
-                }
+                if (worldData.Tiles[x, y] != TileType.NonEmpty) continue;
+
+                TerrainLayer terrainLayer = layers[layersAtHeight[y].ElementAt(Random.Range(0, layersAtHeight[y].Count))];
+                TileType tileType = terrainLayer.TileType;
+                worldData.Tiles[x, y] = tileType;
             }
         }
     }
@@ -61,8 +47,8 @@ public class TerrainLayerProcessor : ITerrainProcessor
             float heightPercent = i / (float)layersAtHeight.Length;
             for (byte layer = 0; layer < layers.Count; ++layer)
             {
-                LayerInfo info = layers[layer];
-                if (info.top <= heightPercent && info.bottom >= heightPercent)
+                TerrainLayer info = layers[layer];
+                if (info.Top <= heightPercent && info.Bottom >= heightPercent)
                 {
                     layersAtHeight[i].Add(layer);
                 }
@@ -72,15 +58,15 @@ public class TerrainLayerProcessor : ITerrainProcessor
 
     private void ReadLayer(XmlReader xmlReader)
     {
-        TileType tileType = TileType.Get(xmlReader.GetAttribute("TileType"));
+        TileType tileType = TileType.Parse(xmlReader.GetAttribute("TileType"));
         float top = float.Parse(xmlReader.GetAttribute("Top"));
         float bottom = float.Parse(xmlReader.GetAttribute("Bottom"));
 
-        layers.Add(new LayerInfo(tileType, top, bottom));
+        layers.Add(new TerrainLayer(tileType, top, bottom));
     }
 
     private void SortLayers()
     {
-        layers = layers.OrderBy(layer => layer.top).ToList();
+        layers = layers.OrderBy(layer => layer.Top).ToList();
     }
 }

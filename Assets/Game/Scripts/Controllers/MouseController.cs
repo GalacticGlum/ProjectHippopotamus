@@ -23,7 +23,7 @@ public class MouseController
             Tile tile = WorldController.Instance.GetTileFromMousePosition();
             if (tile != null)
             {
-                tile.Type = TileType.Get("Quartz");
+                tile.Type = TileType.Parse("Quartz");
             }
         }
 

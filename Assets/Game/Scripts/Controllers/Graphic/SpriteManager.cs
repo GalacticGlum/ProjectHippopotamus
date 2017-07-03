@@ -43,7 +43,12 @@ public static class SpriteManager
 
         string[] files = Directory.GetFiles(filePath);
         string spriteCategory = new DirectoryInfo(filePath).Name;
-        reroutes.Add(spriteCategory, new Reroute(filePath));
+
+        Reroute reroute = new Reroute(filePath);
+        if (reroute.Exists)
+        {
+            reroutes.Add(spriteCategory, reroute);
+        }
 
         foreach (string file in files)
         {

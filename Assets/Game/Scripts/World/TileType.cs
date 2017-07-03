@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using UnityEngine;
@@ -7,20 +8,21 @@ public struct TileType
 {
     public static readonly TileType Empty;
     public static readonly TileType NonEmpty;
-    private static readonly Dictionary<byte, string> tileTypeIdMap;
-    private static readonly Dictionary<string, byte> tileTypeNameMap;
+    private static readonly Dictionary<byte, TileType> tileTypeIdMap;
+    private static readonly Dictionary<string, TileType> tileTypeNameMap;
 
     public readonly byte Id;
     public readonly string Name;
+    public readonly LinkType LinkType;
 
     static TileType()
     {
-        tileTypeIdMap = new Dictionary<byte, string>();
-        tileTypeNameMap = new Dictionary<string, byte>();
+        tileTypeIdMap = new Dictionary<byte, TileType>();
+        tileTypeNameMap = new Dictionary<string, TileType>();
 
         // Initialize defaults
-        Empty = new TileType(0, "Empty");
-        NonEmpty = new TileType(255, "NonEmpty");
+        Empty = new TileType(0, "Empty", LinkType.None);
+        NonEmpty = new TileType(255, "NonEmpty", LinkType.None);
         Add(Empty);
         Add(NonEmpty);
 
@@ -28,10 +30,11 @@ public struct TileType
         XmlUtilities.Read("TileTypes", "TileType", filePath, ReadTileType);
     }
 
-    public TileType(byte id, string name) : this()
+    public TileType(byte id, string name, LinkType linkType) : this()
     {
         Id = id;
         Name = name;
+        LinkType = linkType;
     }
 
     private static void ReadTileType(XmlReader xmlReader)
@@ -39,7 +42,14 @@ public struct TileType
         byte id = byte.Parse(xmlReader.GetAttribute("Id"));
         string name = xmlReader.GetAttribute("Name");
 
-        Add(new TileType(id, name));
+        LinkType linkType = LinkType.None;
+        string linkTypeAttribute = xmlReader.GetAttribute("LinkType");
+        if (!string.IsNullOrEmpty(linkTypeAttribute))
+        {
+            linkType = (LinkType)Enum.Parse(typeof(LinkType), linkTypeAttribute);
+        }
+
+        Add(new TileType(id, name, linkType));
     }
 
     public static void Add(TileType tileType)
@@ -50,32 +60,23 @@ public struct TileType
             return;
         }
 
-        tileTypeIdMap.Add(tileType.Id, tileType.Name);
-        tileTypeNameMap.Add(tileType.Name, tileType.Id);
+        tileTypeIdMap.Add(tileType.Id, tileType);
+        tileTypeNameMap.Add(tileType.Name, tileType);
     }
 
-    public static TileType Get(string name)
+    public static TileType Parse(string name)
     {
-        if (!tileTypeNameMap.ContainsKey(name))
-        {
-            Logger.Log("Engine", string.Format("TileType::Get: Tile Type \"{0}\" could not be found!", name), LoggerVerbosity.Warning);
-            return Empty;
-        }
+        if (tileTypeNameMap.ContainsKey(name)) return tileTypeNameMap[name];
 
-        byte id = tileTypeNameMap[name];
-        return new TileType(id, name);
+        Logger.Log("Engine", string.Format("TileType::Parse: Tile Type \"{0}\" could not be found!", name), LoggerVerbosity.Warning);
+        return Empty;
     }
 
-    public static TileType Get(byte id)
+    public static TileType Parse(byte id)
     {
-        if (!tileTypeIdMap.ContainsKey(id))
-        {
-            Logger.Log("Engine", string.Format("TileType::Get: Tile Type with Id={0} could not be found!", id), LoggerVerbosity.Warning);
-            return Empty;
-        }
-
-        string name = tileTypeIdMap[id];
-        return new TileType(id, name);
+        if (tileTypeIdMap.ContainsKey(id)) return tileTypeIdMap[id];
+        Logger.Log("Engine", string.Format("TileType::Parse: Tile Type with Id={0} could not be found!", id), LoggerVerbosity.Warning);
+        return Empty;
     }
 
     public static bool operator ==(TileType a, TileType b)
@@ -90,7 +91,7 @@ public struct TileType
 
     public bool Equals(TileType other)
     {
-        return Id == other.Id && string.Equals(Name, other.Name);
+        return Id == other.Id && string.Equals(Name, other.Name) && LinkType == other.LinkType;
     }
 
     public override bool Equals(object obj)
@@ -103,7 +104,10 @@ public struct TileType
     {
         unchecked
         {
-            return (Id.GetHashCode() * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+            int hashCode = Id.GetHashCode();
+            hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ (int) LinkType;
+            return hashCode;
         }
     }
 }

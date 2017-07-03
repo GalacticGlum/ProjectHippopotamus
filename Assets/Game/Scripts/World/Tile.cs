@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MoonSharp.Interpreter;
 using UnityEngine;
 
 public delegate void TileChangedEventHandler(object sender, TileEventArgs args);
@@ -12,6 +13,8 @@ public class TileEventArgs : EventArgs
     }
 }
 
+[LuaExposeType]
+[MoonSharpUserData]
 public class Tile
 {
     /// <summary>

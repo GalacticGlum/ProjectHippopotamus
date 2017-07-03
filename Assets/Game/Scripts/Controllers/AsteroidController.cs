@@ -1,6 +1,9 @@
 ﻿using System.IO;
+using MoonSharp.Interpreter;
 using UnityEngine;
 
+[LuaExposeType]
+[MoonSharpUserData]
 public class AsteroidController
 {
     private readonly GameObject[] asteroidPrefabs;
@@ -20,6 +23,12 @@ public class AsteroidController
     {
         GameObject asteroidPrefab = GetAsteroidPrefab();
         AsteroidInstance.Create(impactRadius, speed, targetTile.WorldPosition.ToVector2(), asteroidPrefab, GetImpactPrefab(asteroidPrefab));
+    }
+
+    public void SpawnAtPlayer(int impactRadius, float speed)
+    {
+        Tile playerTile = Player.Current.GetTile();
+        Spawn(impactRadius, speed, World.Current.GetTileAt(playerTile.WorldPosition.X, playerTile.WorldPosition.Y - 5));
     }
 
     private GameObject GetAsteroidPrefab()

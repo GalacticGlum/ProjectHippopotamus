@@ -1,4 +1,5 @@
 ﻿using System;
+using MoonSharp.Interpreter;
 using UnityEngine;
 
 public delegate void WorldControllerLoadedEventHandler(object sender, WorldControllerEventArgs args);
@@ -10,7 +11,8 @@ public class WorldControllerEventArgs : EventArgs
         WorldController = worldController;
     }
 }
-
+[LuaExposeType]
+[MoonSharpUserData]
 public class WorldController : MonoBehaviour 
 {
     public static WorldController Instance { get; private set; }

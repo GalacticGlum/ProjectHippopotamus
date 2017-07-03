@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using MoonSharp.Interpreter;
+using UnityEngine;
 
+[LuaExposeType]
+[MoonSharpUserData]
 public struct Vector2i
 {
     public int X { get; set; }

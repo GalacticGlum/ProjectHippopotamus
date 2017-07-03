@@ -1,5 +1,7 @@
 using System;
+using MoonSharp.Interpreter;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public delegate void PlayerJumpedEventHandler(object sender, PlayerEventArgs args);
 public class PlayerEventArgs : EventArgs
@@ -15,6 +17,9 @@ public class PlayerEventArgs : EventArgs
  *      - Refactor movement code into the PlayerController.
  *      - Jump audio played before actual jump force.
  */
+
+[LuaExposeType]
+[MoonSharpUserData]
 [RequireComponent(typeof(PlayerMotor))]
 public class Player : MonoBehaviour
 {
@@ -55,6 +60,7 @@ public class Player : MonoBehaviour
     {
         Current = this;
 
+        canMove = true;
         motor = GetComponent<PlayerMotor>();
         attributes.Initialize();
         currentSpeed = walkSpeed;
@@ -64,7 +70,7 @@ public class Player : MonoBehaviour
     {
         attributes.Update();
 
-        if(!canMove) return;
+        if (!canMove) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jump = true;
@@ -124,6 +130,25 @@ public class Player : MonoBehaviour
         Freeze(duration);
         CameraController.Instance.Freeze(duration);
         CameraShakeAgent.Create(duration, cameraShakeAmount, cameraShakeDegradationFactor);
+    }
+
+    public Tile GetTile()
+    {
+        return WorldController.Instance.GetTileFromWorldCoordinates(transform.position);
+    }
+
+    public Tile GetTileInChunk()
+    {
+        Tile tile = GetTile();
+        if (tile == null) return null;
+
+        Chunk chunk = tile.Chunk;
+        return chunk.GetTileAt(Random.Range(0, Chunk.Size), Random.Range(0, Chunk.Size));
+    }
+
+    public Vector2i GetGridPosition()
+    {
+        return WorldController.Instance.WorldCoordiantesToGridSpace(transform.position);
     }
 }
 

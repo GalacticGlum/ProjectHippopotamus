@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sprites>
+    <Sprite Name="Ice_" X="32" Y="0" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_E" X="32" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_ES" X="0" Y="32" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_ESW" X="32" Y="32" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_EW" X="64" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+
+    <Sprite Name="Ice_N" X="0" Y="224" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_NE" X="0" Y="96" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_NES" X="0" Y="64" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_NESW" X="32" Y="64" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_NEW" X="32" Y="96" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_NS" X="0" Y="192" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_NSW" X="64" Y="64" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_NW" X="64" Y="96" Width="32" Height="32" PixelPerUnit="32" />
+
+    <Sprite Name="Ice_S" X="0" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+    <Sprite Name="Ice_SW" X="64" Y="32" Width="32" Height="32" PixelPerUnit="32" />
+
+    <Sprite Name="Ice_W" X="96" Y="160" Width="32" Height="32" PixelPerUnit="32" />
+</Sprites>

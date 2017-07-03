@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using MoonSharp.Interpreter;
 using UnityEngine;
 
+[LuaExposeType]
+[MoonSharpUserData]
 public struct TileType
 {
     public static readonly TileType Empty;
@@ -14,6 +17,8 @@ public struct TileType
     public readonly byte Id;
     public readonly string Name;
     public readonly LinkType LinkType;
+
+    private readonly Closure destroyedFunction;
 
     static TileType()
     {
@@ -30,11 +35,12 @@ public struct TileType
         XmlUtilities.Read("TileTypes", "TileType", filePath, ReadTileType);
     }
 
-    public TileType(byte id, string name, LinkType linkType) : this()
+    public TileType(byte id, string name, LinkType linkType, Closure destroyedFunction = null) : this()
     {
         Id = id;
         Name = name;
         LinkType = linkType;
+        this.destroyedFunction = destroyedFunction;
     }
 
     private static void ReadTileType(XmlReader xmlReader)
@@ -49,7 +55,20 @@ public struct TileType
             linkType = (LinkType)Enum.Parse(typeof(LinkType), linkTypeAttribute);
         }
 
-        Add(new TileType(id, name, linkType));
+        XmlReader subReader = xmlReader.ReadSubtree();
+        Closure destroyedFunction = null;
+        while (subReader.Read())
+        {
+            switch (subReader.Name)
+            {
+                case "OnDestroy":
+                    Lua.Parse(subReader.GetAttribute("FilePath"));
+                    destroyedFunction = Lua.GetFunction(subReader.GetAttribute("FunctionName"));
+                    break;
+            }
+        }
+
+        Add(new TileType(id, name, linkType, destroyedFunction));
     }
 
     public static void Add(TileType tileType)
@@ -77,6 +96,12 @@ public struct TileType
         if (tileTypeIdMap.ContainsKey(id)) return tileTypeIdMap[id];
         Logger.Log("Engine", string.Format("TileType::Parse: Tile Type with Id={0} could not be found!", id), LoggerVerbosity.Warning);
         return Empty;
+    }
+
+    public void OnDestroyed(Tile tile)
+    {
+        if (destroyedFunction == null) return; 
+        Lua.Call(destroyedFunction, tile);
     }
 
     public static bool operator ==(TileType a, TileType b)

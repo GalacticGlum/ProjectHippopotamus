@@ -37,9 +37,7 @@ public class Tile
             type = value;
 
             if (oldTileType == type) return;
-            World.Current.OnTileChanged(new TileEventArgs(this));
-            UpdateNeighbouring();
-            World.Current.WorldData.SetTileTypeAt(WorldPosition.X, WorldPosition.Y, Type);
+            TileChanged(oldTileType);
         }
     }
 
@@ -117,6 +115,18 @@ public class Tile
         if (oldTileType == type) return;
         World.Current.OnTileChanged(new TileEventArgs(this));
         UpdateNeighbouring();
+    }
+
+    private void TileChanged(TileType oldTileType)
+    {
+        World.Current.OnTileChanged(new TileEventArgs(this));
+        UpdateNeighbouring();
+        World.Current.WorldData.SetTileTypeAt(WorldPosition.X, WorldPosition.Y, Type);
+
+        if (Type == TileType.Empty)
+        {
+            oldTileType.OnDestroyed(this);
+        }
     }
 }
 

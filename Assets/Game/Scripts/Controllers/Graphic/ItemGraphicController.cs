@@ -26,6 +26,7 @@ public class ItemGraphicController
     private void OnItemPlaced(object sender, ItemEventArgs args)
     {
         GameObject itemGameObject = ItemInstance.Create(args.Item, itemParent);
+        itemGameObject.transform.localScale = new Vector3(0.5f, 0.5f, 1);
         itemGameObjects.Add(args.Item, itemGameObject);
 
         SpriteRenderer spriteRenderer = itemGameObject.GetComponent<SpriteRenderer>();

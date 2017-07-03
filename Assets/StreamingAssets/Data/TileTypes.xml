@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <TileTypes>
-    <TileType Id="1" Name="Quartz" LinkType="All" />
-    <TileType Id="2" Name="Grass" LinkType="All" />
-    <TileType Id="3" Name="Ice" LinkType="All" />
+    <TileType Id="1" Name="Quartz" LinkType="All"></TileType>
+    <TileType Id="2" Name="Grass" LinkType="All"></TileType>
+    <TileType Id="3" Name="Ice" LinkType="All">
+        <OnDestroy FilePath="Lua/IceTileType.lua" FunctionName="OnIceDestroyed" />
+    </TileType>
 </TileTypes>

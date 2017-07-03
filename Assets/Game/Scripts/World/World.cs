@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Hippopotamus.World;
+using MoonSharp.Interpreter;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public delegate void ItemPlacedEventHandler(object sender, ItemEventArgs args);
+
+[LuaExposeType]
+[MoonSharpUserData]
 public class World
 {
     public static World Current { get; private set; }
@@ -276,6 +280,17 @@ public class World
         item.SpawnPosition = position;
 
         OnItemPlaced(new ItemEventArgs(item));
+    }
+
+    /// <summary>
+    /// Place an item into the world.
+    /// </summary>
+    /// <param name="itemType"></param>
+    /// <param name="position"></param>
+    public void PlaceItem(string itemType, Vector2i position)
+    {
+        Item item = new Item("Ice", 1);
+        PlaceItem(item, position);
     }
 
     private void LoadChunks(Vector2 loadFromPosition)

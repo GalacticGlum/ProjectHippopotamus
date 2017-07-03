@@ -27,6 +27,7 @@ public class AsteroidController
 
     public void SpawnAtPlayer(int impactRadius, float speed)
     {
+        // TODO: Spawn asteroid IN player chunk at the surface tile.
         Tile playerTile = Player.Current.GetTile();
         Spawn(impactRadius, speed, World.Current.GetTileAt(playerTile.WorldPosition.X, playerTile.WorldPosition.Y - 5));
     }

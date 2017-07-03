@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 
-// Do items want to be able to move around??
-// Maybe they should be linked to a object in the game (such as a tile); though this will look weird .
-// Items could be linked to a tile and they will move to the tile from their spawn position?
-// TODO: Player should not collide with items. 
+// TODO: Add bobbing effect
 
 /// <summary>
 /// Stores an instance to the item that this instance is linked to.
@@ -15,10 +12,13 @@ public class ItemInstance : MonoBehaviour
     public static GameObject Create(Item item, Transform parent = null)
     {
         if (item == null) return null;
-        GameObject instance = new GameObject(string.Format("{0}_Instance", item.Type), typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(BoxCollider2D));
+        GameObject instance = new GameObject(string.Format("{0}_Instance", item.Type), typeof(Rigidbody2D), typeof(SpriteRenderer), 
+            typeof(BoxCollider2D));
+
         instance.GetComponent<BoxCollider2D>().size = Vector2.one;
         instance.transform.position = item.SpawnPosition.ToVector3(1);
         instance.GetComponent<SpriteRenderer>().material = Resources.Load<Material>("Materials/SpriteDiffuse");
+        instance.layer = LayerMask.NameToLayer("Items");
 
         ItemInstance itemInstance = instance.AddComponent<ItemInstance>();
         itemInstance.Item = item;

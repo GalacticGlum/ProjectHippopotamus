@@ -64,6 +64,10 @@ public class Player : MonoBehaviour
         motor = GetComponent<PlayerMotor>();
         attributes.Initialize();
         currentSpeed = walkSpeed;
+
+        int playerLayer = LayerMask.NameToLayer("Player");
+        gameObject.layer = playerLayer;
+        Physics2D.IgnoreLayerCollision(playerLayer, LayerMask.NameToLayer("Items"));
     }
 
     private void Update()

@@ -8,6 +8,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public delegate void ItemPlacedEventHandler(object sender, ItemEventArgs args);
+public delegate void ItemRemovedEventHandler(object sender, ItemEventArgs args);
 
 [LuaExposeType]
 [MoonSharpUserData]
@@ -24,7 +25,6 @@ public class World
     public WorldData WorldData { get; private set; }
     public Player Player { get; private set; }
 
-    public Dictionary<string, List<Item>> Items { get; private set; }
     public string Seed { get; private set; }
 
     public event TileChangedEventHandler TileChanged;
@@ -59,6 +59,13 @@ public class World
         ItemPlaced(this, args);
     }
 
+    public event ItemRemovedEventHandler ItemRemoved;
+    private void OnItemRemoved(ItemEventArgs args)
+    {
+        if (ItemRemoved == null) return;
+        ItemRemoved(this, args);
+    }
+
     private Chunk[,] chunks;
     private readonly HashSet<Chunk> loadedChunks;
     private readonly Queue<Chunk> loadChunkQueue;
@@ -66,6 +73,7 @@ public class World
 
     private readonly TerrainProcessor terrainProcessor;
     private readonly List<ITerrainProcessor> terrainProcesses;
+    private Dictionary<string, List<Item>> items;
 
     private bool playerLoaded;
 
@@ -91,7 +99,7 @@ public class World
 
         chunks = new Chunk[Width, Height];
         WorldData = new WorldData(WidthInTiles, HeightInTiles);
-        Items = new Dictionary<string, List<Item>>();
+        items = new Dictionary<string, List<Item>>();
 
         LoadPrototypes();
     }
@@ -264,35 +272,6 @@ public class World
         LoadChunks(Camera.main.transform.position);
     }
 
-    /// <summary>
-    /// Place an item into the world.
-    /// </summary>
-    /// <param name="item"></param>
-    /// <param name="position"></param>
-    public void PlaceItem(Item item, Vector2i position)
-    {
-        if (Items.ContainsKey(item.Type) == false)
-        {
-            Items[item.Type] = new List<Item>();
-        }
-
-        Items[item.Type].Add(item);
-        item.SpawnPosition = position;
-
-        OnItemPlaced(new ItemEventArgs(item));
-    }
-
-    /// <summary>
-    /// Place an item into the world.
-    /// </summary>
-    /// <param name="itemType"></param>
-    /// <param name="position"></param>
-    public void PlaceItem(string itemType, Vector2i position)
-    {
-        Item item = new Item("Ice", 1);
-        PlaceItem(item, position);
-    }
-
     private void LoadChunks(Vector2 loadFromPosition)
     {
         int screenWidth = Screen.width;
@@ -414,5 +393,46 @@ public class World
 
         return new Vector2i(x, positionY);
     }
-}
 
+    public void PlaceItem(string type, int stackSize, Tile tile)
+    {
+        if (tile == null) return;
+        Item item = new Item(type, stackSize);
+        PlaceItem(item, tile);
+    }
+
+    public void PlaceItem(Item item, Tile tile)
+    {
+        if (item == null || tile == null) return;
+        if (tile.Item != null && tile.Item.Type == item.Type)
+        {
+            tile.Item.StackSize += item.StackSize;
+            return;
+        }
+
+        item.Tile = tile;
+        OnItemPlaced(new ItemEventArgs(item));
+
+        if (!items.ContainsKey(item.Type))
+        {
+            items.Add(item.Type, new List<Item>());
+        }
+
+        items[item.Type].Add(item);
+    }
+
+    public void RemoveItem(Item item)
+    {
+        if (item == null) return;
+        if (!items.ContainsKey(item.Type)) return;
+        items[item.Type].Remove(item);
+        OnItemRemoved(new ItemEventArgs(item));
+        item.Tile.Item = null;
+    }
+
+    public Dictionary<string, List<Item>> GetItems()
+    {
+        return new Dictionary<string, List<Item>>(items);
+    }
+
+}

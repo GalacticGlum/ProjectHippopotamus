@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class ItemGraphicController
 {
@@ -9,14 +9,20 @@ public class ItemGraphicController
 
     public ItemGraphicController()
     {
+        int itemLayer = LayerMask.NameToLayer("Items");
+        Physics2D.IgnoreLayerCollision(itemLayer, itemLayer);
+
         // Setup parent
         itemParent = new GameObject("Items").transform;
         itemGameObjects = new Dictionary<Item, GameObject>();
 
         World.Current.ItemPlaced += OnItemPlaced;
-        foreach (string type in World.Current.Items.Keys)
+        World.Current.ItemRemoved += OnItemRemoved;
+
+        Dictionary<string, List<Item>> items = World.Current.GetItems();
+        foreach (string type in items.Keys)
         {
-            foreach (Item item in World.Current.Items[type])
+            foreach (Item item in items[type])
             {
                 OnItemPlaced(this, new ItemEventArgs(item));
             }
@@ -38,6 +44,11 @@ public class ItemGraphicController
 
     private void OnItemChanged(object sender, ItemEventArgs args)
     {
-        throw new NotImplementedException();
+    }
+
+    private void OnItemRemoved(object sender, ItemEventArgs args)
+    {
+        if (!itemGameObjects.ContainsKey(args.Item)) return;
+        Object.Destroy(itemGameObjects[args.Item]);
     }
 }

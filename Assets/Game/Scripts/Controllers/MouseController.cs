@@ -15,7 +15,8 @@ public class MouseController
 
         if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl))
         {
-            World.Current.PlaceItem(new Item("Ice", 1), WorldController.Instance.GetTileFromMousePosition().WorldPosition);
+            //WorldController.Instance.GetTileFromMousePosition().PlaceItem("Ice", 1);
+            World.Current.PlaceItem("Ice", 1, WorldController.Instance.GetTileFromMousePosition());
         }
 
         if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl))
@@ -23,7 +24,8 @@ public class MouseController
             Tile tile = WorldController.Instance.GetTileFromMousePosition();
             if (tile != null)
             {
-                tile.Type = TileType.Parse("Quartz");
+                //tile.Type = TileType.Parse("Ice");
+                Debug.Log(tile.Item == null ? "Item null" : string.Format("Item {0}, {1}", tile.Item.Type, tile.Item.StackSize));
             }
         }
 

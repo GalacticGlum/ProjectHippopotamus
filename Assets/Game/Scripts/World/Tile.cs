@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using MoonSharp.Interpreter;
 using UnityEngine;
@@ -26,6 +27,7 @@ public class Tile
     /// </summary>
     public Vector2i Position { get; private set; }
     public Chunk Chunk { get; private set; }
+    public Item Item { get; set; }
 
     private TileType type = TileType.Empty;
     public TileType Type
